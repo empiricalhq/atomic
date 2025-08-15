@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { storageService } from '../services/StorageService';
@@ -74,7 +75,7 @@ export default function OnboardingScreen() {
   const isLastStep = currentStep === ONBOARDING_STEPS.length - 1;
 
   return (
-    <SafeAreaView className={STYLES.container + ' flex-1'}>
+    <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
       <View className="flex-row items-center justify-between px-6 py-4">
         <View className="flex-row">
           {ONBOARDING_STEPS.map((_, index) => (

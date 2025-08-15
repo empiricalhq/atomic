@@ -1,13 +1,6 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-  TouchableOpacity,
-  TextInput,
-  Modal,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { DESIGN } from '../../constants/design';
 
@@ -77,7 +70,7 @@ export default function BudgetScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
       <View className="flex-row items-center justify-between border-b border-slate-100 bg-white px-6 py-4">
         <Text className="text-2xl font-bold text-slate-900">Presupuesto</Text>
         <TouchableOpacity

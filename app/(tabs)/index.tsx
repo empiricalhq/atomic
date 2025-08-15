@@ -1,12 +1,6 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useTransactions } from '../../hooks/useTransactions';
@@ -46,7 +40,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView className={STYLES.container + ' flex-1'}>
+    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
       <ScrollView
         className="flex-1"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

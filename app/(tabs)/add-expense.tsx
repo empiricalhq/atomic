@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  TextInput,
-  Modal,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTransactions } from '../../hooks/useTransactions';
@@ -104,7 +97,7 @@ export default function AddExpenseScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-slate-100 bg-white px-6 py-4">
         <TouchableOpacity

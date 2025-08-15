@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ConfigScreen() {
@@ -103,7 +104,7 @@ export default function ConfigScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
       {/* Header */}
       <View className="bg-white px-5 py-4">
         <Text className="text-2xl font-bold text-slate-900">Configuración</Text>

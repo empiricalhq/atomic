@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   Dimensions,
   Animated,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -178,7 +178,7 @@ export default function ScannerScreen() {
   });
 
   return (
-    <SafeAreaView className="flex-1 bg-black">
+    <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-black">
       <View className="absolute left-0 right-0 top-0 z-10 flex-row items-center justify-between px-6 py-4">
         <TouchableOpacity
           className="h-10 w-10 items-center justify-center rounded-full bg-black/60"

@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { DESIGN } from '../../constants/design';
 
@@ -33,7 +34,7 @@ export default function ReportsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50">
+    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-slate-100 bg-white px-6 py-4">
         <Text className="text-2xl font-bold text-slate-900">Reportes</Text>

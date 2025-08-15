@@ -5,7 +5,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { storageService } from '../services/StorageService';
 import { userService } from '../services/UserService';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
-
 import '../global.css';
 
 export default function RootLayout() {
@@ -18,9 +17,7 @@ export default function RootLayout() {
 
   const initializeApp = async () => {
     try {
-      // Check if onboarding is complete
       const onboardingComplete = await storageService.getOnboardingComplete();
-
       if (!onboardingComplete) {
         setShowOnboarding(true);
       } else {
@@ -40,11 +37,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="auto" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: 'slide_from_right',
-        }}>
+      <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
         {showOnboarding ? (
           <Stack.Screen name="onboarding" />
         ) : (
@@ -52,23 +45,10 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen
               name="scanner"
-              options={{
-                presentation: 'modal',
-                animation: 'slide_from_bottom',
-              }}
+              options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
             />
-            <Stack.Screen
-              name="transaction/[id]"
-              options={{
-                presentation: 'modal',
-              }}
-            />
-            <Stack.Screen
-              name="category-select"
-              options={{
-                presentation: 'modal',
-              }}
-            />
+            <Stack.Screen name="transaction/[id]" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="category-select" options={{ presentation: 'modal' }} />
           </>
         )}
       </Stack>
