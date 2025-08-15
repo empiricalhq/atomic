@@ -1,13 +1,10 @@
-import { ScreenContent } from 'components/ScreenContent';
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-reanimated';
+import { registerRootComponent } from 'expo';
+import { ExpoRoot } from 'expo-router';
 
-import './global.css';
-
-export default function App() {
-  return (
-    <>
-      <ScreenContent title="Home" path="App.tsx"></ScreenContent>
-      <StatusBar style="auto" />
-    </>
-  );
+export function App() {
+  const ctx = require.context('./app');
+  return <ExpoRoot context={ctx} />;
 }
+
+registerRootComponent(App);
