@@ -2,18 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   Dimensions,
   Animated,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 
 const { width, height } = Dimensions.get('window');
@@ -79,13 +76,13 @@ export default function ScannerScreen() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnimation, {
-          toValue: 1.1,
-          duration: 1000,
+          toValue: 1.05,
+          duration: 1500,
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnimation, {
           toValue: 1,
-          duration: 1000,
+          duration: 1500,
           useNativeDriver: true,
         }),
       ])
@@ -103,7 +100,6 @@ export default function ScannerScreen() {
       // Simulate processing time
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Here you would call your backend API to process the receipt
       const mockResponse = {
         amount: 45.67,
         merchant: 'Starbucks',
@@ -115,7 +111,6 @@ export default function ScannerScreen() {
         ],
       };
 
-      // Navigate to add expense screen with pre-filled data
       router.push({
         pathname: '/(tabs)/add-expense',
         params: {
@@ -138,7 +133,6 @@ export default function ScannerScreen() {
   const handleTakePicture = async () => {
     setScanState((prev) => ({ ...prev, scanning: true }));
 
-    // Simulate picture taking
     setTimeout(() => {
       const mockImageUri = 'mock://receipt.jpg';
       processImage(mockImageUri);
@@ -162,16 +156,12 @@ export default function ScannerScreen() {
     }
   };
 
-  const toggleFlash = () => {
-    setFlashEnabled(!flashEnabled);
-  };
-
   if (hasPermission === null) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centerContent}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.permissionText}>Preparando cámara...</Text>
+      <SafeAreaView className="flex-1 bg-slate-900">
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#64748b" />
+          <Text className="mt-4 text-lg font-medium text-slate-300">Preparando cámara...</Text>
         </View>
       </SafeAreaView>
     );
@@ -179,24 +169,26 @@ export default function ScannerScreen() {
 
   if (hasPermission === false) {
     return (
-      <SafeAreaView style={styles.container}>
-        <LinearGradient colors={['#1C1C1E', '#000']} style={styles.gradient}>
-          <View style={styles.centerContent}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="videocam-off" size={64} color="#8E8E93" />
-            </View>
-            <Text style={styles.permissionText}>Acceso a cámara requerido</Text>
-            <Text style={styles.permissionSubtext}>
-              Para escanear recibos necesitamos acceso a tu cámara
-            </Text>
-            <TouchableOpacity style={styles.permissionButton} onPress={requestPermissions}>
-              <Text style={styles.permissionButtonText}>Permitir acceso</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <Text style={styles.backButtonText}>Volver</Text>
-            </TouchableOpacity>
+      <SafeAreaView className="flex-1 bg-slate-900">
+        <View className="flex-1 items-center justify-center px-8">
+          <View className="mb-6 h-20 w-20 items-center justify-center rounded-full bg-slate-800">
+            <Ionicons name="videocam-off" size={40} color="#64748b" />
           </View>
-        </LinearGradient>
+          <Text className="mb-3 text-center text-xl font-bold text-white">
+            Acceso a cámara requerido
+          </Text>
+          <Text className="mb-8 text-center leading-relaxed text-slate-300">
+            Para escanear recibos necesitamos acceso a tu cámara
+          </Text>
+          <TouchableOpacity
+            className="mb-4 rounded-2xl bg-slate-800 px-8 py-4"
+            onPress={requestPermissions}>
+            <Text className="text-lg font-semibold text-white">Permitir acceso</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="px-6 py-3" onPress={() => router.back()}>
+            <Text className="font-medium text-slate-400">Volver</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   }
@@ -207,99 +199,134 @@ export default function ScannerScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-black">
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton} onPress={() => router.back()}>
-          <Ionicons name="close" size={28} color="white" />
+      <View className="absolute left-0 right-0 top-0 z-10 flex-row items-center justify-between px-6 pb-2 pt-4">
+        <TouchableOpacity
+          className="h-11 w-11 items-center justify-center rounded-full bg-black/60"
+          onPress={() => router.back()}>
+          <Ionicons name="close" size={24} color="white" />
         </TouchableOpacity>
 
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Escanear Recibo</Text>
+        <View className="items-center">
+          <Text className="text-lg font-semibold text-white">Escanear Recibo</Text>
         </View>
 
         <TouchableOpacity
-          style={[styles.headerButton, flashEnabled && styles.flashActive]}
-          onPress={toggleFlash}>
-          <Ionicons name={flashEnabled ? 'flash' : 'flash-off'} size={28} color="white" />
+          className={`h-11 w-11 items-center justify-center rounded-full ${
+            flashEnabled ? 'bg-yellow-500/80' : 'bg-black/60'
+          }`}
+          onPress={() => setFlashEnabled(!flashEnabled)}>
+          <Ionicons name={flashEnabled ? 'flash' : 'flash-off'} size={24} color="white" />
         </TouchableOpacity>
       </View>
 
       {/* Camera */}
-      <CameraView style={styles.camera} facing="back" flash={flashEnabled ? 'on' : 'off'} />
+      <CameraView className="flex-1" facing="back" flash={flashEnabled ? 'on' : 'off'} />
 
       {/* Overlay */}
-      <View style={styles.overlay}>
-        <View style={styles.scanAreaContainer}>
-          {/* Top overlay */}
-          <View style={styles.topOverlay} />
+      <View className="absolute inset-0 items-center justify-center">
+        {/* Top overlay */}
+        <View
+          className="bg-black/60"
+          style={{
+            width: width,
+            height: (height - SCAN_AREA_SIZE) / 2,
+          }}
+        />
 
-          {/* Middle row */}
-          <View style={styles.middleRow}>
-            <View style={styles.sideOverlay} />
+        {/* Middle row */}
+        <View className="flex-row" style={{ height: SCAN_AREA_SIZE }}>
+          <View
+            className="bg-black/60"
+            style={{
+              width: (width - SCAN_AREA_SIZE) / 2,
+              height: SCAN_AREA_SIZE,
+            }}
+          />
 
-            {/* Scan area */}
-            <Animated.View style={[styles.scanArea, { transform: [{ scale: pulseAnimation }] }]}>
-              <View style={[styles.corner, styles.topLeft]} />
-              <View style={[styles.corner, styles.topRight]} />
-              <View style={[styles.corner, styles.bottomLeft]} />
-              <View style={[styles.corner, styles.bottomRight]} />
+          {/* Scan area */}
+          <Animated.View
+            className="relative"
+            style={{
+              width: SCAN_AREA_SIZE,
+              height: SCAN_AREA_SIZE,
+              transform: [{ scale: pulseAnimation }],
+            }}>
+            {/* Corner borders */}
+            <View className="absolute left-0 top-0 h-8 w-8 rounded-tl-lg border-l-4 border-t-4 border-slate-300" />
+            <View className="absolute right-0 top-0 h-8 w-8 rounded-tr-lg border-r-4 border-t-4 border-slate-300" />
+            <View className="absolute bottom-0 left-0 h-8 w-8 rounded-bl-lg border-b-4 border-l-4 border-slate-300" />
+            <View className="absolute bottom-0 right-0 h-8 w-8 rounded-br-lg border-b-4 border-r-4 border-slate-300" />
 
-              {!scanState.processing && (
-                <Animated.View style={[styles.scanLine, { top: scanLineTop }]} />
-              )}
+            {!scanState.processing && (
+              <Animated.View
+                className="absolute left-0 right-0 h-1 bg-slate-300 opacity-80 shadow-lg"
+                style={{ top: scanLineTop }}
+              />
+            )}
 
-              {scanState.processing && (
-                <View style={styles.processingContainer}>
-                  <ActivityIndicator size="large" color="#007AFF" />
-                  <Text style={styles.processingText}>Procesando...</Text>
-                </View>
-              )}
-            </Animated.View>
+            {scanState.processing && (
+              <View className="flex-1 items-center justify-center rounded-2xl bg-black/30">
+                <ActivityIndicator size="large" color="#64748b" />
+                <Text className="mt-3 text-lg font-medium text-white">Procesando...</Text>
+              </View>
+            )}
+          </Animated.View>
 
-            <View style={styles.sideOverlay} />
-          </View>
-
-          {/* Bottom overlay */}
-          <View style={styles.bottomOverlay} />
+          <View
+            className="bg-black/60"
+            style={{
+              width: (width - SCAN_AREA_SIZE) / 2,
+              height: SCAN_AREA_SIZE,
+            }}
+          />
         </View>
+
+        {/* Bottom overlay */}
+        <View
+          className="bg-black/60"
+          style={{
+            width: width,
+            height: (height - SCAN_AREA_SIZE) / 2,
+          }}
+        />
       </View>
 
       {/* Bottom controls */}
-      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']} style={styles.bottomContainer}>
-        <Text style={styles.instructionText}>
+      <View className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent px-8 pb-12 pt-10">
+        <Text className="mb-2 text-center text-xl font-semibold text-white">
           {scanState.processing
             ? 'Analizando tu recibo...'
             : 'Posiciona el recibo dentro del marco'}
         </Text>
-        <Text style={styles.subText}>
-          Nos encargaremos de extraer todos los detalles automáticamente
+        <Text className="mb-8 text-center leading-relaxed text-slate-300">
+          Extraeremos automáticamente todos los detalles
         </Text>
 
-        <View style={styles.buttonsContainer}>
+        <View className="flex-row items-center justify-center space-x-8">
           <TouchableOpacity
-            style={styles.galleryButton}
+            className="h-14 w-14 items-center justify-center rounded-full border-2 border-white/30 bg-white/20"
             onPress={handlePickFromGallery}
             disabled={scanState.processing}>
             <Ionicons name="images" size={24} color="white" />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[
-              styles.captureButton,
-              (scanState.scanning || scanState.processing) && styles.captureButtonDisabled,
-            ]}
+            className={`h-20 w-20 items-center justify-center rounded-full ${
+              scanState.scanning || scanState.processing ? 'bg-slate-600' : 'bg-slate-300'
+            }`}
             onPress={handleTakePicture}
             disabled={scanState.processing || scanState.scanning}>
             {scanState.scanning ? (
-              <ActivityIndicator color="white" />
+              <ActivityIndicator color="#334155" />
             ) : (
-              <Ionicons name="camera" size={32} color="white" />
+              <Ionicons name="camera" size={32} color="#334155" />
             )}
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.manualButton}
+            className="h-14 w-14 items-center justify-center rounded-full border-2 border-white/30 bg-white/20"
             onPress={() => router.push('/(tabs)/add-expense')}
             disabled={scanState.processing}>
             <Ionicons name="create" size={24} color="white" />
@@ -307,271 +334,11 @@ export default function ScannerScreen() {
         </View>
 
         {scanState.error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{scanState.error}</Text>
+          <View className="mt-4 rounded-xl border border-red-500/30 bg-red-500/20 p-4">
+            <Text className="text-center text-red-300">{scanState.error}</Text>
           </View>
         )}
-      </LinearGradient>
+      </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  gradient: {
-    flex: 1,
-  },
-  centerContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  iconContainer: {
-    marginBottom: 24,
-  },
-  permissionText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  permissionSubtext: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: 32,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  permissionButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  permissionButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  backButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  backButtonText: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-  },
-  headerButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  flashActive: {
-    backgroundColor: 'rgba(255, 193, 7, 0.8)',
-  },
-  camera: {
-    flex: 1,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  scanAreaContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  topOverlay: {
-    width: width,
-    height: (height - SCAN_AREA_SIZE) / 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  middleRow: {
-    flexDirection: 'row',
-    height: SCAN_AREA_SIZE,
-  },
-  sideOverlay: {
-    width: (width - SCAN_AREA_SIZE) / 2,
-    height: SCAN_AREA_SIZE,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  bottomOverlay: {
-    width: width,
-    height: (height - SCAN_AREA_SIZE) / 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  scanArea: {
-    width: SCAN_AREA_SIZE,
-    height: SCAN_AREA_SIZE,
-    position: 'relative',
-  },
-  corner: {
-    position: 'absolute',
-    width: 30,
-    height: 30,
-    borderColor: '#007AFF',
-    borderWidth: 4,
-  },
-  topLeft: {
-    top: 0,
-    left: 0,
-    borderBottomWidth: 0,
-    borderRightWidth: 0,
-  },
-  topRight: {
-    top: 0,
-    right: 0,
-    borderBottomWidth: 0,
-    borderLeftWidth: 0,
-  },
-  bottomLeft: {
-    bottom: 0,
-    left: 0,
-    borderTopWidth: 0,
-    borderRightWidth: 0,
-  },
-  bottomRight: {
-    bottom: 0,
-    right: 0,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-  },
-  scanLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 3,
-    backgroundColor: '#007AFF',
-    opacity: 0.8,
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-  },
-  processingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  },
-  processingText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '500',
-    marginTop: 12,
-  },
-  bottomContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 32,
-    paddingTop: 40,
-    paddingBottom: 48,
-    alignItems: 'center',
-  },
-  instructionText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subText: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
-    textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 32,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 32,
-  },
-  galleryButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  captureButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  captureButtonDisabled: {
-    backgroundColor: 'rgba(0, 122, 255, 0.5)',
-  },
-  manualButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  errorContainer: {
-    marginTop: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'rgba(255, 59, 48, 0.2)',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 59, 48, 0.3)',
-  },
-  errorText: {
-    color: '#FF3B30',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-});
