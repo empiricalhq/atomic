@@ -11,7 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useTransactions } from '../../hooks/useTransactions';
 import { useUser } from '../../hooks/useUser';
-import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { formatCurrency, formatDate, getCurrentMonth } from '../../utils/dateHelpers';
 import { categoryService } from '../../services/CategoryService';
