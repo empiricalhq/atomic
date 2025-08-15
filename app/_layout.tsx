@@ -6,6 +6,8 @@ import { storageService } from '../services/StorageService';
 import { userService } from '../services/UserService';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 
+import '../global.css';
+
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);

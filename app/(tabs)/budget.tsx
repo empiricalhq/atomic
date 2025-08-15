@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   TextInput,
@@ -28,7 +27,7 @@ export default function BudgetScreen() {
       budgeted: 500,
       spent: 340,
       icon: 'restaurant',
-      color: '#FF9500',
+      color: '#f97316',
     },
     {
       id: '2',
@@ -36,7 +35,7 @@ export default function BudgetScreen() {
       budgeted: 200,
       spent: 150,
       icon: 'car',
-      color: '#007AFF',
+      color: '#3b82f6',
     },
     {
       id: '3',
@@ -44,7 +43,7 @@ export default function BudgetScreen() {
       budgeted: 300,
       spent: 280,
       icon: 'game-controller',
-      color: '#5856D6',
+      color: '#8b5cf6',
     },
     {
       id: '4',
@@ -52,7 +51,7 @@ export default function BudgetScreen() {
       budgeted: 400,
       spent: 420,
       icon: 'bag',
-      color: '#AF52DE',
+      color: '#a855f7',
     },
   ]);
 
@@ -67,129 +66,150 @@ export default function BudgetScreen() {
     return Math.min((spent / budgeted) * 100, 100);
   };
 
-  const getProgressColor = (spent: number, budgeted: number) => {
+  const getProgressColorClass = (spent: number, budgeted: number) => {
     const percentage = (spent / budgeted) * 100;
-    if (percentage >= 100) return '#FF3B30';
-    if (percentage >= 80) return '#FF9500';
-    return '#34C759';
+    if (percentage >= 100) return 'bg-red-500';
+    if (percentage >= 80) return 'bg-orange-500';
+    return 'bg-green-500';
+  };
+
+  const getAmountTextColor = (amount: number) => {
+    if (amount >= 0) return 'text-green-600';
+    return 'text-red-600';
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Presupuesto</Text>
-        <TouchableOpacity onPress={() => setShowAddModal(true)}>
-          <Ionicons name="add" size={24} color="#007AFF" />
+    <SafeAreaView className="flex-1 bg-slate-50">
+      {/* Header */}
+      <View className="flex-row items-center justify-between bg-white px-5 py-4">
+        <Text className="text-2xl font-bold text-slate-900">Presupuesto</Text>
+        <TouchableOpacity
+          className="h-10 w-10 items-center justify-center rounded-full bg-slate-100 active:bg-slate-200"
+          onPress={() => setShowAddModal(true)}>
+          <Ionicons name="add" size={22} color="#475569" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
-        <View style={styles.overviewCard}>
-          <Text style={styles.overviewTitle}>Resumen del Mes</Text>
-          <View style={styles.overviewRow}>
-            <View style={styles.overviewItem}>
-              <Text style={styles.overviewLabel}>Presupuestado</Text>
-              <Text style={styles.overviewAmount}>${totalBudgeted}</Text>
+      <ScrollView className="flex-1 p-5" showsVerticalScrollIndicator={false}>
+        {/* Overview Card */}
+        <View className="mb-5 rounded-2xl bg-white p-6 shadow-sm">
+          <Text className="mb-4 text-lg font-semibold text-slate-900">Resumen del Mes</Text>
+          <View className="flex-row justify-between">
+            <View className="items-center">
+              <Text className="mb-1 text-sm font-medium text-slate-500">Presupuestado</Text>
+              <Text className="text-xl font-bold text-slate-900">${totalBudgeted}</Text>
             </View>
-            <View style={styles.overviewItem}>
-              <Text style={styles.overviewLabel}>Gastado</Text>
-              <Text style={[styles.overviewAmount, { color: '#FF3B30' }]}>${totalSpent}</Text>
+            <View className="items-center">
+              <Text className="mb-1 text-sm font-medium text-slate-500">Gastado</Text>
+              <Text className="text-xl font-bold text-red-600">${totalSpent}</Text>
             </View>
-            <View style={styles.overviewItem}>
-              <Text style={styles.overviewLabel}>Restante</Text>
+            <View className="items-center">
+              <Text className="mb-1 text-sm font-medium text-slate-500">Restante</Text>
               <Text
-                style={[
-                  styles.overviewAmount,
-                  {
-                    color: totalBudgeted - totalSpent >= 0 ? '#34C759' : '#FF3B30',
-                  },
-                ]}>
+                className={`text-xl font-bold ${getAmountTextColor(totalBudgeted - totalSpent)}`}>
                 ${Math.abs(totalBudgeted - totalSpent)}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.categoriesContainer}>
-          <Text style={styles.categoriesTitle}>Categorías</Text>
+        {/* Categories */}
+        <View className="mb-5">
+          <Text className="mb-4 text-xl font-semibold text-slate-900">Categorías</Text>
           {budgetCategories.map((category) => {
             const progressPercentage = getProgressPercentage(category.spent, category.budgeted);
-            const progressColor = getProgressColor(category.spent, category.budgeted);
+            const progressColorClass = getProgressColorClass(category.spent, category.budgeted);
 
             return (
-              <TouchableOpacity key={category.id} style={styles.categoryCard}>
-                <View style={styles.categoryHeader}>
-                  <View style={styles.categoryLeft}>
-                    <View style={[styles.categoryIcon, { backgroundColor: category.color }]}>
+              <TouchableOpacity
+                key={category.id}
+                className="mb-3 rounded-2xl bg-white p-5 shadow-sm active:bg-slate-50">
+                {/* Category Header */}
+                <View className="mb-4 flex-row items-center justify-between">
+                  <View className="flex-row items-center">
+                    <View
+                      className="mr-3 h-10 w-10 items-center justify-center rounded-xl"
+                      style={{ backgroundColor: category.color }}>
                       <Ionicons name={category.icon as any} size={20} color="white" />
                     </View>
-                    <Text style={styles.categoryName}>{category.name}</Text>
+                    <Text className="text-lg font-semibold text-slate-900">{category.name}</Text>
                   </View>
-                  <TouchableOpacity>
-                    <Ionicons name="ellipsis-horizontal" size={20} color="#8E8E93" />
+                  <TouchableOpacity className="h-8 w-8 items-center justify-center rounded-full active:bg-slate-100">
+                    <Ionicons name="ellipsis-horizontal" size={18} color="#64748b" />
                   </TouchableOpacity>
                 </View>
 
-                <View style={styles.categoryProgress}>
-                  <View style={styles.progressBar}>
+                {/* Progress Bar */}
+                <View className="mb-3 flex-row items-center">
+                  <View className="mr-3 h-2 flex-1 rounded-full bg-slate-200">
                     <View
-                      style={[
-                        styles.progressFill,
-                        {
-                          width: `${progressPercentage}%`,
-                          backgroundColor: progressColor,
-                        },
-                      ]}
+                      className={`h-2 rounded-full ${progressColorClass}`}
+                      style={{ width: `${progressPercentage}%` }}
                     />
                   </View>
-                  <Text style={styles.progressText}>{progressPercentage.toFixed(0)}%</Text>
+                  <Text className="min-w-[35px] text-sm font-semibold text-slate-600">
+                    {progressPercentage.toFixed(0)}%
+                  </Text>
                 </View>
 
-                <View style={styles.categoryAmounts}>
-                  <Text style={styles.spentAmount}>${category.spent}</Text>
-                  <Text style={styles.budgetedAmount}>de ${category.budgeted}</Text>
+                {/* Amounts */}
+                <View className="flex-row items-center">
+                  <Text className="text-base font-semibold text-slate-900">${category.spent}</Text>
+                  <Text className="ml-1 text-base text-slate-500">de ${category.budgeted}</Text>
                 </View>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        <TouchableOpacity style={styles.addCategoryButton} onPress={() => setShowAddModal(true)}>
-          <Ionicons name="add" size={24} color="#007AFF" />
-          <Text style={styles.addCategoryText}>Agregar Categoría</Text>
+        {/* Add Category Button */}
+        <TouchableOpacity
+          className="flex-row items-center justify-center rounded-2xl bg-white p-5 shadow-sm active:bg-slate-50"
+          onPress={() => setShowAddModal(true)}>
+          <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-slate-100">
+            <Ionicons name="add" size={22} color="#475569" />
+          </View>
+          <Text className="text-base font-semibold text-slate-700">Agregar Categoría</Text>
         </TouchableOpacity>
       </ScrollView>
 
+      {/* Add Category Modal */}
       <Modal visible={showAddModal} animationType="slide" presentationStyle="pageSheet">
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
+        <SafeAreaView className="flex-1 bg-slate-50">
+          {/* Modal Header */}
+          <View className="flex-row items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
             <TouchableOpacity onPress={() => setShowAddModal(false)}>
-              <Text style={styles.cancelButton}>Cancelar</Text>
+              <Text className="text-base font-medium text-slate-500">Cancelar</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Nueva categoría</Text>
+            <Text className="text-lg font-semibold text-slate-900">Nueva categoría</Text>
             <TouchableOpacity>
-              <Text style={styles.saveButton}>Guardar</Text>
+              <Text className="text-base font-semibold text-blue-600">Guardar</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.modalContent}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Nombre</Text>
+          {/* Modal Content */}
+          <View className="p-5">
+            {/* Name Input */}
+            <View className="mb-6">
+              <Text className="mb-2 text-base font-semibold text-slate-900">Nombre</Text>
               <TextInput
-                style={styles.textInput}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-900"
                 value={newCategoryName}
                 onChangeText={setNewCategoryName}
                 placeholder="Ej: Comida, Transporte..."
+                placeholderTextColor="#94a3b8"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Presupuesto</Text>
+            {/* Budget Input */}
+            <View className="mb-6">
+              <Text className="mb-2 text-base font-semibold text-slate-900">Presupuesto</Text>
               <TextInput
-                style={styles.textInput}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-900"
                 value={newCategoryBudget}
                 onChangeText={setNewCategoryBudget}
                 placeholder="$0.00"
+                placeholderTextColor="#94a3b8"
                 keyboardType="numeric"
               />
             </View>
@@ -199,207 +219,3 @@ export default function BudgetScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: 'white',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1C1C1E',
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  overviewCard: {
-    backgroundColor: 'white',
-    padding: 24,
-    borderRadius: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  overviewTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 16,
-  },
-  overviewRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  overviewItem: {
-    alignItems: 'center',
-  },
-  overviewLabel: {
-    fontSize: 14,
-    color: '#8E8E93',
-    marginBottom: 4,
-  },
-  overviewAmount: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  categoriesContainer: {
-    marginBottom: 20,
-  },
-  categoriesTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 16,
-  },
-  categoryCard: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  categoryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  categoryLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  categoryIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  categoryName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  categoryProgress: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  progressBar: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#E5E5EA',
-    borderRadius: 4,
-    marginRight: 12,
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#8E8E93',
-    minWidth: 35,
-  },
-  categoryAmounts: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  spentAmount: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginRight: 4,
-  },
-  budgetedAmount: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  addCategoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  addCategoryText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#007AFF',
-    marginLeft: 8,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
-  },
-  cancelButton: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#1C1C1E',
-  },
-  saveButton: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-  modalContent: {
-    padding: 20,
-  },
-  inputGroup: {
-    marginBottom: 24,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 8,
-  },
-  textInput: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 12,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-});

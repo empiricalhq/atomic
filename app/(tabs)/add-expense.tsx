@@ -70,9 +70,7 @@ export default function AddExpenseScreen() {
   };
 
   const handleSave = async () => {
-    if (parseFloat(amount) <= 0) {
-      return;
-    }
+    if (parseFloat(amount) <= 0) return;
 
     setIsLoading(true);
     try {
@@ -109,202 +107,204 @@ export default function AddExpenseScreen() {
     <SafeAreaView className="flex-1 bg-slate-50">
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-slate-100 bg-white px-6 py-4">
-        <TouchableOpacity onPress={() => router.back()} className="-ml-2 p-2">
-          <Ionicons name="close" size={24} color="#334155" />
+        <TouchableOpacity
+          className="-ml-2 h-10 w-10 items-center justify-center active:opacity-70"
+          onPress={() => router.back()}>
+          <Ionicons name="close" size={22} color="#475569" />
         </TouchableOpacity>
-        <Text className="text-lg font-bold text-slate-900">Nueva transacción</Text>
-        <TouchableOpacity onPress={() => router.push('/scanner')} className="-mr-2 p-2">
-          <Ionicons name="camera" size={24} color="#64748b" />
+        <Text className="text-lg font-semibold text-slate-900">Nueva transacción</Text>
+        <TouchableOpacity
+          className="-mr-2 h-10 w-10 items-center justify-center active:opacity-70"
+          onPress={() => router.push('/scanner')}>
+          <Ionicons name="camera-outline" size={22} color="#64748b" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
-        {/* Transaction Type Selector */}
-        <View className="mb-6 rounded-2xl bg-white p-4">
-          <View className="flex-row gap-3">
-            <TouchableOpacity
-              className={`flex-1 flex-row items-center justify-center rounded-xl border-2 px-5 py-4 ${
-                type === 'expense' ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'
-              }`}
-              onPress={() => {
-                setType('expense');
-                setCategory('');
-              }}>
-              <Ionicons
-                name="remove-circle"
-                size={24}
-                color={type === 'expense' ? '#dc2626' : '#64748b'}
-              />
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <View className="space-y-6 px-6 py-6">
+          {/* Transaction Type Selector */}
+          <View className="rounded-2xl bg-white p-4">
+            <View className="flex-row space-x-3">
+              <TouchableOpacity
+                className={`flex-1 flex-row items-center justify-center rounded-xl border-2 px-4 py-4 ${
+                  type === 'expense' ? 'border-red-200 bg-red-50' : 'border-slate-200 bg-slate-50'
+                }`}
+                onPress={() => {
+                  setType('expense');
+                  setCategory('');
+                }}>
+                <Ionicons
+                  name="remove-circle-outline"
+                  size={20}
+                  color={type === 'expense' ? '#dc2626' : '#64748b'}
+                />
+                <Text
+                  className={`ml-2 font-semibold ${
+                    type === 'expense' ? 'text-red-700' : 'text-slate-600'
+                  }`}>
+                  Gasto
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className={`flex-1 flex-row items-center justify-center rounded-xl border-2 px-4 py-4 ${
+                  type === 'income'
+                    ? 'border-green-200 bg-green-50'
+                    : 'border-slate-200 bg-slate-50'
+                }`}
+                onPress={() => {
+                  setType('income');
+                  setCategory('');
+                }}>
+                <Ionicons
+                  name="add-circle-outline"
+                  size={20}
+                  color={type === 'income' ? '#16a34a' : '#64748b'}
+                />
+                <Text
+                  className={`ml-2 font-semibold ${
+                    type === 'income' ? 'text-green-700' : 'text-slate-600'
+                  }`}>
+                  Ingreso
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Amount Display */}
+          <View className="rounded-2xl bg-white py-8">
+            <View className="flex-row items-baseline justify-center">
+              <Text className="mr-2 text-3xl font-light text-slate-400">$</Text>
               <Text
-                className={`ml-2 font-semibold ${
-                  type === 'expense' ? 'text-red-700' : 'text-slate-600'
+                className={`text-5xl font-light tracking-tight ${
+                  type === 'expense' ? 'text-red-600' : 'text-green-600'
                 }`}>
-                Gasto
+                {amount}
               </Text>
+            </View>
+          </View>
+
+          {/* Details */}
+          <View className="space-y-4 rounded-2xl bg-white p-6">
+            {/* Description Input */}
+            <View>
+              <Text className="mb-3 text-sm font-semibold text-slate-700">Descripción</Text>
+              <TextInput
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900"
+                value={description}
+                onChangeText={setDescription}
+                placeholder={`¿En qué ${type === 'expense' ? 'gastaste' : 'obtuviste este ingreso'}?`}
+                placeholderTextColor="#94a3b8"
+              />
+            </View>
+
+            {/* Category Selection */}
+            <TouchableOpacity
+              className="flex-row items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 active:bg-slate-100"
+              onPress={() => setShowCategories(true)}>
+              <View className="flex-1 flex-row items-center">
+                <View
+                  className="mr-3 h-10 w-10 items-center justify-center rounded-xl"
+                  style={{ backgroundColor: selectedCategory.color }}>
+                  <Ionicons name={selectedCategory.icon as any} size={18} color="white" />
+                </View>
+                <View className="flex-1">
+                  <Text className="mb-0.5 text-sm font-medium text-slate-500">Categoría</Text>
+                  <Text className="font-semibold text-slate-900">{selectedCategory.name}</Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#cbd5e1" />
             </TouchableOpacity>
 
+            {/* Date */}
+            <View className="flex-row items-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
+                <Ionicons name="calendar-outline" size={18} color="#2563eb" />
+              </View>
+              <View className="flex-1">
+                <Text className="mb-0.5 text-sm font-medium text-slate-500">Fecha</Text>
+                <Text className="font-semibold text-slate-900">{formatDateString(date)}</Text>
+              </View>
+            </View>
+
+            {/* Notes */}
             <TouchableOpacity
-              className={`flex-1 flex-row items-center justify-center rounded-xl border-2 px-5 py-4 ${
-                type === 'income' ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-slate-50'
-              }`}
-              onPress={() => {
-                setType('income');
-                setCategory('');
-              }}>
-              <Ionicons
-                name="add-circle"
-                size={24}
-                color={type === 'income' ? '#16a34a' : '#64748b'}
-              />
-              <Text
-                className={`ml-2 font-semibold ${
-                  type === 'income' ? 'text-green-700' : 'text-slate-600'
-                }`}>
-                Ingreso
-              </Text>
+              className="flex-row items-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-4 active:bg-slate-100"
+              onPress={() => setShowNotesInput(true)}>
+              <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-purple-100">
+                <Ionicons name="document-text-outline" size={18} color="#7c3aed" />
+              </View>
+              <View className="flex-1">
+                <Text className="mb-0.5 text-sm font-medium text-slate-500">Nota</Text>
+                <Text className="font-semibold text-slate-600">
+                  {notes ? 'Editar nota' : 'Agregar nota'}
+                </Text>
+              </View>
+              {notes && (
+                <View className="h-5 w-5 items-center justify-center rounded-full bg-green-100">
+                  <Ionicons name="checkmark" size={12} color="#16a34a" />
+                </View>
+              )}
             </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Amount Display */}
-        <View className="mb-6 rounded-2xl bg-white py-8">
-          <View className="flex-row items-center justify-center">
-            <Text className="mr-2 text-4xl font-light text-slate-400">$</Text>
-            <Text
-              className={`text-5xl font-light ${
-                type === 'expense' ? 'text-red-600' : 'text-green-600'
-              }`}>
-              {amount}
-            </Text>
-          </View>
-        </View>
-
-        {/* Details */}
-        <View className="mb-6 space-y-4 rounded-2xl bg-white p-6">
-          {/* Description Input */}
-          <View>
-            <Text className="mb-2 font-semibold text-slate-700">Descripción</Text>
-            <TextInput
-              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900"
-              value={description}
-              onChangeText={setDescription}
-              placeholder={`¿En qué gastaste${type === 'income' ? ' o de dónde viene este ingreso' : ''}?`}
-              placeholderTextColor="#94a3b8"
-            />
-          </View>
-
-          {/* Category Selection */}
-          <TouchableOpacity
-            className="flex-row items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-4"
-            onPress={() => setShowCategories(true)}>
-            <View className="flex-row items-center">
-              <View
-                className="mr-3 h-11 w-11 items-center justify-center rounded-xl"
-                style={{ backgroundColor: selectedCategory.color }}>
-                <Ionicons name={selectedCategory.icon as any} size={20} color="white" />
+          {/* Calculator */}
+          <View className="rounded-2xl bg-white p-6">
+            <View className="space-y-3">
+              {/* Row 1 */}
+              <View className="flex-row justify-between space-x-3">
+                {['1', '2', '3'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    className="h-12 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 active:bg-slate-100"
+                    onPress={() => handleNumberPress(num)}>
+                    <Text className="text-lg font-semibold text-slate-900">{num}</Text>
+                  </TouchableOpacity>
+                ))}
               </View>
-              <View>
-                <Text className="text-sm font-medium text-slate-500">Categoría</Text>
-                <Text className="mt-0.5 font-semibold text-slate-900">{selectedCategory.name}</Text>
+
+              {/* Row 2 */}
+              <View className="flex-row justify-between space-x-3">
+                {['4', '5', '6'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    className="h-12 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 active:bg-slate-100"
+                    onPress={() => handleNumberPress(num)}>
+                    <Text className="text-lg font-semibold text-slate-900">{num}</Text>
+                  </TouchableOpacity>
+                ))}
               </View>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#cbd5e1" />
-          </TouchableOpacity>
 
-          {/* Date */}
-          <View className="flex-row items-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
-            <Ionicons name="calendar-outline" size={20} color="#64748b" />
-            <View className="ml-3">
-              <Text className="text-sm font-medium text-slate-500">Fecha</Text>
-              <Text className="mt-0.5 font-semibold text-slate-900">{formatDateString(date)}</Text>
-            </View>
-          </View>
+              {/* Row 3 */}
+              <View className="flex-row justify-between space-x-3">
+                {['7', '8', '9'].map((num) => (
+                  <TouchableOpacity
+                    key={num}
+                    className="h-12 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 active:bg-slate-100"
+                    onPress={() => handleNumberPress(num)}>
+                    <Text className="text-lg font-semibold text-slate-900">{num}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
 
-          {/* Notes */}
-          <TouchableOpacity
-            className="flex-row items-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-4"
-            onPress={() => setShowNotesInput(true)}>
-            <Ionicons name="document-text-outline" size={20} color="#64748b" />
-            <Text className="ml-3 flex-1 font-semibold text-slate-600">
-              {notes ? 'Editar nota' : 'Agregar nota'}
-            </Text>
-            {notes && <Ionicons name="checkmark" size={16} color="#16a34a" />}
-          </TouchableOpacity>
-        </View>
-
-        {/* Calculator */}
-        <View className="mb-6 rounded-2xl bg-white p-6">
-          <View className="space-y-4">
-            <View className="flex-row justify-between space-x-4">
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('1')}>
-                <Text className="text-xl font-semibold text-slate-900">1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('2')}>
-                <Text className="text-xl font-semibold text-slate-900">2</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('3')}>
-                <Text className="text-xl font-semibold text-slate-900">3</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View className="flex-row justify-between space-x-4">
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('4')}>
-                <Text className="text-xl font-semibold text-slate-900">4</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('5')}>
-                <Text className="text-xl font-semibold text-slate-900">5</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('6')}>
-                <Text className="text-xl font-semibold text-slate-900">6</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View className="flex-row justify-between space-x-4">
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('7')}>
-                <Text className="text-xl font-semibold text-slate-900">7</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('8')}>
-                <Text className="text-xl font-semibold text-slate-900">8</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('9')}>
-                <Text className="text-xl font-semibold text-slate-900">9</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View className="flex-row justify-between space-x-4">
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('.')}>
-                <Text className="text-xl font-semibold text-slate-900">.</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={() => handleNumberPress('0')}>
-                <Text className="text-xl font-semibold text-slate-900">0</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="h-14 flex-1 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50"
-                onPress={handleDelete}>
-                <Ionicons name="backspace" size={24} color="#ef4444" />
-              </TouchableOpacity>
+              {/* Row 4 */}
+              <View className="flex-row justify-between space-x-3">
+                <TouchableOpacity
+                  className="h-12 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 active:bg-slate-100"
+                  onPress={() => handleNumberPress('.')}>
+                  <Text className="text-lg font-semibold text-slate-900">.</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="h-12 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 active:bg-slate-100"
+                  onPress={() => handleNumberPress('0')}>
+                  <Text className="text-lg font-semibold text-slate-900">0</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="h-12 flex-1 items-center justify-center rounded-xl border border-red-200 bg-red-50 active:bg-red-100"
+                  onPress={handleDelete}>
+                  <Ionicons name="backspace-outline" size={20} color="#dc2626" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -314,7 +314,9 @@ export default function AddExpenseScreen() {
       <View className="border-t border-slate-100 bg-white px-6 py-4">
         <TouchableOpacity
           className={`items-center rounded-2xl px-8 py-4 ${
-            parseFloat(amount) > 0 && !isLoading ? 'bg-slate-800' : 'bg-slate-300'
+            parseFloat(amount) > 0 && !isLoading
+              ? 'bg-slate-900 active:bg-slate-800'
+              : 'bg-slate-300'
           }`}
           onPress={handleSave}
           disabled={parseFloat(amount) <= 0 || isLoading}>
@@ -331,31 +333,35 @@ export default function AddExpenseScreen() {
             <TouchableOpacity onPress={() => setShowCategories(false)}>
               <Text className="font-medium text-slate-500">Cancelar</Text>
             </TouchableOpacity>
-            <Text className="text-lg font-bold text-slate-900">Seleccionar categoría</Text>
+            <Text className="text-lg font-semibold text-slate-900">Seleccionar categoría</Text>
             <View className="w-16" />
           </View>
 
           <ScrollView className="flex-1 p-6">
-            <View className="space-y-3">
+            <View className="space-y-2">
               {categories.map((cat) => (
                 <TouchableOpacity
                   key={cat.id}
-                  className={`flex-row items-center rounded-xl border-2 px-4 py-4 ${
+                  className={`flex-row items-center rounded-2xl border-2 px-4 py-4 ${
                     cat.id === category
                       ? 'border-slate-300 bg-slate-100'
                       : 'border-slate-200 bg-white'
-                  }`}
+                  } active:bg-slate-50`}
                   onPress={() => {
                     setCategory(cat.id);
                     setShowCategories(false);
                   }}>
                   <View
-                    className="mr-4 h-11 w-11 items-center justify-center rounded-xl"
+                    className="mr-4 h-10 w-10 items-center justify-center rounded-xl"
                     style={{ backgroundColor: cat.color }}>
-                    <Ionicons name={cat.icon as any} size={24} color="white" />
+                    <Ionicons name={cat.icon as any} size={20} color="white" />
                   </View>
                   <Text className="flex-1 font-semibold text-slate-900">{cat.name}</Text>
-                  {cat.id === category && <Ionicons name="checkmark" size={20} color="#64748b" />}
+                  {cat.id === category && (
+                    <View className="h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                      <Ionicons name="checkmark" size={14} color="#16a34a" />
+                    </View>
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
@@ -370,23 +376,25 @@ export default function AddExpenseScreen() {
             <TouchableOpacity onPress={() => setShowNotesInput(false)}>
               <Text className="font-medium text-slate-500">Cancelar</Text>
             </TouchableOpacity>
-            <Text className="text-lg font-bold text-slate-900">Nota</Text>
+            <Text className="text-lg font-semibold text-slate-900">Nota</Text>
             <TouchableOpacity onPress={() => setShowNotesInput(false)}>
-              <Text className="font-semibold text-slate-800">Guardar</Text>
+              <Text className="font-semibold text-slate-900">Guardar</Text>
             </TouchableOpacity>
           </View>
 
           <View className="flex-1 p-6">
-            <TextInput
-              className="h-32 rounded-xl border border-slate-200 bg-white p-4 text-base text-slate-900"
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Agregar una nota para esta transacción..."
-              placeholderTextColor="#94a3b8"
-              multiline
-              textAlignVertical="top"
-              autoFocus
-            />
+            <View className="rounded-2xl bg-white p-4">
+              <TextInput
+                className="min-h-32 text-base text-slate-900"
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Agregar una nota para esta transacción..."
+                placeholderTextColor="#94a3b8"
+                multiline
+                textAlignVertical="top"
+                autoFocus
+              />
+            </View>
           </View>
         </SafeAreaView>
       </Modal>

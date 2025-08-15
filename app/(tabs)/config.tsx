@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  Switch,
-} from 'react-native';
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ConfigScreen() {
@@ -111,53 +103,60 @@ export default function ConfigScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Configuración</Text>
+    <SafeAreaView className="flex-1 bg-slate-50">
+      {/* Header */}
+      <View className="bg-white px-5 py-4">
+        <Text className="text-2xl font-bold text-slate-900">Configuración</Text>
       </View>
 
-      <ScrollView style={styles.content}>
-        <View style={styles.profileSection}>
-          <View style={styles.avatarContainer}>
-            <View style={styles.avatar}>
-              <Ionicons name="person" size={40} color="white" />
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {/* Profile Section */}
+        <View className="mb-8 items-center bg-white py-8">
+          <View className="mb-4">
+            <View className="h-20 w-20 items-center justify-center rounded-full bg-slate-700">
+              <Ionicons name="person" size={36} color="white" />
             </View>
           </View>
-          <Text style={styles.profileName}>Usuario</Text>
-          <Text style={styles.profileEmail}>usuario@email.com</Text>
+          <Text className="mb-1 text-2xl font-semibold text-slate-900">Usuario</Text>
+          <Text className="text-base text-slate-500">usuario@email.com</Text>
         </View>
 
+        {/* Settings Groups */}
         {settingsGroups.map((group, groupIndex) => (
-          <View key={groupIndex} style={styles.settingsGroup}>
-            <Text style={styles.groupTitle}>{group.title}</Text>
-            <View style={styles.groupContainer}>
+          <View key={groupIndex} className="mb-8">
+            <Text className="mb-2 px-5 text-sm font-semibold uppercase tracking-wide text-slate-500">
+              {group.title}
+            </Text>
+            <View className="mx-5 overflow-hidden rounded-2xl bg-white">
               {group.items.map((item, itemIndex) => (
                 <TouchableOpacity
                   key={itemIndex}
-                  style={[
-                    styles.settingItem,
-                    itemIndex === group.items.length - 1 && styles.lastItem,
-                  ]}>
-                  <View style={styles.settingLeft}>
-                    <View style={styles.settingIconContainer}>
-                      <Ionicons name={item.icon as any} size={20} color="#007AFF" />
+                  className={`flex-row items-center justify-between px-4 py-4 active:bg-slate-50 ${
+                    itemIndex !== group.items.length - 1 ? 'border-b border-slate-100' : ''
+                  }`}>
+                  <View className="flex-1 flex-row items-center">
+                    <View className="mr-3 h-8 w-8 items-center justify-center rounded-lg bg-slate-100">
+                      <Ionicons name={item.icon as any} size={18} color="#475569" />
                     </View>
-                    <View style={styles.settingTexts}>
-                      <Text style={styles.settingTitle}>{item.title}</Text>
-                      <Text style={styles.settingSubtitle}>{item.subtitle}</Text>
+                    <View className="flex-1">
+                      <Text className="mb-0.5 text-base font-semibold text-slate-900">
+                        {item.title}
+                      </Text>
+                      <Text className="text-sm text-slate-500">{item.subtitle}</Text>
                     </View>
                   </View>
-                  <View style={styles.settingRight}>
+                  <View className="ml-3">
                     {item.action === 'switch' && 'value' in item && (
                       <Switch
                         value={item.value}
                         onValueChange={item.onToggle}
-                        trackColor={{ false: '#E5E5EA', true: '#007AFF' }}
+                        trackColor={{ false: '#e2e8f0', true: '#475569' }}
                         thumbColor="white"
+                        ios_backgroundColor="#e2e8f0"
                       />
                     )}
                     {item.action === 'chevron' && (
-                      <Ionicons name="chevron-forward" size={16} color="#8E8E93" />
+                      <Ionicons name="chevron-forward" size={16} color="#64748b" />
                     )}
                   </View>
                 </TouchableOpacity>
@@ -166,142 +165,15 @@ export default function ConfigScreen() {
           </View>
         ))}
 
-        <TouchableOpacity style={styles.signOutButton}>
-          <Ionicons name="log-out" size={20} color="#FF3B30" />
-          <Text style={styles.signOutText}>Cerrar Sesión</Text>
+        {/* Sign Out Button */}
+        <TouchableOpacity className="mx-5 mb-8 flex-row items-center justify-center rounded-2xl bg-white py-4 active:bg-slate-50">
+          <Ionicons name="log-out" size={20} color="#dc2626" />
+          <Text className="ml-2 text-base font-semibold text-red-600">Cerrar Sesión</Text>
         </TouchableOpacity>
 
-        <Text style={styles.versionText}>Versión 1.0.0</Text>
+        {/* Version */}
+        <Text className="pb-8 text-center text-sm text-slate-400">Versión 1.0.0</Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F2F2F7',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: 'white',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1C1C1E',
-  },
-  content: {
-    flex: 1,
-  },
-  profileSection: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    paddingVertical: 32,
-    marginBottom: 32,
-  },
-  avatarContainer: {
-    marginBottom: 16,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  profileName: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 4,
-  },
-  profileEmail: {
-    fontSize: 16,
-    color: '#8E8E93',
-  },
-  settingsGroup: {
-    marginBottom: 32,
-  },
-  groupTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#8E8E93',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  groupContainer: {
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F7',
-  },
-  lastItem: {
-    borderBottomWidth: 0,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  settingTexts: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 2,
-  },
-  settingSubtitle: {
-    fontSize: 14,
-    color: '#8E8E93',
-  },
-  settingRight: {
-    marginLeft: 12,
-  },
-  signOutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    marginHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 16,
-    marginBottom: 32,
-  },
-  signOutText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FF3B30',
-    marginLeft: 8,
-  },
-  versionText: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#8E8E93',
-    paddingBottom: 32,
-  },
-});

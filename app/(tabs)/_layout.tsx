@@ -1,118 +1,132 @@
 import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: '#1e293b', // slate-800
+        tabBarInactiveTintColor: '#64748b', // slate-500
         headerShown: false,
         tabBarStyle: {
           backgroundColor: 'white',
           borderTopWidth: 0,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 12,
-          elevation: 16,
-          height: Platform.OS === 'ios' ? 90 : 70,
-          paddingBottom: Platform.OS === 'ios' ? 25 : 15,
-          paddingTop: 12,
+          shadowOffset: { width: 0, height: -8 },
+          shadowOpacity: 0.12,
+          shadowRadius: 20,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 80, // More padding for Android
+          paddingHorizontal: 8,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           position: 'absolute',
+          bottom: 0,
         },
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '600',
-          marginTop: 4,
+          fontWeight: '700',
+          marginTop: 6,
+          letterSpacing: 0.3,
         },
         tabBarIconStyle: {
-          marginTop: 2,
+          marginBottom: -2,
+        },
+        tabBarItemStyle: {
+          paddingTop: 4,
         },
       }}>
+      {/* Tab 1: Home */}
       <Tabs.Screen
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'home' : 'home-outline'}
-              size={focused ? 26 : 24}
-              color={color}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              className={`h-8 w-11 items-center justify-center rounded-2xl ${focused ? 'bg-slate-800' : 'bg-transparent'} py-1.5`}>
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={focused ? 22 : 20}
+                color={focused ? 'white' : color}
+              />
+            </View>
           ),
         }}
       />
 
+      {/* Tab 2: Budget */}
       <Tabs.Screen
-        name="transactions"
+        name="budget"
         options={{
-          title: 'Transacciones',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'list' : 'list-outline'}
-              size={focused ? 26 : 24}
-              color={color}
-            />
+          title: 'Presupuesto',
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              className={`h-8 w-11 items-center justify-center rounded-2xl ${focused ? 'bg-slate-800' : 'bg-transparent'} py-1.5`}>
+              <Ionicons
+                name={focused ? 'wallet' : 'wallet-outline'}
+                size={focused ? 22 : 20}
+                color={focused ? 'white' : color}
+              />
+            </View>
           ),
         }}
       />
 
+      {/* Tab 3: Add Expense (Center) */}
       <Tabs.Screen
         name="add-expense"
         options={{
           title: '',
-          tabBarIcon: ({ color, size, focused }) => (
-            <LinearGradient
-              colors={['#007AFF', '#0056CC']}
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              className="h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-slate-800 shadow-lg"
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 20,
-                shadowColor: '#007AFF',
-                shadowOffset: { width: 0, height: 4 },
+                marginTop: Platform.OS === 'ios' ? -28 : -32, // More negative margin for Android
+                shadowColor: '#1e293b',
+                shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 8,
+                shadowRadius: 12,
+                elevation: 12,
               }}>
               <Ionicons name="add" size={28} color="white" />
-            </LinearGradient>
+            </View>
           ),
-          tabBarStyle: { display: 'none' }, // Hide tab bar on this screen
+          tabBarLabelStyle: { display: 'none' },
         }}
       />
 
+      {/* Tab 4: Reports */}
       <Tabs.Screen
         name="reports"
         options={{
           title: 'Reportes',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'bar-chart' : 'bar-chart-outline'}
-              size={focused ? 26 : 24}
-              color={color}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              className={`h-8 w-11 items-center justify-center rounded-2xl ${focused ? 'bg-slate-800' : 'bg-transparent'} py-1.5`}>
+              <Ionicons
+                name={focused ? 'analytics' : 'analytics-outline'}
+                size={focused ? 22 : 20}
+                color={focused ? 'white' : color}
+              />
+            </View>
           ),
         }}
       />
 
+      {/* Tab 5: Settings */}
       <Tabs.Screen
-        name="settings"
+        name="config"
         options={{
           title: 'Ajustes',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? 'settings' : 'settings-outline'}
-              size={focused ? 26 : 24}
-              color={color}
-            />
+          tabBarIcon: ({ color, focused }) => (
+            <View
+              className={`h-8 w-11 items-center justify-center rounded-2xl ${focused ? 'bg-slate-800' : 'bg-transparent'} py-1.5`}>
+              <Ionicons
+                name={focused ? 'person' : 'person-outline'}
+                size={focused ? 22 : 20}
+                color={focused ? 'white' : color}
+              />
+            </View>
           ),
         }}
       />
