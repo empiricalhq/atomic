@@ -1,69 +1,174 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Dimensions,
+  ViewStyle,
+} from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { storageService } from '../services/StorageService';
+import { userService } from '../services/UserService';
+
+const { width } = Dimensions.get('window');
+
+interface OnboardingStep {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  color: string;
+}
+
+const ONBOARDING_STEPS: OnboardingStep[] = [
+  {
+    id: 'welcome',
+    title: 'Bienvenido a atomic',
+    subtitle: 'Tu compañero inteligente para el control de gastos',
+    icon: 'analytics',
+    color: '#007AFF',
+  },
+  {
+    id: 'track',
+    title: 'Registra fácilmente',
+    subtitle: 'Toma fotos de tus recibos y nosotros nos encargamos del resto',
+    icon: 'camera',
+    color: '#FF9500',
+  },
+  {
+    id: 'analyze',
+    title: 'Analiza tu dinero',
+    subtitle: 'Obtén insights personalizados sobre tus hábitos de gasto',
+    icon: 'stats-chart',
+    color: '#34C759',
+  },
+  {
+    id: 'goals',
+    title: 'Cumple tus metas',
+    subtitle: 'Establece presupuestos y alcanza tus objetivos financieros',
+    icon: 'trophy',
+    color: '#5856D6',
+  },
+];
 
 export default function OnboardingScreen() {
-  const [checkedItems, setCheckedItems] = useState({
-    expenses: false,
-    money: false,
-    goals: false,
-  });
+  const [currentStep, setCurrentStep] = useState(0);
 
-  const handleCheck = (item: keyof typeof checkedItems) => {
-    setCheckedItems((prev) => ({
-      ...prev,
-      [item]: !prev[item],
-    }));
+  const handleNext = () => {
+    if (currentStep < ONBOARDING_STEPS.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleGetStarted();
+    }
   };
 
-  const allChecked = Object.values(checkedItems).every(Boolean);
+  const handleSkip = () => {
+    handleGetStarted();
+  };
+
+  const handleGetStarted = async () => {
+    try {
+      // Create anonymous user
+      await userService.createAnonymousUser();
+      await storageService.setOnboardingComplete();
+      router.replace('/(tabs)');
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+      // Still proceed to main app
+      router.replace('/(tabs)');
+    }
+  };
+
+  const currentStepData = ONBOARDING_STEPS[currentStep];
+  const isLastStep = currentStep === ONBOARDING_STEPS.length - 1;
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        {/* logo and title */}
-        <View style={styles.logoContainer}>
-          <View style={styles.logo}>
-            <Ionicons name="analytics" size={40} color="#007AFF" />
+      <LinearGradient
+        colors={['#F8F9FA', '#FFFFFF']}
+        style={styles.gradient}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
+            <Text style={styles.skipText}>Saltar</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Content */}
+        <View style={styles.content}>
+          {/* Logo and Icon */}
+          <View style={styles.iconContainer}>
+            <LinearGradient
+              colors={[currentStepData.color, `${currentStepData.color}80`]}
+              style={styles.iconGradient}
+            >
+              <Ionicons 
+                name={currentStepData.icon as any} 
+                size={60} 
+                color="white" 
+              />
+            </LinearGradient>
           </View>
-          <Text style={styles.logoText}>atomic</Text>
+
+          {/* Text Content */}
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{currentStepData.title}</Text>
+            <Text style={styles.subtitle}>{currentStepData.subtitle}</Text>
+          </View>
+
+          {/* Progress Dots */}
+          <View style={styles.dotsContainer}>
+            {ONBOARDING_STEPS.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.dot,
+                  {
+                    backgroundColor: index === currentStep 
+                      ? currentStepData.color 
+                      : '#E5E5EA',
+                    width: index === currentStep ? 24 : 8,
+                  },
+                ]}
+              />
+            ))}
+          </View>
         </View>
 
-        {/* list of features */}
-        <View style={styles.featuresContainer}>
-          <TouchableOpacity style={styles.featureItem} onPress={() => handleCheck('expenses')}>
-            <View style={styles.checkbox}>
-              {checkedItems.expenses && <Ionicons name="checkmark" size={16} color="white" />}
-            </View>
-            <Text style={styles.featureText}>Registra tus gastos fácilmente</Text>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={[
+              styles.nextButton,
+              { backgroundColor: currentStepData.color }
+            ]}
+            onPress={handleNext}
+          >
+            <Text style={styles.nextButtonText}>
+              {isLastStep ? 'Comenzar' : 'Continuar'}
+            </Text>
+            <Ionicons 
+              name="arrow-forward" 
+              size={20} 
+              color="white" 
+              style={styles.buttonIcon}
+            />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.featureItem} onPress={() => handleCheck('money')}>
-            <View style={styles.checkbox}>
-              {checkedItems.money && <Ionicons name="checkmark" size={16} color="white" />}
+          {!isLastStep && (
+            <View style={styles.navigationHint}>
+              <Text style={styles.hintText}>
+                {currentStep + 1} de {ONBOARDING_STEPS.length}
+              </Text>
             </View>
-            <Text style={styles.featureText}>Analiza tu dinero</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.featureItem} onPress={() => handleCheck('goals')}>
-            <View style={styles.checkbox}>
-              {checkedItems.goals && <Ionicons name="checkmark" size={16} color="white" />}
-            </View>
-            <Text style={styles.featureText}>Cumple tus metas</Text>
-          </TouchableOpacity>
+          )}
         </View>
-
-        <TouchableOpacity
-          style={[styles.startButton, allChecked && styles.startButtonActive]}
-          disabled={!allChecked}
-          onPress={() => router.replace('/(tabs)')}>
-          <Text style={styles.startButtonText}>Comenzar</Text>
-          <Ionicons name="arrow-forward" size={20} color="white" />
-        </TouchableOpacity>
-
-        <Text style={styles.subtitle}>Ya tienes una cuenta? Inicia sesión.</Text>
-      </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -71,80 +176,106 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+  },
+  gradient: {
+    flex: 1,
+  },
+  header: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    height: 60,
+  },
+  skipButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  skipText: {
+    fontSize: 16,
+    color: '#8E8E93',
+    fontWeight: '500',
   },
   content: {
     flex: 1,
-    paddingHorizontal: 40,
-    paddingVertical: 60,
-    justifyContent: 'space-between',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: 60,
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
-    backgroundColor: '#F2F2F7',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  logoText: {
-    fontSize: 32,
-    fontWeight: '300',
-    color: '#1C1C1E',
-    letterSpacing: -1,
-  },
-  featuresContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingVertical: 40,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    backgroundColor: '#007AFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  featureText: {
-    fontSize: 18,
-    color: '#1C1C1E',
-    fontWeight: '500',
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#8E8E93',
-    paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    marginBottom: 48,
+  },
+  iconGradient: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginBottom: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#1C1C1E',
+    textAlign: 'center',
     marginBottom: 16,
+    letterSpacing: -0.5,
   },
-  startButtonActive: {
-    backgroundColor: '#007AFF',
+  subtitle: {
+    fontSize: 18,
+    color: '#8E8E93',
+    textAlign: 'center',
+    lineHeight: 26,
+    maxWidth: width - 80,
   },
-  startButtonText: {
+  dotsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  dot: {
+    height: 8,
+    borderRadius: 4,
+    transition: 'all 0.3s ease',
+  } as ViewStyle & { transition?: string },
+  footer: {
+    paddingHorizontal: 32,
+    paddingBottom: 48,
+    alignItems: 'center',
+  },
+  nextButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    borderRadius: 28,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  nextButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
-    marginRight: 8,
   },
-  subtitle: {
-    textAlign: 'center',
+  buttonIcon: {
+    marginLeft: 8,
+  },
+  navigationHint: {
+    marginTop: 16,
+  },
+  hintText: {
     fontSize: 14,
     color: '#8E8E93',
   },
