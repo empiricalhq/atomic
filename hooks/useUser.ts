@@ -28,7 +28,7 @@ export const useUser = () => {
       if (updates.settings) {
         await userService.updateUserSettings(user.id, updates.settings);
       }
-      
+
       if (updates.name || updates.email) {
         await userService.updateUserProfile(user.id, {
           name: updates.name,
@@ -36,7 +36,7 @@ export const useUser = () => {
         });
       }
 
-      setUser(prev => prev ? { ...prev, ...updates } : null);
+      setUser((prev) => (prev ? { ...prev, ...updates } : null));
     } catch (error) {
       console.error('Error updating user:', error);
     }

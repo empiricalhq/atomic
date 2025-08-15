@@ -101,8 +101,8 @@ export default function ScannerScreen() {
 
     try {
       // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Here you would call your backend API to process the receipt
       const mockResponse = {
         amount: 45.67,
@@ -136,8 +136,8 @@ export default function ScannerScreen() {
   };
 
   const handleTakePicture = async () => {
-    setScanState(prev => ({ ...prev, scanning: true }));
-    
+    setScanState((prev) => ({ ...prev, scanning: true }));
+
     // Simulate picture taking
     setTimeout(() => {
       const mockImageUri = 'mock://receipt.jpg';
@@ -189,10 +189,7 @@ export default function ScannerScreen() {
             <Text style={styles.permissionSubtext}>
               Para escanear recibos necesitamos acceso a tu cámara
             </Text>
-            <TouchableOpacity 
-              style={styles.permissionButton} 
-              onPress={requestPermissions}
-            >
+            <TouchableOpacity style={styles.permissionButton} onPress={requestPermissions}>
               <Text style={styles.permissionButtonText}>Permitir acceso</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -223,45 +220,35 @@ export default function ScannerScreen() {
 
         <TouchableOpacity
           style={[styles.headerButton, flashEnabled && styles.flashActive]}
-          onPress={toggleFlash}
-        >
+          onPress={toggleFlash}>
           <Ionicons name={flashEnabled ? 'flash' : 'flash-off'} size={28} color="white" />
         </TouchableOpacity>
       </View>
 
       {/* Camera */}
-      <CameraView
-        style={styles.camera}
-        facing="back"
-        flash={flashEnabled ? 'on' : 'off'}
-      />
+      <CameraView style={styles.camera} facing="back" flash={flashEnabled ? 'on' : 'off'} />
 
       {/* Overlay */}
       <View style={styles.overlay}>
         <View style={styles.scanAreaContainer}>
           {/* Top overlay */}
           <View style={styles.topOverlay} />
-          
+
           {/* Middle row */}
           <View style={styles.middleRow}>
             <View style={styles.sideOverlay} />
-            
+
             {/* Scan area */}
-            <Animated.View 
-              style={[
-                styles.scanArea,
-                { transform: [{ scale: pulseAnimation }] }
-              ]}
-            >
+            <Animated.View style={[styles.scanArea, { transform: [{ scale: pulseAnimation }] }]}>
               <View style={[styles.corner, styles.topLeft]} />
               <View style={[styles.corner, styles.topRight]} />
               <View style={[styles.corner, styles.bottomLeft]} />
               <View style={[styles.corner, styles.bottomRight]} />
-              
+
               {!scanState.processing && (
                 <Animated.View style={[styles.scanLine, { top: scanLineTop }]} />
               )}
-              
+
               {scanState.processing && (
                 <View style={styles.processingContainer}>
                   <ActivityIndicator size="large" color="#007AFF" />
@@ -269,25 +256,21 @@ export default function ScannerScreen() {
                 </View>
               )}
             </Animated.View>
-            
+
             <View style={styles.sideOverlay} />
           </View>
-          
+
           {/* Bottom overlay */}
           <View style={styles.bottomOverlay} />
         </View>
       </View>
 
       {/* Bottom controls */}
-      <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.8)']}
-        style={styles.bottomContainer}
-      >
+      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']} style={styles.bottomContainer}>
         <Text style={styles.instructionText}>
-          {scanState.processing 
-            ? 'Analizando tu recibo...' 
-            : 'Posiciona el recibo dentro del marco'
-          }
+          {scanState.processing
+            ? 'Analizando tu recibo...'
+            : 'Posiciona el recibo dentro del marco'}
         </Text>
         <Text style={styles.subText}>
           Nos encargaremos de extraer todos los detalles automáticamente
@@ -297,19 +280,17 @@ export default function ScannerScreen() {
           <TouchableOpacity
             style={styles.galleryButton}
             onPress={handlePickFromGallery}
-            disabled={scanState.processing}
-          >
+            disabled={scanState.processing}>
             <Ionicons name="images" size={24} color="white" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.captureButton,
-              (scanState.scanning || scanState.processing) && styles.captureButtonDisabled
+              (scanState.scanning || scanState.processing) && styles.captureButtonDisabled,
             ]}
             onPress={handleTakePicture}
-            disabled={scanState.processing || scanState.scanning}
-          >
+            disabled={scanState.processing || scanState.scanning}>
             {scanState.scanning ? (
               <ActivityIndicator color="white" />
             ) : (
@@ -320,8 +301,7 @@ export default function ScannerScreen() {
           <TouchableOpacity
             style={styles.manualButton}
             onPress={() => router.push('/(tabs)/add-expense')}
-            disabled={scanState.processing}
-          >
+            disabled={scanState.processing}>
             <Ionicons name="create" size={24} color="white" />
           </TouchableOpacity>
         </View>

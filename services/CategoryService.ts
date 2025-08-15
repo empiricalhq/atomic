@@ -30,12 +30,12 @@ class CategoryService {
 
   getCategoryById(id: string) {
     const allCategories = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
-    return allCategories.find(cat => cat.id === id);
+    return allCategories.find((cat) => cat.id === id);
   }
 
   getCategoryByName(name: string) {
     const allCategories = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
-    return allCategories.find(cat => cat.name === name);
+    return allCategories.find((cat) => cat.name === name);
   }
 }
 

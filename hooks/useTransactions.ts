@@ -39,7 +39,7 @@ export const useTransactions = () => {
         ...transactionData,
         userId: user.id,
       });
-      setTransactions(prev => [newTransaction, ...prev]);
+      setTransactions((prev) => [newTransaction, ...prev]);
       return newTransaction;
     } catch (err) {
       console.error('Error adding transaction:', err);
@@ -49,7 +49,7 @@ export const useTransactions = () => {
   };
 
   const getTransactionsByMonth = (year: number, month: number) => {
-    return transactions.filter(t => {
+    return transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       return transactionDate.getFullYear() === year && transactionDate.getMonth() === month;
     });

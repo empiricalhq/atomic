@@ -31,7 +31,7 @@ class StorageService {
     try {
       const transactions = await AsyncStorage.getItem(KEYS.TRANSACTIONS);
       const allTransactions: Transaction[] = transactions ? JSON.parse(transactions) : [];
-      return allTransactions.filter(t => t.userId === userId);
+      return allTransactions.filter((t) => t.userId === userId);
     } catch (error) {
       console.error('Error getting transactions:', error);
       return [];
@@ -57,7 +57,7 @@ class StorageService {
     try {
       const categories = await AsyncStorage.getItem(KEYS.BUDGET_CATEGORIES);
       const allCategories: BudgetCategory[] = categories ? JSON.parse(categories) : [];
-      return allCategories.filter(c => c.userId === userId);
+      return allCategories.filter((c) => c.userId === userId);
     } catch (error) {
       console.error('Error getting budget categories:', error);
       return [];

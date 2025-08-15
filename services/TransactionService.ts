@@ -18,7 +18,7 @@ class TransactionService {
 
   async getTransactionsByCategory(userId: string, category: string): Promise<Transaction[]> {
     const transactions = await this.getUserTransactions(userId);
-    return transactions.filter(t => t.category === category);
+    return transactions.filter((t) => t.category === category);
   }
 
   async getTransactionsByDateRange(
@@ -27,13 +27,17 @@ class TransactionService {
     endDate: Date
   ): Promise<Transaction[]> {
     const transactions = await this.getUserTransactions(userId);
-    return transactions.filter(t => {
+    return transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       return transactionDate >= startDate && transactionDate <= endDate;
     });
   }
 
-  async getMonthlyTransactions(userId: string, year: number, month: number): Promise<Transaction[]> {
+  async getMonthlyTransactions(
+    userId: string,
+    year: number,
+    month: number
+  ): Promise<Transaction[]> {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 0);
     return await this.getTransactionsByDateRange(userId, startDate, endDate);
@@ -51,24 +55,27 @@ class TransactionService {
 
   getTransactionSummary(transactions: Transaction[]) {
     const totalIncome = transactions
-      .filter(t => t.type === 'income')
+      .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
 
     const totalExpenses = transactions
-      .filter(t => t.type === 'expense')
+      .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
     const netAmount = totalIncome - totalExpenses;
 
-    const categoryTotals = transactions.reduce((acc, transaction) => {
-      const category = transaction.category;
-      if (!acc[category]) {
-        acc[category] = { total: 0, count: 0 };
-      }
-      acc[category].total += Math.abs(transaction.amount);
-      acc[category].count += 1;
-      return acc;
-    }, {} as Record<string, { total: number; count: number }>);
+    const categoryTotals = transactions.reduce(
+      (acc, transaction) => {
+        const category = transaction.category;
+        if (!acc[category]) {
+          acc[category] = { total: 0, count: 0 };
+        }
+        acc[category].total += Math.abs(transaction.amount);
+        acc[category].count += 1;
+        return acc;
+      },
+      {} as Record<string, { total: number; count: number }>
+    );
 
     const topCategories = Object.entries(categoryTotals)
       .sort((a, b) => b[1].total - a[1].total)

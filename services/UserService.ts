@@ -39,7 +39,10 @@ class UserService {
     }
   }
 
-  async updateUserProfile(userId: string, updates: Partial<Pick<User, 'name' | 'email'>>): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    updates: Partial<Pick<User, 'name' | 'email'>>
+  ): Promise<void> {
     const user = await storageService.getUser();
     if (user && user.id === userId) {
       Object.assign(user, updates);

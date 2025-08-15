@@ -87,8 +87,7 @@ export const Button: React.FC<ButtonProps> = ({
           colors={['#007AFF', '#0056CC']}
           style={buttonStyle}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
+          end={{ x: 1, y: 1 }}>
           {renderContent()}
         </LinearGradient>
       </TouchableOpacity>
@@ -96,11 +95,7 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <TouchableOpacity
-      style={buttonStyle}
-      onPress={onPress}
-      disabled={disabled || loading}
-    >
+    <TouchableOpacity style={buttonStyle} onPress={onPress} disabled={disabled || loading}>
       {renderContent()}
     </TouchableOpacity>
   );

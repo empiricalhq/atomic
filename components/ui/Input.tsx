@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextInputProps,
-} from 'react-native';
+import { View, TextInput, Text, StyleSheet, ViewStyle, TextInputProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface InputProps extends TextInputProps {
@@ -30,12 +23,7 @@ export const Input: React.FC<InputProps> = ({
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={[styles.inputContainer, error && styles.inputError]}>
         {icon && iconPosition === 'left' && (
-          <Ionicons
-            name={icon as any}
-            size={20}
-            color="#8E8E93"
-            style={styles.iconLeft}
-          />
+          <Ionicons name={icon as any} size={20} color="#8E8E93" style={styles.iconLeft} />
         )}
         <TextInput
           style={[
@@ -47,12 +35,7 @@ export const Input: React.FC<InputProps> = ({
           {...props}
         />
         {icon && iconPosition === 'right' && (
-          <Ionicons
-            name={icon as any}
-            size={20}
-            color="#8E8E93"
-            style={styles.iconRight}
-          />
+          <Ionicons name={icon as any} size={20} color="#8E8E93" style={styles.iconRight} />
         )}
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}

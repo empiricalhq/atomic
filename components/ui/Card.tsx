@@ -8,24 +8,8 @@ interface CardProps {
   shadow?: boolean;
 }
 
-export const Card: React.FC<CardProps> = ({
-  children,
-  style,
-  padding = 20,
-  shadow = true,
-}) => {
-  return (
-    <View
-      style={[
-        styles.card,
-        { padding },
-        shadow && styles.shadow,
-        style,
-      ]}
-    >
-      {children}
-    </View>
-  );
+export const Card: React.FC<CardProps> = ({ children, style, padding = 20, shadow = true }) => {
+  return <View style={[styles.card, { padding }, shadow && styles.shadow, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({

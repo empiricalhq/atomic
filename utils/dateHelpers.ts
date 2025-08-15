@@ -3,7 +3,7 @@ export const formatDate = (date: Date): string => {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  
+
   const inputDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
   if (inputDate.getTime() === today.getTime()) {
@@ -29,8 +29,18 @@ export const formatCurrency = (amount: number): string => {
 
 export const getMonthName = (month: number): string => {
   const months = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    'Enero',
+    'Febrero',
+    'Marzo',
+    'Abril',
+    'Mayo',
+    'Junio',
+    'Julio',
+    'Agosto',
+    'Septiembre',
+    'Octubre',
+    'Noviembre',
+    'Diciembre',
   ];
   return months[month];
 };
