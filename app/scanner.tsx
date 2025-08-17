@@ -6,15 +6,17 @@ import {
   Dimensions,
   Animated,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width, height } = Dimensions.get('window');
-const SCAN_AREA_SIZE = Math.min(width * 0.75, 280);
+const { width } = Dimensions.get('window');
+const SCAN_AREA_SIZE = Math.min(width * 0.7, 250);
 
 interface ScanState {
   scanning: boolean;
@@ -121,7 +123,7 @@ export default function ScannerScreen() {
   const handlePickFromGallery = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images', 'videos'],
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
@@ -135,9 +137,15 @@ export default function ScannerScreen() {
     }
   };
 
+  const scanLineTop = scanLineAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, SCAN_AREA_SIZE - 4],
+  });
+
   if (hasPermission === null) {
     return (
       <SafeAreaView className="flex-1 bg-black">
+        <StatusBar barStyle="light-content" />
         <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" color="#64748b" />
           <Text className="mt-4 text-lg font-medium text-slate-300">Preparando cámara...</Text>
@@ -149,6 +157,7 @@ export default function ScannerScreen() {
   if (hasPermission === false) {
     return (
       <SafeAreaView className="flex-1 bg-black">
+        <StatusBar barStyle="light-content" />
         <View className="flex-1 items-center justify-center px-8">
           <View className="mb-6 h-20 w-20 items-center justify-center rounded-full bg-slate-800">
             <Ionicons name="videocam-off" size={32} color="#64748b" />
@@ -172,59 +181,40 @@ export default function ScannerScreen() {
     );
   }
 
-  const scanLineTop = scanLineAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, SCAN_AREA_SIZE - 4],
-  });
-
   return (
-    <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-black">
-      <View className="absolute left-0 right-0 top-0 z-10 flex-row items-center justify-between px-6 py-4">
-        <TouchableOpacity
-          className="h-10 w-10 items-center justify-center rounded-full bg-black/60"
-          onPress={() => router.back()}>
-          <Ionicons name="close" size={20} color="white" />
-        </TouchableOpacity>
-        <Text className="text-lg font-bold text-white">Escanear Recibo</Text>
-        <TouchableOpacity
-          className={`h-10 w-10 items-center justify-center rounded-full ${
-            flashEnabled ? 'bg-white/20' : 'bg-black/60'
-          }`}
-          onPress={() => setFlashEnabled(!flashEnabled)}>
-          <Ionicons name={flashEnabled ? 'flash' : 'flash-off'} size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+    <View className="flex-1 bg-black">
+      <StatusBar barStyle="light-content" />
 
-      <CameraView className="flex-1" facing="back" flash={flashEnabled ? 'on' : 'off'} />
+      <CameraView className="absolute inset-0" facing="back" flash={flashEnabled ? 'on' : 'off'} />
 
-      <View className="absolute inset-0 items-center justify-center">
-        <View
-          className="bg-black/50"
-          style={{
-            width: width,
-            height: (height - SCAN_AREA_SIZE) / 2,
-          }}
-        />
+      <SafeAreaView className="flex-1">
+        <View className="flex-row items-center justify-between bg-black/20 px-6 py-4">
+          <TouchableOpacity
+            className="h-10 w-10 items-center justify-center rounded-full bg-black/60"
+            onPress={() => router.back()}>
+            <Ionicons name="close" size={20} color="white" />
+          </TouchableOpacity>
+          <Text className="text-lg font-bold text-white">Escanear recibo</Text>
+          <TouchableOpacity
+            className={`h-10 w-10 items-center justify-center rounded-full ${
+              flashEnabled ? 'bg-white/20' : 'bg-black/60'
+            }`}
+            onPress={() => setFlashEnabled(!flashEnabled)}>
+            <Ionicons name={flashEnabled ? 'flash' : 'flash-off'} size={20} color="white" />
+          </TouchableOpacity>
+        </View>
 
-        <View className="flex-row" style={{ height: SCAN_AREA_SIZE }}>
+        <View className="flex-1 items-center justify-center">
           <View
-            className="bg-black/50"
-            style={{
-              width: (width - SCAN_AREA_SIZE) / 2,
-              height: SCAN_AREA_SIZE,
-            }}
-          />
-
-          <View
-            className="relative"
+            className="relative rounded-2xl border-2 border-white/30"
             style={{
               width: SCAN_AREA_SIZE,
               height: SCAN_AREA_SIZE,
             }}>
-            <View className="border-l-3 border-t-3 absolute left-0 top-0 h-6 w-6 rounded-tl-lg border-white" />
-            <View className="border-r-3 border-t-3 absolute right-0 top-0 h-6 w-6 rounded-tr-lg border-white" />
-            <View className="border-l-3 border-b-3 absolute bottom-0 left-0 h-6 w-6 rounded-bl-lg border-white" />
-            <View className="border-r-3 border-b-3 absolute bottom-0 right-0 h-6 w-6 rounded-br-lg border-white" />
+            <View className="absolute -left-1 -top-1 h-6 w-6 rounded-tl-xl border-l-4 border-t-4 border-white" />
+            <View className="absolute -right-1 -top-1 h-6 w-6 rounded-tr-xl border-r-4 border-t-4 border-white" />
+            <View className="absolute -bottom-1 -left-1 h-6 w-6 rounded-bl-xl border-b-4 border-l-4 border-white" />
+            <View className="absolute -bottom-1 -right-1 h-6 w-6 rounded-br-xl border-b-4 border-r-4 border-white" />
 
             {!scanState.processing && (
               <Animated.View
@@ -240,68 +230,54 @@ export default function ScannerScreen() {
               </View>
             )}
           </View>
-
-          <View
-            className="bg-black/50"
-            style={{
-              width: (width - SCAN_AREA_SIZE) / 2,
-              height: SCAN_AREA_SIZE,
-            }}
-          />
         </View>
 
-        <View
-          className="bg-black/50"
-          style={{
-            width: width,
-            height: (height - SCAN_AREA_SIZE) / 2,
-          }}
-        />
-      </View>
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.9)']}
+          style={{ paddingHorizontal: 32, paddingBottom: 32 }}>
+          <Text className="mb-2 text-center text-xl font-semibold text-white">
+            {scanState.processing ? 'Analizando recibo...' : 'Centra el recibo en el marco'}
+          </Text>
+          <Text className="mb-8 text-center leading-relaxed text-slate-300">
+            Extraeremos automáticamente todos los detalles
+          </Text>
 
-      <View className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent px-8 pb-12 pt-8">
-        <Text className="mb-2 text-center text-xl font-semibold text-white">
-          {scanState.processing ? 'Analizando recibo...' : 'Centra el recibo en el marco'}
-        </Text>
-        <Text className="mb-8 text-center leading-relaxed text-slate-300">
-          Extraeremos automáticamente todos los detalles
-        </Text>
+          <View className="flex-row items-center justify-center space-x-8">
+            <TouchableOpacity
+              className="h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/20"
+              onPress={handlePickFromGallery}
+              disabled={scanState.processing}>
+              <Ionicons name="images" size={20} color="white" />
+            </TouchableOpacity>
 
-        <View className="flex-row items-center justify-center space-x-8">
-          <TouchableOpacity
-            className="h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/20"
-            onPress={handlePickFromGallery}
-            disabled={scanState.processing}>
-            <Ionicons name="images" size={20} color="white" />
-          </TouchableOpacity>
+            <TouchableOpacity
+              className={`h-16 w-16 items-center justify-center rounded-full ${
+                scanState.scanning || scanState.processing ? 'bg-slate-600' : 'bg-white'
+              }`}
+              onPress={handleTakePicture}
+              disabled={scanState.processing || scanState.scanning}>
+              {scanState.scanning ? (
+                <ActivityIndicator color="#334155" />
+              ) : (
+                <Ionicons name="camera" size={24} color="#1e293b" />
+              )}
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            className={`h-16 w-16 items-center justify-center rounded-full ${
-              scanState.scanning || scanState.processing ? 'bg-slate-600' : 'bg-white'
-            }`}
-            onPress={handleTakePicture}
-            disabled={scanState.processing || scanState.scanning}>
-            {scanState.scanning ? (
-              <ActivityIndicator color="#334155" />
-            ) : (
-              <Ionicons name="camera" size={24} color="#1e293b" />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/20"
-            onPress={() => router.push('/(tabs)/add-expense')}
-            disabled={scanState.processing}>
-            <Ionicons name="create" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {scanState.error && (
-          <View className="mt-4 rounded-xl border border-red-500/30 bg-red-500/20 p-4">
-            <Text className="text-center text-red-300">{scanState.error}</Text>
+            <TouchableOpacity
+              className="h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/20"
+              onPress={() => router.push('/(tabs)/add-expense')}
+              disabled={scanState.processing}>
+              <Ionicons name="create" size={20} color="white" />
+            </TouchableOpacity>
           </View>
-        )}
-      </View>
-    </SafeAreaView>
+
+          {scanState.error && (
+            <View className="mt-4 rounded-xl border border-red-500/30 bg-red-500/20 p-4">
+              <Text className="text-center text-red-300">{scanState.error}</Text>
+            </View>
+          )}
+        </LinearGradient>
+      </SafeAreaView>
+    </View>
   );
 }
