@@ -3,12 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useTransactions } from '../../hooks/useTransactions';
-import { useUser } from '../../hooks/useUser';
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { formatCurrency, formatDate, getCurrentMonth } from '../../utils/dateHelpers';
-import { categoryService } from '../../services/CategoryService';
-import { STYLES } from '../../constants/design';
+import { useTransactions } from '@/hooks/useTransactions';
+import { useUser } from '@/hooks/useUser';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { formatCurrency, formatDate, getCurrentMonth } from '@/utils/dateHelpers';
+import { categoryService } from '@/services/CategoryService';
 
 export default function HomeScreen() {
   const { user } = useUser();

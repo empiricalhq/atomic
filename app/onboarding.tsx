@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { storageService } from '../services/StorageService';
-import { userService } from '../services/UserService';
-import { STYLES } from '../constants/design';
+import { storageService } from '@/services/StorageService';
+import { userService } from '@/services/UserService';
 
 interface OnboardingStep {
   id: string;

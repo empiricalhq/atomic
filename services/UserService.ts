@@ -1,4 +1,4 @@
-import { User, UserSettings } from '../types';
+import { User, UserSettings } from '@/types';
 import { storageService } from './StorageService';
 
 const DEFAULT_SETTINGS: UserSettings = {

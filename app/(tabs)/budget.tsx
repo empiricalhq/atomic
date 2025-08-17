@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { DESIGN } from '../../constants/design';
+import { DESIGN } from '@/constants/design';
 
 interface BudgetCategory {
   id: string;

@@ -3,13 +3,9 @@ import { View, Text, TouchableOpacity, TextInput, Modal, ScrollView } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useTransactions } from '../../hooks/useTransactions';
-import {
-  categoryService,
-  EXPENSE_CATEGORIES,
-  INCOME_CATEGORIES,
-} from '../../services/CategoryService';
-import { Transaction } from '../../types';
+import { useTransactions } from '@/hooks/useTransactions';
+import { categoryService, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/services/CategoryService';
+import { Transaction } from '@/types';
 
 type TransactionType = 'expense' | 'income';
 

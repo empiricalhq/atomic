@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { storageService } from '../services/StorageService';
-import { userService } from '../services/UserService';
-import { LoadingSpinner } from '../components/ui/LoadingSpinner';
-import '../global.css';
+import { storageService } from '@/services/StorageService';
+import { userService } from '@/services/UserService';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import '@/global.css';
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);

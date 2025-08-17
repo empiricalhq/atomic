@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Transaction, BudgetCategory } from '../types';
+import { User, Transaction, BudgetCategory } from '@/types';
 
 const KEYS = {
   USER: 'user',

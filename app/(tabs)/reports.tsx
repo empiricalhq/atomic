@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { DESIGN } from '../../constants/design';
+import { DESIGN } from '@/constants/design';
 
 export default function ReportsScreen() {
   const monthlyData = [

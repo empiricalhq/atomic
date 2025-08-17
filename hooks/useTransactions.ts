@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Transaction } from '../types';
-import { transactionService } from '../services/TransactionService';
+import { Transaction } from '@/types';
+import { transactionService } from '@/services/TransactionService';
 import { useUser } from './useUser';
 
 export const useTransactions = () => {
