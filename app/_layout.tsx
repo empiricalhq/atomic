@@ -48,20 +48,6 @@ export default function RootLayout() {
             animation: 'slide_from_bottom',
           }}
         />
-        <Stack.Screen
-          name="transaction/[id]"
-          options={{
-            headerShown: false,
-            presentation: 'modal',
-          }}
-        />
-        <Stack.Screen
-          name="category-select"
-          options={{
-            headerShown: false,
-            presentation: 'modal',
-          }}
-        />
       </Stack>
     </SafeAreaProvider>
   );
