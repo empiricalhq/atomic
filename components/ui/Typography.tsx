@@ -1,13 +1,14 @@
-import { Text } from 'react-native';
+import { Text, TextStyle } from 'react-native';
 import { cn } from '@/utils/cn';
 
 interface TypographyProps {
   variant?: 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'overline';
   color?: 'primary' | 'secondary' | 'muted' | 'success' | 'error';
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+  weight?: 'normal' | 'medium' | 'semibold' | 'bold' | 'extralight' | 'light';
   children: React.ReactNode;
   className?: string;
   numberOfLines?: number;
+  style?: TextStyle;
 }
 
 export default function Typography({
@@ -16,6 +17,8 @@ export default function Typography({
   weight = 'normal',
   children,
   className,
+  numberOfLines,
+  style,
 }: TypographyProps) {
   const variantStyles = {
     h1: 'text-4xl leading-10',
@@ -35,6 +38,8 @@ export default function Typography({
   };
 
   const weightStyles = {
+    extralight: 'font-extralight',
+    light: 'font-light',
     normal: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
@@ -43,7 +48,9 @@ export default function Typography({
 
   return (
     <Text
-      className={cn(variantStyles[variant], colorStyles[color], weightStyles[weight], className)}>
+      className={cn(variantStyles[variant], colorStyles[color], weightStyles[weight], className)}
+      style={style}
+      numberOfLines={numberOfLines}>
       {children}
     </Text>
   );

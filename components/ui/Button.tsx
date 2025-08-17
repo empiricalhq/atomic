@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn';
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
