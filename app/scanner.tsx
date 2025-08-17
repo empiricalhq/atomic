@@ -13,6 +13,7 @@ import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const SCAN_AREA_SIZE = Math.min(width * 0.7, 250);
@@ -231,7 +232,9 @@ export default function ScannerScreen() {
           </View>
         </View>
 
-        <View className="bg-gradient-to-t from-black/90 to-transparent px-8 pb-8">
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.9)']}
+          style={{ paddingHorizontal: 32, paddingBottom: 32 }}>
           <Text className="mb-2 text-center text-xl font-semibold text-white">
             {scanState.processing ? 'Analizando recibo...' : 'Centra el recibo en el marco'}
           </Text>
@@ -273,7 +276,7 @@ export default function ScannerScreen() {
               <Text className="text-center text-red-300">{scanState.error}</Text>
             </View>
           )}
-        </View>
+        </LinearGradient>
       </SafeAreaView>
     </View>
   );
