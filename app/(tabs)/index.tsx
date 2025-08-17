@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useTransactions } from '@/hooks/useTransactions';
-import { useUser } from '@/hooks/useUser';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { formatCurrency, formatDate, getCurrentMonth } from '@/utils/dateHelpers';
-import { categoryService } from '@/services/CategoryService';
+import { useTransactions } from '../../hooks/useTransactions';
+import { useUser } from '../../hooks/useUser';
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { formatCurrency, formatDate, getCurrentMonth } from '../../utils/dateHelpers';
+import { categoryService } from '../../services/CategoryService';
+import Screen from '../../components/layout/Screen';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Typography from '../../components/ui/Typography';
 
 export default function HomeScreen() {
   const { user } = useUser();
@@ -39,158 +42,160 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView edges={['top']} className="flex-1 bg-slate-50">
+    <Screen
+      variant="scroll"
+      background="gray"
+      safeArea
+      padding="none"
+      contentContainerStyle={{ paddingBottom: 120 }}>
       <ScrollView
-        className="flex-1"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}>
+        showsVerticalScrollIndicator={false}>
         <View className="px-6 pb-8 pt-4">
           <View className="mb-8 flex-row items-center justify-between">
             <View className="flex-1">
-              <Text className="mb-1 text-sm text-slate-400">{getGreeting()}</Text>
-              <Text className="text-2xl font-bold text-slate-900">{user?.name || 'Usuario'}</Text>
+              <Typography variant="caption" color="muted" className="mb-1">
+                {getGreeting()}
+              </Typography>
+              <Typography variant="h2" weight="bold">
+                {user?.name || 'Usuario'}
+              </Typography>
             </View>
             <TouchableOpacity
-              className="h-10 w-10 items-center justify-center rounded-full bg-slate-100"
+              className="h-10 w-10 items-center justify-center rounded-full bg-gray-100"
               onPress={() => router.push('/(tabs)/config')}>
               <Ionicons name="person-outline" size={18} color="#64748b" />
             </TouchableOpacity>
           </View>
 
-          <View className="rounded-3xl bg-slate-900 p-8">
+          <Card variant="elevated" padding="lg" className="rounded-3xl bg-gray-900">
             <View className="mb-8 items-center">
-              <Text className="mb-2 text-sm text-slate-400">Balance actual</Text>
-              <Text className="text-4xl font-light tracking-tight text-white">
+              <Typography variant="caption" className="mb-2 text-gray-400">
+                Balance actual
+              </Typography>
+              <Typography
+                variant="h1"
+                weight="normal"
+                className="text-4xl tracking-tight text-white">
                 {formatCurrency(summary.netAmount)}
-              </Text>
+              </Typography>
             </View>
 
             <View className="flex-row">
               <View className="flex-1 items-center">
-                <Text className="mb-1 text-xs uppercase tracking-wider text-slate-500">
+                <Typography variant="overline" className="mb-1 text-gray-500">
                   Ingresos
-                </Text>
-                <Text className="text-lg font-medium text-slate-200">
+                </Typography>
+                <Typography variant="body" weight="medium" className="text-lg text-gray-200">
                   {formatCurrency(summary.totalIncome)}
-                </Text>
+                </Typography>
               </View>
-              <View className="mx-6 w-px bg-slate-700" />
+              <View className="mx-6 w-px bg-gray-700" />
               <View className="flex-1 items-center">
-                <Text className="mb-1 text-xs uppercase tracking-wider text-slate-500">Gastos</Text>
-                <Text className="text-lg font-medium text-slate-200">
+                <Typography variant="overline" className="mb-1 text-gray-500">
+                  Gastos
+                </Typography>
+                <Typography variant="body" weight="medium" className="text-lg text-gray-200">
                   {formatCurrency(summary.totalExpenses)}
-                </Text>
+                </Typography>
               </View>
             </View>
-          </View>
+          </Card>
         </View>
 
         <View className="mb-8 px-6">
-          <Text className="mb-4 text-lg font-bold text-slate-900">Acciones</Text>
+          <Typography variant="body" weight="bold" className="mb-4 text-lg">
+            Acciones
+          </Typography>
           <View className="flex-row justify-between">
-            <TouchableOpacity
-              className="mr-2 flex-1 items-center rounded-2xl bg-white p-6"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}
-              onPress={() => router.push('/(tabs)/add-expense')}>
-              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
+            <Card
+              variant="elevated"
+              padding="lg"
+              onPress={() => router.push('/(tabs)/add-expense')}
+              className="mr-2 flex-1 items-center rounded-2xl">
+              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="remove" size={20} color="#475569" />
               </View>
-              <Text className="text-sm font-semibold text-slate-700">Gasto</Text>
-            </TouchableOpacity>
+              <Typography variant="caption" weight="semibold" color="secondary">
+                Gasto
+              </Typography>
+            </Card>
 
-            <TouchableOpacity
-              className="mx-1 flex-1 items-center rounded-2xl bg-white p-6"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}
-              onPress={() => router.push('/(tabs)/add-expense')}>
-              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
+            <Card
+              variant="elevated"
+              padding="lg"
+              onPress={() => router.push('/(tabs)/add-expense')}
+              className="mx-1 flex-1 items-center rounded-2xl">
+              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="add" size={20} color="#475569" />
               </View>
-              <Text className="text-sm font-semibold text-slate-700">Ingreso</Text>
-            </TouchableOpacity>
+              <Typography variant="caption" weight="semibold" color="secondary">
+                Ingreso
+              </Typography>
+            </Card>
 
-            <TouchableOpacity
-              className="ml-2 flex-1 items-center rounded-2xl bg-white p-6"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}
-              onPress={() => router.push('/scanner')}>
-              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
+            <Card
+              variant="elevated"
+              padding="lg"
+              onPress={() => router.push('/scanner')}
+              className="ml-2 flex-1 items-center rounded-2xl">
+              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="camera" size={20} color="#475569" />
               </View>
-              <Text className="text-sm font-semibold text-slate-700">Escanear</Text>
-            </TouchableOpacity>
+              <Typography variant="caption" weight="semibold" color="secondary">
+                Escanear
+              </Typography>
+            </Card>
           </View>
         </View>
 
         <View className="mb-8 px-6">
           <View className="mb-4 flex-row items-center justify-between">
-            <Text className="text-lg font-bold text-slate-900">Recientes</Text>
+            <Typography variant="body" weight="bold" className="text-lg">
+              Recientes
+            </Typography>
             <TouchableOpacity
               className="flex-row items-center"
               onPress={() => router.push('/(tabs)/transactions')}>
-              <Text className="mr-1 text-sm text-slate-500">Ver todas</Text>
+              <Typography variant="caption" color="muted" className="mr-1">
+                Ver todas
+              </Typography>
               <Ionicons name="chevron-forward" size={14} color="#94a3b8" />
             </TouchableOpacity>
           </View>
 
           {recentTransactions.length === 0 ? (
-            <View
-              className="items-center rounded-2xl bg-white p-8"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}>
-              <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+            <Card variant="elevated" padding="lg" className="items-center rounded-2xl">
+              <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                 <Ionicons name="wallet-outline" size={24} color="#94a3b8" />
               </View>
-              <Text className="mb-2 text-lg font-semibold text-slate-900">Sin transacciones</Text>
-              <Text className="mb-6 text-center leading-relaxed text-slate-500">
+              <Typography variant="body" weight="semibold" className="mb-2 text-lg">
+                Sin transacciones
+              </Typography>
+              <Typography
+                variant="body"
+                color="secondary"
+                className="mb-6 text-center leading-relaxed">
                 Comienza agregando tu primera transacción
-              </Text>
-              <TouchableOpacity
-                className="rounded-xl bg-slate-800 px-6 py-3"
-                onPress={() => router.push('/(tabs)/add-expense')}>
-                <Text className="font-semibold text-white">Agregar</Text>
-              </TouchableOpacity>
-            </View>
+              </Typography>
+              <Button
+                variant="primary"
+                size="md"
+                onPress={() => router.push('/(tabs)/add-expense')}
+                className="rounded-xl">
+                Agregar
+              </Button>
+            </Card>
           ) : (
-            <View
-              className="overflow-hidden rounded-2xl bg-white"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}>
+            <Card variant="elevated" padding="none" className="overflow-hidden rounded-2xl">
               {recentTransactions.map((transaction, index) => (
                 <TouchableOpacity
                   key={transaction.id}
                   className={`flex-row items-center p-4 ${
-                    index !== recentTransactions.length - 1 ? 'border-b border-slate-100' : ''
+                    index !== recentTransactions.length - 1 ? 'border-b border-gray-100' : ''
                   }`}
                   onPress={() => router.push(`/transaction/${transaction.id}`)}>
-                  <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
+                  <View className="mr-3 h-10 w-10 items-center justify-center rounded-xl bg-gray-100">
                     <Ionicons
                       name={
                         (categoryService.getCategoryById(transaction.category)?.icon as any) ||
@@ -201,73 +206,71 @@ export default function HomeScreen() {
                     />
                   </View>
                   <View className="flex-1">
-                    <Text className="mb-0.5 font-semibold text-slate-900" numberOfLines={1}>
+                    <Typography
+                      variant="body"
+                      weight="semibold"
+                      className="mb-0.5"
+                      numberOfLines={1}>
                       {transaction.description}
-                    </Text>
-                    <Text className="text-xs text-slate-400">
+                    </Typography>
+                    <Typography variant="caption" color="muted">
                       {formatDate(new Date(transaction.date))}
-                    </Text>
+                    </Typography>
                   </View>
-                  <Text
-                    className={`font-semibold ${
-                      transaction.type === 'expense' ? 'text-slate-600' : 'text-slate-800'
-                    }`}>
+                  <Typography
+                    variant="body"
+                    weight="semibold"
+                    className={transaction.type === 'expense' ? 'text-gray-600' : 'text-gray-800'}>
                     {transaction.type === 'expense' ? '-' : '+'}
                     {formatCurrency(transaction.amount)}
-                  </Text>
+                  </Typography>
                 </TouchableOpacity>
               ))}
-            </View>
+            </Card>
           )}
         </View>
 
         {monthTransactions.length > 0 && (
           <View className="px-6">
-            <View
-              className="rounded-2xl bg-white p-6"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-                elevation: 2,
-              }}>
-              <Text className="mb-6 text-center text-lg font-bold text-slate-900">
+            <Card variant="elevated" padding="lg" className="rounded-2xl">
+              <Typography variant="body" weight="bold" className="mb-6 text-center text-lg">
                 {currentMonth.name}
-              </Text>
+              </Typography>
               <View className="flex-row justify-between">
                 <View className="items-center">
-                  <Text className="mb-1 text-2xl font-bold text-slate-900">
+                  <Typography variant="h2" weight="bold" className="mb-1">
                     {monthTransactions.length}
-                  </Text>
-                  <Text className="text-xs uppercase tracking-wider text-slate-500">
+                  </Typography>
+                  <Typography variant="overline" color="muted">
                     Transacciones
-                  </Text>
+                  </Typography>
                 </View>
                 <View className="items-center">
-                  <Text className="mb-1 text-2xl font-bold text-slate-900">
+                  <Typography variant="h2" weight="bold" className="mb-1">
                     {summary.topCategories.length}
-                  </Text>
-                  <Text className="text-xs uppercase tracking-wider text-slate-500">
+                  </Typography>
+                  <Typography variant="overline" color="muted">
                     Categorías
-                  </Text>
+                  </Typography>
                 </View>
                 <View className="items-center">
-                  <Text className="mb-1 text-2xl font-bold text-slate-900">
+                  <Typography variant="h2" weight="bold" className="mb-1">
                     {formatCurrency(
                       Math.round(
                         summary.totalExpenses /
                           (monthTransactions.filter((t) => t.type === 'expense').length || 1)
                       )
                     )}
-                  </Text>
-                  <Text className="text-xs uppercase tracking-wider text-slate-500">Promedio</Text>
+                  </Typography>
+                  <Typography variant="overline" color="muted">
+                    Promedio
+                  </Typography>
                 </View>
               </View>
-            </View>
+            </Card>
           </View>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }

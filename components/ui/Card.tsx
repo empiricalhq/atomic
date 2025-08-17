@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn';
 
 interface CardProps {
   variant?: 'default' | 'elevated' | 'bordered';
-  padding?: 'sm' | 'md' | 'lg';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
   children: React.ReactNode;
   onPress?: () => void;
   className?: string;
@@ -26,6 +26,7 @@ export default function Card({
   };
 
   const paddingStyles = {
+    none: 'p-0',
     sm: 'p-3',
     md: 'p-4',
     lg: 'p-6',
@@ -34,7 +35,7 @@ export default function Card({
   const combinedClassName = cn(
     baseStyles,
     variantStyles[variant],
-    paddingStyles[padding],
+    padding && paddingStyles[padding],
     className
   );
 
