@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, ActivityIndicator, Text, ViewStyle } from 'react-native';
 import { STYLES } from '@/constants/design';
 
@@ -9,12 +8,12 @@ interface LoadingSpinnerProps {
   style?: ViewStyle;
 }
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+export function LoadingSpinner({
   message,
   size = 'large',
   color = '#64748b',
   style,
-}) => {
+}: LoadingSpinnerProps) {
   return (
     <View className={`${STYLES.container} flex-1 items-center justify-center p-8`} style={style}>
       <ActivityIndicator size={size} color={color} />
@@ -23,4 +22,4 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       )}
     </View>
   );
-};
+}

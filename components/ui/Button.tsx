@@ -1,11 +1,10 @@
-import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
 import { cn } from '@/utils/cn';
 
 interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
@@ -13,7 +12,7 @@ interface ButtonProps {
   className?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({
+export default function Button({
   variant = 'primary',
   size = 'md',
   children,
@@ -22,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   icon,
   className,
-}: ButtonProps) => {
+}: ButtonProps) {
   const isDisabled = disabled || loading;
 
   const baseStyles = 'flex-row items-center justify-center rounded-lg';
@@ -112,6 +111,4 @@ const Button: React.FC<ButtonProps> = ({
       </Text>
     </TouchableOpacity>
   );
-};
-
-export default Button;
+}

@@ -9,8 +9,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#1e293b',
-        tabBarInactiveTintColor: '#94a3b8',
+        tabBarActiveTintColor: '#334155', // gray-500
+        tabBarInactiveTintColor: '#94a3b8', // gray-400
         headerShown: false,
         tabBarStyle: {
           backgroundColor: 'white',
@@ -47,12 +47,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
+                focused ? 'bg-gray-800' : 'bg-transparent'
               }`}>
               <Ionicons
                 name={focused ? 'home' : 'home-outline'}
                 size={20}
-                color={focused ? 'white' : color}
+                color={focused ? 'white' : '#94a3b8'}
               />
             </View>
           ),
@@ -66,12 +66,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
+                focused ? 'bg-gray-800' : 'bg-transparent'
               }`}>
               <Ionicons
                 name={focused ? 'wallet' : 'wallet-outline'}
                 size={20}
-                color={focused ? 'white' : color}
+                color={focused ? 'white' : '#94a3b8'}
               />
             </View>
           ),
@@ -84,7 +84,7 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ color, focused }) => (
             <View
-              className="h-12 w-12 items-center justify-center rounded-2xl border-2 border-white bg-slate-800"
+              className="h-12 w-12 items-center justify-center rounded-2xl border-2 border-white bg-gray-800"
               style={{
                 marginTop: Platform.OS === 'ios' ? -24 : -20,
                 shadowColor: '#1e293b',
@@ -107,12 +107,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
+                focused ? 'bg-gray-800' : 'bg-transparent'
               }`}>
               <Ionicons
                 name={focused ? 'analytics' : 'analytics-outline'}
                 size={20}
-                color={focused ? 'white' : color}
+                color={focused ? 'white' : '#94a3b8'}
               />
             </View>
           ),
@@ -126,12 +126,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <View
               className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
+                focused ? 'bg-gray-800' : 'bg-transparent'
               }`}>
               <Ionicons
                 name={focused ? 'person' : 'person-outline'}
                 size={20}
-                color={focused ? 'white' : color}
+                color={focused ? 'white' : '#94a3b8'}
               />
             </View>
           ),
