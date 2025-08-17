@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text } from 'react-native';
 import { cn } from '@/utils/cn';
 
@@ -8,15 +7,16 @@ interface TypographyProps {
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   children: React.ReactNode;
   className?: string;
+  numberOfLines?: number;
 }
 
-const Typography: React.FC<TypographyProps> = ({
+export default function Typography({
   variant = 'body',
   color = 'primary',
   weight = 'normal',
   children,
   className,
-}) => {
+}: TypographyProps) {
   const variantStyles = {
     h1: 'text-4xl leading-10',
     h2: 'text-3xl leading-9',
@@ -47,30 +47,28 @@ const Typography: React.FC<TypographyProps> = ({
       {children}
     </Text>
   );
-};
+}
 
-export const Heading1: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="h1" weight="bold" />
-);
+export function Heading1(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="h1" weight="bold" />;
+}
 
-export const Heading2: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="h2" weight="semibold" />
-);
+export function Heading2(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="h2" weight="semibold" />;
+}
 
-export const Heading3: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="h3" weight="semibold" />
-);
+export function Heading3(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="h3" weight="semibold" />;
+}
 
-export const BodyText: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="body" />
-);
+export function BodyText(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="body" />;
+}
 
-export const Caption: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="caption" color="secondary" />
-);
+export function Caption(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="caption" color="secondary" />;
+}
 
-export const Overline: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography {...props} variant="overline" color="muted" weight="medium" />
-);
-
-export default Typography;
+export function Overline(props: Omit<TypographyProps, 'variant'>) {
+  return <Typography {...props} variant="overline" color="muted" weight="medium" />;
+}
