@@ -10,13 +10,13 @@ interface CardProps {
   className?: string;
 }
 
-const Card: React.FC<CardProps> = ({
+export default function Card({
   variant = 'default',
   padding = 'md',
   children,
   onPress,
   className,
-}) => {
+}: CardProps) {
   const baseStyles = 'bg-white rounded-xl';
 
   const variantStyles = {
@@ -47,6 +47,4 @@ const Card: React.FC<CardProps> = ({
   }
 
   return <View className={combinedClassName}>{children}</View>;
-};
-
-export default Card;
+}

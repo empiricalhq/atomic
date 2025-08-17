@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, TextInput, Text, TextInputProps } from 'react-native';
 import { cn } from '@/utils/cn';
 
@@ -10,7 +10,7 @@ interface InputProps extends Omit<TextInputProps, 'className'> {
   inputClassName?: string;
 }
 
-const Input: React.FC<InputProps> = ({
+export default function Input({
   label,
   error,
   hint,
@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({
   onFocus,
   onBlur,
   ...props
-}) => {
+}: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = (e: any) => {
@@ -57,6 +57,4 @@ const Input: React.FC<InputProps> = ({
       {hint && !error && <Text className="mt-1 text-sm text-gray-500">{hint}</Text>}
     </View>
   );
-};
-
-export default Input;
+}
