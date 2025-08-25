@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { storageService } from '@/services/StorageService';
-import { userService } from '@/services/UserService';
+import { storageService } from '@/services/storageService';
+import { userService } from '@/api/userService';
+import Screen from '@/components/layout/Screen';
+import Button from '@/components/common/Button';
+import Typography from '@/components/common/Typography';
 
 interface OnboardingStep {
   id: string;
@@ -52,7 +54,6 @@ export default function OnboardingScreen() {
           useNativeDriver: true,
         }),
       ]).start();
-
       setTimeout(() => setCurrentStep(currentStep + 1), 150);
     } else {
       handleGetStarted();
@@ -74,7 +75,7 @@ export default function OnboardingScreen() {
   const isLastStep = currentStep === ONBOARDING_STEPS.length - 1;
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} className="flex-1 bg-white">
+    <Screen background="white" safeArea padding="none">
       <View className="flex-row items-center justify-between px-6 py-4">
         <View className="flex-row">
           {ONBOARDING_STEPS.map((_, index) => (
@@ -82,68 +83,65 @@ export default function OnboardingScreen() {
               key={index}
               className={`mr-2 h-1 rounded-full transition-all ${
                 index === currentStep
-                  ? 'w-6 bg-slate-800'
+                  ? 'w-6 bg-gray-800'
                   : index < currentStep
-                    ? 'w-1 bg-slate-400'
-                    : 'w-1 bg-slate-200'
+                    ? 'w-1 bg-gray-400'
+                    : 'w-1 bg-gray-200'
               }`}
             />
           ))}
         </View>
         {!isLastStep && (
-          <TouchableOpacity onPress={handleGetStarted} className="rounded-full px-4 py-2">
-            <Text className="text-sm font-medium text-slate-500">Saltar</Text>
-          </TouchableOpacity>
+          <Button variant="ghost" size="sm" onPress={handleGetStarted} className="px-4 py-2">
+            Saltar
+          </Button>
         )}
       </View>
 
-      {/* Content */}
       <Animated.View
         style={{ opacity: fadeAnim }}
         className="flex-1 items-center justify-center px-8">
         <View className="mb-16">
-          <View className="h-32 w-32 items-center justify-center rounded-full bg-slate-100">
-            <View className="h-24 w-24 items-center justify-center rounded-full bg-slate-800">
+          <View className="h-32 w-32 items-center justify-center rounded-full bg-gray-100">
+            <View className="h-24 w-24 items-center justify-center rounded-full bg-gray-800">
               <Ionicons name={currentStepData.icon} size={32} color="white" />
             </View>
           </View>
         </View>
-
         <View className="mb-16 items-center">
-          <Text className="mb-4 text-center text-3xl font-bold leading-tight text-slate-900">
+          <Typography variant="h1" weight="bold" className="mb-4 text-center leading-tight">
             {currentStepData.title}
-          </Text>
-          <Text className="max-w-sm text-center text-lg leading-relaxed text-slate-500">
+          </Typography>
+          <Typography
+            variant="body"
+            color="secondary"
+            className="max-w-sm text-center text-lg leading-relaxed">
             {currentStepData.subtitle}
-          </Text>
+          </Typography>
         </View>
       </Animated.View>
 
       <View className="px-8 pb-12">
-        <TouchableOpacity
+        <Button
+          variant="primary"
+          size="lg"
           onPress={handleNext}
-          className="mb-4 flex-row items-center justify-center rounded-2xl bg-slate-800 py-4"
-          style={{
-            shadowColor: '#1e293b',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
-            elevation: 8,
-          }}>
-          <Text className="mr-2 text-lg font-semibold text-white">
-            {isLastStep ? 'Comenzar' : 'Continuar'}
-          </Text>
-          <Ionicons name={isLastStep ? 'checkmark' : 'arrow-forward'} size={16} color="white" />
-        </TouchableOpacity>
-
+          className="mb-4 rounded-2xl shadow-lg"
+          icon={
+            <Ionicons name={isLastStep ? 'checkmark' : 'arrow-forward'} size={16} color="white" />
+          }>
+          {isLastStep ? 'Comenzar' : 'Continuar'}
+        </Button>
         {currentStep > 0 && (
-          <TouchableOpacity
+          <Button
+            variant="ghost"
+            size="md"
             onPress={() => setCurrentStep(currentStep - 1)}
             className="items-center py-3">
-            <Text className="font-medium text-slate-500">Anterior</Text>
-          </TouchableOpacity>
+            Anterior
+          </Button>
         )}
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }

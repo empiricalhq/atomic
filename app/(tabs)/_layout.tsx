@@ -2,15 +2,16 @@ import { Tabs } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS } from '@/constants/theme';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#1e293b',
-        tabBarInactiveTintColor: '#94a3b8',
+        tabBarActiveTintColor: COLORS.tab.active,
+        tabBarInactiveTintColor: COLORS.tab.inactive,
         headerShown: false,
         tabBarStyle: {
           backgroundColor: 'white',
@@ -33,58 +34,32 @@ export default function TabLayout() {
           marginTop: 4,
           letterSpacing: 0.5,
         },
-        tabBarIconStyle: {
-          marginBottom: 0,
-        },
-        tabBarItemStyle: {
-          paddingTop: 0,
-        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color, focused }) => (
-            <View
-              className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
-              }`}>
-              <Ionicons
-                name={focused ? 'home' : 'home-outline'}
-                size={20}
-                color={focused ? 'white' : color}
-              />
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} iconName={focused ? 'home' : 'home-outline'} />
           ),
         }}
       />
-
       <Tabs.Screen
         name="budget"
         options={{
           title: 'Presupuesto',
-          tabBarIcon: ({ color, focused }) => (
-            <View
-              className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
-              }`}>
-              <Ionicons
-                name={focused ? 'wallet' : 'wallet-outline'}
-                size={20}
-                color={focused ? 'white' : color}
-              />
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} iconName={focused ? 'wallet' : 'wallet-outline'} />
           ),
         }}
       />
-
       <Tabs.Screen
         name="add-expense"
         options={{
           title: '',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: () => (
             <View
-              className="h-12 w-12 items-center justify-center rounded-2xl border-2 border-white bg-slate-800"
+              className="h-12 w-12 items-center justify-center rounded-2xl border-2 border-white bg-gray-800"
               style={{
                 marginTop: Platform.OS === 'ios' ? -24 : -20,
                 shadowColor: '#1e293b',
@@ -99,41 +74,21 @@ export default function TabLayout() {
           tabBarLabelStyle: { display: 'none' },
         }}
       />
-
       <Tabs.Screen
         name="reports"
         options={{
           title: 'Reportes',
-          tabBarIcon: ({ color, focused }) => (
-            <View
-              className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
-              }`}>
-              <Ionicons
-                name={focused ? 'analytics' : 'analytics-outline'}
-                size={20}
-                color={focused ? 'white' : color}
-              />
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} iconName={focused ? 'analytics' : 'analytics-outline'} />
           ),
         }}
       />
-
       <Tabs.Screen
         name="config"
         options={{
           title: 'Ajustes',
-          tabBarIcon: ({ color, focused }) => (
-            <View
-              className={`h-8 w-10 items-center justify-center rounded-xl ${
-                focused ? 'bg-slate-800' : 'bg-transparent'
-              }`}>
-              <Ionicons
-                name={focused ? 'person' : 'person-outline'}
-                size={20}
-                color={focused ? 'white' : color}
-              />
-            </View>
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon focused={focused} iconName={focused ? 'person' : 'person-outline'} />
           ),
         }}
       />
