@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { View, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { storageService } from '@/services/StorageService';
-import { userService } from '@/services/UserService';
+import { storageService } from '@/services/storageService';
+import { userService } from '@/api/userService';
 import Screen from '@/components/layout/Screen';
-import Button from '@/components/ui/Button';
-import Typography from '@/components/ui/Typography';
+import Button from '@/components/common/Button';
+import Typography from '@/components/common/Typography';
 
 interface OnboardingStep {
   id: string;
@@ -54,7 +54,6 @@ export default function OnboardingScreen() {
           useNativeDriver: true,
         }),
       ]).start();
-
       setTimeout(() => setCurrentStep(currentStep + 1), 150);
     } else {
       handleGetStarted();
@@ -99,7 +98,6 @@ export default function OnboardingScreen() {
         )}
       </View>
 
-      {/* Content */}
       <Animated.View
         style={{ opacity: fadeAnim }}
         className="flex-1 items-center justify-center px-8">
@@ -110,7 +108,6 @@ export default function OnboardingScreen() {
             </View>
           </View>
         </View>
-
         <View className="mb-16 items-center">
           <Typography variant="h1" weight="bold" className="mb-4 text-center leading-tight">
             {currentStepData.title}
@@ -135,7 +132,6 @@ export default function OnboardingScreen() {
           }>
           {isLastStep ? 'Comenzar' : 'Continuar'}
         </Button>
-
         {currentStep > 0 && (
           <Button
             variant="ghost"

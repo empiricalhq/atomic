@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { storageService } from '@/services/StorageService';
-import { userService } from '@/services/UserService';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import '@/global.css';
+import { storageService } from '@/services/storageService';
+import { userService } from '@/api/userService';
+import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import '../global.css';
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     initializeApp();
@@ -18,9 +17,7 @@ export default function RootLayout() {
   const initializeApp = async () => {
     try {
       const onboardingComplete = await storageService.getOnboardingComplete();
-      if (!onboardingComplete) {
-        setShowOnboarding(true);
-      } else {
+      if (onboardingComplete) {
         await userService.getCurrentUser();
       }
     } catch (error) {

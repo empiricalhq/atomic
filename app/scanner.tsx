@@ -5,8 +5,8 @@ import { Camera, CameraView } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import Button from '@/components/ui/Button';
-import Typography from '@/components/ui/Typography';
+import Button from '@/components/common/Button';
+import Typography from '@/components/common/Typography';
 
 const { width, height } = Dimensions.get('window');
 const SCAN_AREA_SIZE = Math.min(width * 0.8, 300);
@@ -25,7 +25,6 @@ export default function ScannerScreen() {
     processing: false,
     error: null,
   });
-
   const scanLineAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -66,27 +65,16 @@ export default function ScannerScreen() {
   };
 
   const processImage = async (_imageUri: string) => {
-    setScanState({
-      scanning: false,
-      processing: true,
-      error: null,
-    });
-
+    setScanState({ scanning: false, processing: true, error: null });
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
       const mockResponse = {
         amount: 45.67,
         merchant: 'Starbucks',
-        category: 'Food & Drink',
+        category: 'food',
         date: new Date().toISOString(),
-        items: [
-          { name: 'Latte', price: 4.25 },
-          { name: 'Sandwich', price: 6.75 },
-        ],
       };
-
-      router.push({
+      router.replace({
         pathname: '/(tabs)/add-expense',
         params: {
           amount: mockResponse.amount.toString(),
@@ -108,7 +96,7 @@ export default function ScannerScreen() {
   const handleTakePicture = async () => {
     setScanState((prev) => ({ ...prev, scanning: true }));
     setTimeout(() => {
-      const mockImageUri = 'mock://receipt.jpg';
+      const mockImageUri = 'mock-uri';
       processImage(mockImageUri);
     }, 500);
   };
@@ -116,12 +104,9 @@ export default function ScannerScreen() {
   const handlePickFromGallery = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images', 'videos'],
-        allowsEditing: true,
-        aspect: [4, 3],
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 1,
       });
-
       if (!result.canceled && result.assets[0]) {
         await processImage(result.assets[0].uri);
       }
@@ -142,7 +127,6 @@ export default function ScannerScreen() {
       </SafeAreaView>
     );
   }
-
   if (hasPermission === false) {
     return (
       <SafeAreaView className="flex-1 bg-black">
@@ -200,38 +184,20 @@ export default function ScannerScreen() {
           facing="back"
           flash={flashEnabled ? 'on' : 'off'}
         />
-
         <View
           className="absolute inset-0 items-center justify-center"
           style={{ paddingTop: 60, paddingBottom: 200 }}>
           <View
             className="bg-black/50"
-            style={{
-              width: width,
-              height: (height - SCAN_AREA_SIZE - 260) / 2,
-            }}
+            style={{ width, height: (height - SCAN_AREA_SIZE - 260) / 2 }}
           />
-
           <View className="flex-row" style={{ height: SCAN_AREA_SIZE }}>
-            <View
-              className="bg-black/50"
-              style={{
-                width: (width - SCAN_AREA_SIZE) / 2,
-                height: SCAN_AREA_SIZE,
-              }}
-            />
-
-            <View
-              className="relative"
-              style={{
-                width: SCAN_AREA_SIZE,
-                height: SCAN_AREA_SIZE,
-              }}>
+            <View className="bg-black/50" style={{ width: (width - SCAN_AREA_SIZE) / 2 }} />
+            <View className="relative" style={{ width: SCAN_AREA_SIZE, height: SCAN_AREA_SIZE }}>
               <View className="absolute left-0 top-0 h-6 w-6 rounded-tl-lg border-l-4 border-t-4 border-white" />
               <View className="absolute right-0 top-0 h-6 w-6 rounded-tr-lg border-r-4 border-t-4 border-white" />
               <View className="absolute bottom-0 left-0 h-6 w-6 rounded-bl-lg border-b-4 border-l-4 border-white" />
               <View className="absolute bottom-0 right-0 h-6 w-6 rounded-br-lg border-b-4 border-r-4 border-white" />
-
               {!scanState.processing && (
                 <Animated.View
                   key="scan-line"
@@ -239,7 +205,6 @@ export default function ScannerScreen() {
                   style={{ top: scanLineTop }}
                 />
               )}
-
               {scanState.processing && (
                 <View className="absolute inset-0 items-center justify-center rounded-3xl bg-black/40">
                   <ActivityIndicator size="large" color="white" />
@@ -249,22 +214,11 @@ export default function ScannerScreen() {
                 </View>
               )}
             </View>
-
-            <View
-              className="bg-black/50"
-              style={{
-                width: (width - SCAN_AREA_SIZE) / 2,
-                height: SCAN_AREA_SIZE,
-              }}
-            />
+            <View className="bg-black/50" style={{ width: (width - SCAN_AREA_SIZE) / 2 }} />
           </View>
-
           <View
             className="bg-black/50"
-            style={{
-              width: width,
-              height: (height - SCAN_AREA_SIZE - 260) / 2,
-            }}
+            style={{ width, height: (height - SCAN_AREA_SIZE - 260) / 2 }}
           />
         </View>
       </View>
@@ -279,7 +233,6 @@ export default function ScannerScreen() {
         <Typography variant="body" className="mb-8 text-center text-white/80">
           Extraeremos automáticamente todos los detalles
         </Typography>
-
         <View className="mb-6 flex-row items-center justify-center">
           <TouchableOpacity
             className="mr-1 h-16 w-16 items-center justify-center rounded-full border-2 border-white/50 bg-white/10 backdrop-blur-sm"
@@ -287,7 +240,6 @@ export default function ScannerScreen() {
             disabled={scanState.processing}>
             <Ionicons name="images" size={24} color="white" />
           </TouchableOpacity>
-
           <TouchableOpacity
             className={`mx-1 h-20 w-20 items-center justify-center rounded-full shadow-lg ${
               scanState.scanning || scanState.processing ? 'bg-gray-700' : 'bg-white'
@@ -300,7 +252,6 @@ export default function ScannerScreen() {
               <Ionicons name="camera" size={44} color="#1f2937" />
             )}
           </TouchableOpacity>
-
           <TouchableOpacity
             className="ml-1 h-16 w-16 items-center justify-center rounded-full border-2 border-white/50 bg-white/10 backdrop-blur-sm"
             onPress={() => router.push('/(tabs)/add-expense')}
@@ -308,7 +259,6 @@ export default function ScannerScreen() {
             <Ionicons name="create" size={24} color="white" />
           </TouchableOpacity>
         </View>
-
         {scanState.error && (
           <View className="mt-4 rounded-xl border border-red-500/30 bg-red-500/20 px-4 py-3">
             <Typography variant="body" className="text-center text-red-300">
