@@ -52,30 +52,26 @@ the terminal to force refresh during development.
 
 ## Architecture principles
 
-The app is structured into **four layers**. Each layer has a clear
-responsibility, which keeps data flow organized and easy to follow.
-
-- **Screen components** focus on layout and passing data around.
-- **Business logic** lives in custom hooks (`src/hooks`).
-- **Static configuration** lives in `src/constants` as a single source of truth
-  for settings.
-
-The four layers:
+The app is structured into **four layers**, each with a clear responsibility to
+keep data flow simple and predictable.
 
 1. **UI** ([`app`](app), [`src/components`](src/components)): Renders the
-   interface and handles user input. Components only get data and callbacks from
-   hooks—they don’t contain business logic.
+   interface and handles user input. Components only receive data and callbacks
+   from hooks. They must not contain business logic.
 2. **Logic** ([`src/hooks`](src/hooks)): Manages state and data flow between UI
    and data layers. Custom hooks like
    [`useTransactions`](src/hooks/useTransactions.ts) and
    [`useBudget`](src/hooks/useBudget.ts) contain domain logic and expose simple
    APIs for components.
 3. **Data** ([`src/api`](src/api)): Defines how the app talks to data sources.
-   Services (e.g. `transactionService.ts`) describe what data is needed, but not
-   how it’s retrieved. This makes it easy to swap backends.
+   Services (e.g. `transactionService.ts`) specify what data is needed, but not
+   how it's retrieved, making it easy to swap backends.
 4. **Infrastructure** ([`src/services`](src/services)): Handles low-level
-   operations like file storage and device features. These services focus on
-   implementation details and don’t include domain logic.
+   operations such as file storage and device features. These services focus on
+   implementation details and don't include domain logic.
+
+Static configuration lives in [`src/constants`](src/constants) as a single
+source of truth for application settings.
 
 ## Project structure
 
