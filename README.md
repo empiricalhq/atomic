@@ -1,178 +1,146 @@
 # [app]: atomic
 
-**atomic** is an app that brings all your personal finance tools together in one
-place. It's built using React Native with TypeScript and styled using Tailwind
-CSS through
-[NativeWind v4](https://www.nativewind.dev/docs/getting-started/installation).
-We use [Expo](https://expo.dev/) to make development and deployment faster and
-easier for Android and iOS.
+[![CodeQL](https://github.com/empiricalhq/atomic/actions/workflows/codeql.yml/badge.svg)](https://github.com/empiricalhq/atomic/actions/workflows/codeql.yml)
+
+**atomic** is a personal finance app that puts everything about your money in
+one place. Instead of switching between multiple apps, users can track spending,
+set goals, and manage their finances through a single, simple interface.
+
+Built with React Native and TypeScript, styled with Tailwind CSS via
+[NativeWind v4](https://www.nativewind.dev/docs/getting-started/installation),
+and powered by [Expo](https://expo.dev/) for smooth cross-platform deployment on
+both iOS and Android.
 
 ## Getting started
 
-Development requires:
+Development requires [Node.js](https://nodejs.org/), access to a physical iOS or
+Android device, and [git](https://git-scm.com/) for version control. Install the
+[Expo Go](https://expo.dev/client) app on your testing device. Our team uses
+[mise](https://mise.jdx.dev/getting-started.html) for tool management to
+maintain version consistency across environments.
 
-- [Node.js](https://nodejs.org/) and access to a physical iOS or Android device
-  for testing. Our team uses [mise](https://mise.jdx.dev/getting-started.html)
-  for tool management, which automatically handles version consistency across
-  development environments.
-- You'll also need [git](https://git-scm.com/) for version control, and
-- the [Expo Go](https://expo.dev/client) mobile application installed on your
-  testing device.
-
-Begin by cloning the repository and navigating to the project directory:
+Clone the repository and navigate to the project directory:
 
 ```bash
 git clone https://github.com/empiricalhq/atomic
 cd atomic
 ```
 
-If you're using mise for dependency management, install all required tools and
-dependencies automatically:
+Install dependencies. If using mise, it handles all required tools
+automatically:
 
 ```bash
 mise install
 ```
 
-Otherwise, install dependencies manually using npm:
+For manual dependency management, use npm:
 
 ```bash
 npm install
 ```
 
-Start the Metro bundler and development server with cache clearing to ensure a
-clean build:
+Start the development server with cache clearing:
 
 ```bash
 npx expo start --clear
 ```
 
-The terminal will display a QR code that you can scan using the Expo Go app on
-your physical device. The application will compile and deploy to your device,
-presenting the welcome screen once the build process completes.
+Scan the QR code displayed in your terminal using Expo Go. The app will compile
+and deploy to your device. Expo Go provides hot reloading - press <kbd>r</kbd>
+in the terminal to force refresh during development.
 
-<!-- prettier-ignore -->
-> [!TIP]
-> Note that Expo Go provides hot reloading capabilities, allowing you to
-> see changes immediately as you modify the codebase. You can force this
-> pressing 'r' in the terminal.
+## Architecture principles
 
-## Architecture overview
+The app is structured into **four layers**. Each layer has a clear
+responsibility, which keeps data flow organized and easy to follow.
 
-We follow these core architectural principles:
+- **Screen components** focus on layout and passing data around.
+- **Business logic** lives in custom hooks (`src/hooks`).
+- **Static configuration** lives in `src/constants` as a single source of truth
+  for settings.
 
-1. Screen components maintain minimal responsibility, focusing solely on layout
-   orchestration and data flow coordination while delegating all business logic
-   and state management to custom hooks located in [`src/hooks`](src/hooks).
-   This separation ensures that presentation logic remains decoupled from domain
-   logic, facilitating testing and code reuse.
-2. Static configuration data lives outside the main application code in
-   dedicated modules found in [`src/constants`](src/constants), creating a
-   single source of truth for application-wide settings and reducing the
-   likelihood of inconsistencies across features.
-3. The application implements a four-layer architecture that cleanly separates
-   concerns.
-   - The UI layer, encompassing the [`app`](app) directory and
-     [`src/components`](src/components), focuses exclusively on rendering user
-     interfaces and handling user interactions.
-   - The logic layer, implemented through custom hooks in
-     [`src/hooks`](src/hooks), manages application state and coordinates data
-     flow between the UI and data layers.
-   - The data layer, found in [`src/api`](src/api), abstracts data sources and
-     contains business logic related to data entities, providing a consistent
-     interface regardless of the underlying storage mechanism.
-   - Finally, the infrastructure layer in [`src/services`](src/services) handles
-     low-level operations such as file storage and device capabilities.
+The four layers:
 
-### Directory structure and organization
+1. **UI** ([`app`](app), [`src/components`](src/components)): Renders the
+   interface and handles user input. Components only get data and callbacks from
+   hooks—they don’t contain business logic.
+2. **Logic** ([`src/hooks`](src/hooks)): Manages state and data flow between UI
+   and data layers. Custom hooks like
+   [`useTransactions`](src/hooks/useTransactions.ts) and
+   [`useBudget`](src/hooks/useBudget.ts) contain domain logic and expose simple
+   APIs for components.
+3. **Data** ([`src/api`](src/api)): Defines how the app talks to data sources.
+   Services (e.g. `transactionService.ts`) describe what data is needed, but not
+   how it’s retrieved. This makes it easy to swap backends.
+4. **Infrastructure** ([`src/services`](src/services)): Handles low-level
+   operations like file storage and device features. These services focus on
+   implementation details and don’t include domain logic.
 
-The project's directory structure reflects the layered architecture while
-promoting feature colocation and code discoverability. Each directory serves a
-specific purpose within the overall system design.
+## Project structure
 
-| Directory         | Purpose                                                                                             | Key Files / Examples                                                                                                                                                       | Implementation notes                                                                                          |
-| ----------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `app/`            | Entry point for **Expo Router**. File structure maps directly to navigation routes.                 | - `_layout.tsx`: Defines layout (Stack/Tabs).<br>- `(tabs)/`: Route group with shared layout.                                                                              | Only responsible for **routing & screen composition**. Screens should import hooks (logic) & components (UI). |
-| `src/`            | Primary container for all source code. Keeps project root clean.                                    | —                                                                                                                                                                          | All feature code lives here.                                                                                  |
-| `src/api/`        | Abstraction layer for **data fetching & business logic**. Defines _what_ data is needed, not _how_. | - `transactionService.ts`: Has `getTransactionSummary()`. Uses `storageService`.                                                                                           | Future home for REST/GraphQL calls.                                                                           |
-| `src/components/` | All reusable React components.                                                                      | - `common/`: Generic (e.g., `Button`, `Card`).<br>- `layout/`: Structure (`Screen`, `Header`).<br>- `[feature]/`: Feature-specific (e.g., `budget/BudgetSummaryCard.tsx`). | Promotes **colocation** of feature-specific UI.                                                               |
-| `src/constants/`  | Single source of truth for static, non-component data.                                              | - `categories.ts`<br>- `settings.ts`<br>- `theme.ts`                                                                                                                       | Used across app for consistency.                                                                              |
-| `src/hooks/`      | Core of app logic. Encapsulates **state, side effects, and domain logic**.                          | - `useTransactions`: Manages array, loading/error state, exposes `addTransaction`, `refreshTransactions`.                                                                  | Components stay unaware of data source.                                                                       |
-| `src/services/`   | Low-level **infrastructure services**. Focused on _how_, not _what_.                                | - `storageService.ts`: Wraps `AsyncStorage` with promise API.                                                                                                              | No business domain knowledge.                                                                                 |
-| `src/types/`      | Centralized **TypeScript definitions**.                                                             | —                                                                                                                                                                          | Keeps typing consistent across app.                                                                           |
-| `src/utils/`      | Pure, reusable helper functions.                                                                    | - `cn` (class merging)<br>- `formatters` (currency/date).                                                                                                                  | Framework-agnostic.                                                                                           |
+The directory structure reflects the layered architecture while promoting
+feature colocation:
 
-The [`app`](app) directory leverages Expo Router's file-based routing system,
-where the directory structure directly maps to navigation routes. The
-[`_layout.tsx`](app/_layout.tsx) file defines the overall application layout,
-while grouped routes in directories like [`(tabs)`](<app/(tabs)>) share common
-layout components.
+| Directory         | Purpose                                       | Key files                                  | Notes                                                |
+| ----------------- | --------------------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| `app/`            | Expo Router entry point and navigation routes | `_layout.tsx`, `(tabs)/`                   | File structure maps to routes. Handles routing only. |
+| `src/api/`        | Data abstraction and business logic           | `transactionService.ts`                    | Future home for REST/GraphQL integration.            |
+| `src/components/` | Reusable React components                     | `common/`, `layout/`, feature directories  | Organized by reusability and feature domain.         |
+| `src/constants/`  | Static configuration data                     | `categories.ts`, `settings.ts`, `theme.ts` | Single source of truth for app-wide constants.       |
+| `src/hooks/`      | Application state and domain logic            | `useTransactions`, `useBudget`             | Core business logic encapsulation.                   |
+| `src/services/`   | Infrastructure and low-level operations       | `storageService.ts`                        | Implementation details without domain knowledge.     |
+| `src/types/`      | TypeScript definitions                        | Type definitions for data models           | Centralized typing for consistency.                  |
+| `src/utils/`      | Pure helper functions                         | `cn`, `formatters`                         | Framework-agnostic utilities.                        |
 
-Component organization in [`src/components`](src/components) follows a
-hierarchical structure that promotes reusability and feature colocation. Generic
-components in [`common/`](src/components/common) provide building blocks used
-throughout the application, while layout components in
-[`layout/`](src/components/layout) handle structural elements. Feature-specific
-components are grouped by domain, such as
-[`budget/BudgetSummaryCard.tsx`](src/components/budget/BudgetSummaryCard.tsx),
-making related UI elements easy to locate and maintain.
+The [`app`](app) directory uses Expo Router's file-based routing where directory
+structure determines navigation paths. Route groups like
+[`(tabs)`](<app/(tabs)>) share layouts defined in
+[`_layout.tsx`](app/_layout.tsx).
 
-### Data flow architecture
+Component organization in [`src/components`](src/components) follows a hierarchy
+that balances reusability with feature cohesion. Generic components in
+[`common/`](src/components/common) provide building blocks, while
+[`layout/`](src/components/layout) contains structural elements.
+Feature-specific components group by domain, such as
+[`budget/BudgetSummaryCard.tsx`](src/components/budget/BudgetSummaryCard.tsx).
 
-The application implements a unidirectional data flow that maintains predictable
-state management.
+## Data flow
 
-Consider the typical flow for displaying transaction data on the home screen.
-When [`app/(tabs)/index.tsx`](<app/(tabs)/index.tsx>) (the HomeScreen component)
-mounts, it immediately calls the `useTransactions()` hook to access transaction
-data. The hook's internal `useEffect` triggers the `loadTransactions()`
-function, which initiates the data retrieval process.
+The application implements unidirectional data flow for predictable state
+management. Consider how transaction data appears on the home screen:
+
+When [`app/(tabs)/index.tsx`](<app/(tabs)/index.tsx>) mounts, it calls the
+`useTransactions()` hook to access transaction data. The hook's `useEffect`
+triggers `loadTransactions()`, initiating data retrieval.
 
 The `loadTransactions()` function calls
-`transactionService.getUserTransactions(userId)` from the data layer,
-abstracting the specific storage mechanism from the UI logic. The transaction
-service then delegates to `storageService.getTransactions(userId)` in the
-infrastructure layer, which handles the actual data retrieval from
-`AsyncStorage`. This abstraction allows the service layer to sort and format
-data according to business rules without the UI needing knowledge of storage
-specifics.
+`transactionService.getUserTransactions(userId)` from the data layer. This
+abstracts storage mechanisms from UI logic. The transaction service delegates to
+`storageService.getTransactions(userId)` in the infrastructure layer, which
+retrieves data from `AsyncStorage`.
 
-As data returns up the call stack, each layer adds appropriate transformations.
-The storage service returns raw data, the transaction service applies business
-logic like sorting and filtering, and the hook manages loading states and error
-handling. Finally, the HomeScreen re-renders with updated transaction data,
-passing it to child components like `TransactionListItem` for display.
+Each layer adds appropriate transformations as data returns. The storage service
+provides raw data, the transaction service applies business rules like sorting
+and filtering, and the hook manages loading states and error handling. The
+HomeScreen re-renders with updated data, passing it to components like
+`TransactionListItem`.
 
-This architecture ensures that changing the underlying storage mechanism (from
-AsyncStorage to a REST API, for example) requires modifications only in the
-service layer, leaving hooks and UI components unchanged.
+This architecture isolates changes to specific layers. Switching from
+AsyncStorage to a REST API requires modifications only in the service layer,
+leaving hooks and components unchanged.
 
-### State management strategy
+## State management
 
-The current implementation uses different patterns depending on the scope and
-complexity of the state being managed.
+State management varies by scope and complexity. Component-level state uses
+React's `useState` for data that doesn't cross component boundaries, including
+modal visibility, form inputs, and temporary UI states. This keeps state close
+to its usage without adding complexity.
 
-Component-level state uses React's built-in `useState` hook for data that
-doesn't need to be shared across components, such as modal visibility, form
-input values, or temporary UI states. This approach keeps state close to where
-it's used and avoids unnecessary complexity for simple interactions.
+Domain-specific state uses custom hooks like `useTransactions` and `useBudget`
+in [`src/hooks`](src/hooks). These hooks encapsulate both state and modification
+logic, providing clean interfaces while maintaining separation of concerns. This
+pattern scales well and provides a clear upgrade path as complexity increases.
 
-Domain-specific state management occurs through custom hooks like
-`useTransactions` and `useBudget`, located in [`src/hooks`](src/hooks). These
-hooks encapsulate both state and the logic that modifies it, providing a clean
-interface for components while maintaining separation of concerns. This pattern
-works well for the current application size and provides a clear upgrade path as
-complexity increases.
-
-Currently, the project doesn't implement global state management, relying
-instead on prop passing and isolated hooks. This approach suffices for the
-current feature set.
-
-## Technical debt and future considerations
-
-| Area                    | Current limitation                                                                    | Potential direction                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Global state management | Prop passing and isolated hooks become cumbersome when sharing state between features | Consider Zustand for its simplicity and hook-based API                                     |
-| Authentication          | Anonymous users stored only on device, no account system or sync                      | Implement proper auth service when multi-device support is needed                          |
-| Data persistence        | AsyncStorage is limited for queries and relations, some features use `mockData.ts`    | Replace mock data with real services, evaluate WatermelonDB or SQLite for complex querying |
-| API layer               | Services talk directly to storage rather than network APIs                            | Refactor to network requests when backend integration is required                          |
-| Form management         | Basic `useState` patterns don't scale well with validation needs                      | Consider React Hook Form for complex forms with validation                                 |
+The project currently avoids global state management, relying on prop passing
+and isolated hooks. This approach suits the current feature set while remaining
+adaptable to future requirements.
