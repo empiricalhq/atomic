@@ -1,7 +1,13 @@
-import { useState } from 'react';
-import { View, Animated } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import Reanimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+} from 'react-native-reanimated';
 import { storageService } from '@/services/storageService';
 import { userService } from '@/api/userService';
 import Screen from '@/components/layout/Screen';
@@ -38,25 +44,42 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 export default function OnboardingScreen() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [fadeAnim] = useState(new Animated.Value(1));
+
+  const contentOpacity = useSharedValue(1);
+  const backButtonOpacity = useSharedValue(0);
+
+  const contentAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+  }));
+
+  const backButtonAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: backButtonOpacity.value,
+  }));
+
+  useEffect(() => {
+    contentOpacity.value = withTiming(1, { duration: 300 });
+    backButtonOpacity.value = withTiming(currentStep > 0 ? 1 : 0, { duration: 300 });
+  }, [currentStep, contentOpacity, backButtonOpacity]);
+
+  const changeStep = (nextStep: number) => {
+    const onFadeOutComplete = () => {
+      'worklet';
+      runOnJS(setCurrentStep)(nextStep);
+    };
+    contentOpacity.value = withTiming(0, { duration: 250 }, onFadeOutComplete);
+  };
 
   const handleNext = () => {
     if (currentStep < ONBOARDING_STEPS.length - 1) {
-      Animated.sequence([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 150,
-          useNativeDriver: true,
-        }),
-      ]).start();
-      setTimeout(() => setCurrentStep(currentStep + 1), 150);
+      changeStep(currentStep + 1);
     } else {
       handleGetStarted();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      changeStep(currentStep - 1);
     }
   };
 
@@ -67,7 +90,6 @@ export default function OnboardingScreen() {
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Error completing onboarding:', error);
-      router.replace('/(tabs)');
     }
   };
 
@@ -81,12 +103,8 @@ export default function OnboardingScreen() {
           {ONBOARDING_STEPS.map((_, index) => (
             <View
               key={index}
-              className={`mr-2 h-1 rounded-full transition-all ${
-                index === currentStep
-                  ? 'w-6 bg-gray-800'
-                  : index < currentStep
-                    ? 'w-1 bg-gray-400'
-                    : 'w-1 bg-gray-200'
+              className={`mr-2 h-1 rounded-full ${
+                index === currentStep ? 'w-6 bg-gray-800' : 'w-1 bg-gray-200'
               }`}
             />
           ))}
@@ -98,8 +116,8 @@ export default function OnboardingScreen() {
         )}
       </View>
 
-      <Animated.View
-        style={{ opacity: fadeAnim }}
+      <Reanimated.View
+        style={contentAnimatedStyle}
         className="flex-1 items-center justify-center px-8">
         <View className="mb-16">
           <View className="h-32 w-32 items-center justify-center rounded-full bg-gray-100">
@@ -119,7 +137,7 @@ export default function OnboardingScreen() {
             {currentStepData.subtitle}
           </Typography>
         </View>
-      </Animated.View>
+      </Reanimated.View>
 
       <View className="px-8 pb-12">
         <Button
@@ -132,15 +150,17 @@ export default function OnboardingScreen() {
           }>
           {isLastStep ? 'Comenzar' : 'Continuar'}
         </Button>
-        {currentStep > 0 && (
+
+        <Reanimated.View style={backButtonAnimatedStyle}>
           <Button
             variant="ghost"
             size="md"
-            onPress={() => setCurrentStep(currentStep - 1)}
+            onPress={handlePrevious}
+            disabled={currentStep === 0}
             className="items-center py-3">
             Anterior
           </Button>
-        )}
+        </Reanimated.View>
       </View>
     </Screen>
   );
