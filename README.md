@@ -57,7 +57,7 @@ keep data flow simple and predictable.
 
 1. **UI** ([`app`](app), [`src/components`](src/components)): Renders the
    interface and handles user input. Components only receive data and callbacks
-   from hooks. They must not contain business logic.
+   from hooks. They should avoid containing business logic.
 2. **Logic** ([`src/hooks`](src/hooks)): Manages state and data flow between UI
    and data layers. Custom hooks like
    [`useTransactions`](src/hooks/useTransactions.ts) and
