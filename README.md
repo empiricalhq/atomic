@@ -20,7 +20,7 @@ Development requires Node.js, access to a physical iOS or Android device, and
 Our team uses [mise](https://mise.jdx.dev/getting-started.html) to keep Node.js
 versions consistent. Follow their setup guide before continuing.
 
-Clone the repository and enter to the project directory:
+Clone the repository and enter the project directory:
 
 ```bash
 git clone https://github.com/empiricalhq/atomic
@@ -64,7 +64,7 @@ keep data flow simple and predictable.
    [`useBudget`](src/hooks/useBudget.ts) contain domain logic and expose simple
    APIs for components.
 3. **Data** ([`src/api`](src/api)): Defines how the app talks to data sources.
-   Services (e.g. `transactionService.ts`) specify what data is needed, but not
+   Services (e.g., `transactionService.ts`) specify what data is needed, but not
    how it's retrieved, making it easy to swap backends.
 4. **Infrastructure** ([`src/services`](src/services)): Handles low-level
    operations such as file storage and device features. These services focus on
