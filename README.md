@@ -6,10 +6,10 @@
 one place. Instead of switching between multiple apps, users can track spending,
 set goals, and manage their finances through a single, simple interface.
 
-Built with React Native and TypeScript, styled with Tailwind CSS via
+The app was built with React Native and TypeScript, styled with Tailwind CSS via
 [NativeWind v4](https://www.nativewind.dev/docs/getting-started/installation),
-and powered by [Expo](https://expo.dev/) for smooth cross-platform deployment on
-both iOS and Android.
+and is powered by [Expo](https://expo.dev/) for a smooth deployment on both iOS
+and Android.
 
 ## Getting started
 
