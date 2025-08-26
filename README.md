@@ -13,13 +13,14 @@ and Android.
 
 ## Getting started
 
-Development requires [Node.js](https://nodejs.org/), access to a physical iOS or
-Android device, and [git](https://git-scm.com/) for version control. Install the
-[Expo Go](https://expo.dev/client) app on your testing device. Our team uses
-[mise](https://mise.jdx.dev/getting-started.html) for tool management to
-maintain version consistency across environments.
+Development requires Node.js, access to a physical iOS or Android device, and
+[git](https://git-scm.com/) for version control. Install the
+[Expo Go](https://expo.dev/client) app on your testing device.
 
-Clone the repository and navigate to the project directory:
+Our team uses [mise](https://mise.jdx.dev/getting-started.html) to keep Node.js
+versions consistent. Follow their setup guide before continuing.
+
+Clone the repository and enter to the project directory:
 
 ```bash
 git clone https://github.com/empiricalhq/atomic
@@ -46,8 +47,8 @@ npx expo start --clear
 ```
 
 Scan the QR code displayed in your terminal using Expo Go. The app will compile
-and deploy to your device. Expo Go provides hot reloading - press <kbd>r</kbd>
-in the terminal to force refresh during development.
+and deploy to your device. Expo Go provides hot reloading: press <kbd>r</kbd> in
+the terminal to force refresh during development.
 
 ## Architecture principles
 
