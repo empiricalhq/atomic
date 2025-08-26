@@ -73,6 +73,8 @@ keep data flow simple and predictable.
 Static configuration lives in [`src/constants`](src/constants) as a single
 source of truth for application settings.
 
+---
+
 The directory structure reflects this:
 
 | Directory         | Purpose                                       | Key files                                  | Notes                                                |
