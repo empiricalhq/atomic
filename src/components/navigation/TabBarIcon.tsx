@@ -9,14 +9,13 @@ interface TabBarIconProps {
 
 export function TabBarIcon({ iconName, focused }: TabBarIconProps) {
   return (
-    <View
-      className={`h-8 w-10 items-center justify-center rounded-xl ${
-        focused ? 'bg-gray-800' : 'bg-transparent'
-      }`}>
+    <View className="h-12 w-12 items-center justify-center rounded-full">
       <Ionicons
         name={iconName}
-        size={20}
-        color={focused ? COLORS.tab.activeIcon : COLORS.tab.inactive}
+        size={22}
+        color={COLORS.tab.activeIcon}
+        style={{ opacity: focused ? 1 : 0.5 }}
+        accessibilityRole="image"
       />
     </View>
   );

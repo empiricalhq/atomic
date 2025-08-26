@@ -13,6 +13,6 @@ export const COLORS = {
   tab: {
     active: '#334155', // gray-700
     inactive: '#94a3b8', // gray-400
-    activeIcon: '#ffffff',
+    activeIcon: '#0f172a',
   },
 };
