@@ -73,10 +73,7 @@ keep data flow simple and predictable.
 Static configuration lives in [`src/constants`](src/constants) as a single
 source of truth for application settings.
 
-## Project structure
-
-The directory structure reflects the layered architecture while promoting
-feature colocation:
+The directory structure reflects this:
 
 | Directory         | Purpose                                       | Key files                                  | Notes                                                |
 | ----------------- | --------------------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
