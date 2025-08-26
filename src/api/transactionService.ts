@@ -1,3 +1,4 @@
+import * as Crypto from 'expo-crypto';
 import { Transaction } from '@/types';
 import { storageService } from '@/services/storageService';
 
@@ -10,7 +11,7 @@ class TransactionService {
   async createTransaction(transaction: Omit<Transaction, 'id'>): Promise<Transaction> {
     const newTransaction: Transaction = {
       ...transaction,
-      id: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: Crypto.randomUUID(),
     };
     await storageService.saveTransaction(newTransaction);
     return newTransaction;

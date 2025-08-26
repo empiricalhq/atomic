@@ -1,3 +1,4 @@
+import * as Crypto from 'expo-crypto';
 import { User, UserSettings } from '@/types';
 import { storageService } from '@/services/storageService';
 
@@ -12,9 +13,8 @@ const DEFAULT_SETTINGS: UserSettings = {
 class UserService {
   async createAnonymousUser(): Promise<User> {
     const user: User = {
-      id: `anonymous_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: Crypto.randomUUID(),
       name: 'Usuario',
-      email: 'usuario@email.com',
       isAnonymous: true,
       createdAt: new Date(),
       settings: DEFAULT_SETTINGS,
