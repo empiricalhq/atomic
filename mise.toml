@@ -1,2 +1,35 @@
 [tools]
-node = "24"
+node = "24.6.0"
+
+[tasks.setup]
+description = "Complete project setup for new developers"
+run = [
+    "npm install",
+    "mise run dev",
+]
+
+[tasks.dev]
+description = "Start development server with cache clearing"
+run = "npx expo start"
+alias = "d"
+
+[tasks.reset]
+description = "Reset development environment (clear cache, reinstall)"
+run = [
+    "npm run format",
+    "rm -rf node_modules",
+    "rm -rf .expo",
+    "npm install",
+    "npx expo install --fix",
+]
+
+[tasks.build-preview]
+description = "Build preview version using EAS"
+run = "npx eas build -p android --profile preview"
+
+[tasks.doctor]
+description = "Run Expo doctor to check for common issues"
+run = [
+    "npx expo-doctor",
+    "npx expo install --check",
+]
