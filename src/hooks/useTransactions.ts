@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react'; // 1. Import useCallback
 import { Transaction } from '@/types';
 import { transactionService } from '@/api/transactionService';
 import { useUser } from './useUser';
@@ -9,14 +9,12 @@ export const useTransactions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      loadTransactions();
+  const loadTransactions = useCallback(async () => {
+    if (!user) {
+      setTransactions([]);
+      setLoading(false);
+      return;
     }
-  }, [user]);
-
-  const loadTransactions = async () => {
-    if (!user) return;
     try {
       setLoading(true);
       setError(null);
@@ -28,7 +26,11 @@ export const useTransactions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   const addTransaction = async (transactionData: Omit<Transaction, 'id' | 'userId'>) => {
     if (!user) throw new Error('User not found');
