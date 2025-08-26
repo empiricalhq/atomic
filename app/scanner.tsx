@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { View, TouchableOpacity, Dimensions, Animated, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, CameraView } from 'expo-camera';
@@ -27,27 +27,7 @@ export default function ScannerScreen() {
   });
   const scanLineAnimation = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    requestPermissions();
-  }, []);
-
-  useEffect(() => {
-    if (hasPermission && !scanState.processing) {
-      startScanAnimation();
-    }
-  }, [hasPermission, scanState.processing]);
-
-  const requestPermissions = async () => {
-    try {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    } catch (error) {
-      console.error('Error requesting camera permission:', error);
-      setHasPermission(false);
-    }
-  };
-
-  const startScanAnimation = () => {
+  const startScanAnimation = useCallback(() => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(scanLineAnimation, {
@@ -62,6 +42,26 @@ export default function ScannerScreen() {
         }),
       ])
     ).start();
+  }, [scanLineAnimation]);
+
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  useEffect(() => {
+    if (hasPermission && !scanState.processing) {
+      startScanAnimation();
+    }
+  }, [hasPermission, scanState.processing, startScanAnimation]);
+
+  const requestPermissions = async () => {
+    try {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    } catch (error) {
+      console.error('Error requesting camera permission:', error);
+      setHasPermission(false);
+    }
   };
 
   const processImage = async (_imageUri: string) => {
