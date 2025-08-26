@@ -133,10 +133,7 @@ modal visibility, form inputs, and temporary UI states. This keeps state close
 to its usage without adding complexity.
 
 Domain-specific state uses custom hooks like `useTransactions` and `useBudget`
-in [`src/hooks`](src/hooks). These hooks encapsulate both state and modification
-logic, providing clean interfaces while maintaining separation of concerns. This
-pattern scales well and provides a clear upgrade path as complexity increases.
+in [`src/hooks`](src/hooks).
 
 The project currently avoids global state management, relying on prop passing
-and isolated hooks. This approach suits the current feature set while remaining
-adaptable to future requirements.
+and isolated hooks.
