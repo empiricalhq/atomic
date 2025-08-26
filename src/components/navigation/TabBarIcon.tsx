@@ -13,8 +13,8 @@ export function TabBarIcon({ iconName, focused }: TabBarIconProps) {
       <Ionicons
         name={iconName}
         size={22}
-        color={focused ? COLORS.tab.activeIcon : COLORS.tab.inactive}
-        style={{ opacity: focused ? 1 : 0.7 }}
+        color={COLORS.tab.activeIcon}
+        style={{ opacity: focused ? 1 : 0.5 }}
         accessibilityRole="image"
       />
     </View>

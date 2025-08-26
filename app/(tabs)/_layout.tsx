@@ -11,11 +11,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: COLORS.tab.active,
-        tabBarInactiveTintColor: COLORS.tab.inactive,
         headerShown: false,
         tabBarShowLabel: false,
-        // we do this to remove the ripple animation
+        tabBarActiveTintColor: COLORS.tab.active,
+        tabBarInactiveTintColor: COLORS.tab.inactive,
+        // remove ripple animation
         tabBarButton: (props) => <TouchableOpacity {...(props as any)} activeOpacity={1} />,
         tabBarStyle: {
           position: 'absolute',
@@ -33,9 +33,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} iconName={focused ? 'home' : 'home-outline'} />
-          ),
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} iconName="home" />,
           tabBarAccessibilityLabel: 'Inicio',
         }}
       />
@@ -43,9 +41,7 @@ export default function TabLayout() {
         name="budget"
         options={{
           title: 'Presupuesto',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} iconName={focused ? 'wallet' : 'wallet-outline'} />
-          ),
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} iconName="wallet" />,
           tabBarAccessibilityLabel: 'Presupuesto',
         }}
       />
@@ -55,7 +51,7 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: () => (
             <View
-              className="h-10 w-14 items-center justify-center rounded-full rounded-lg bg-gray-800 shadow-lg"
+              className="h-10 w-14 items-center justify-center rounded-lg bg-gray-800 shadow-lg"
               accessibilityRole="button"
               accessibilityLabel="Agregar gasto">
               <Ionicons name="add" size={24} color="white" />
@@ -67,9 +63,7 @@ export default function TabLayout() {
         name="reports"
         options={{
           title: 'Reportes',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} iconName={focused ? 'analytics' : 'analytics-outline'} />
-          ),
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} iconName="analytics" />,
           tabBarAccessibilityLabel: 'Reportes',
         }}
       />
@@ -77,9 +71,7 @@ export default function TabLayout() {
         name="config"
         options={{
           title: 'Ajustes',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} iconName={focused ? 'person' : 'person-outline'} />
-          ),
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} iconName="person" />,
           tabBarAccessibilityLabel: 'Ajustes',
         }}
       />
