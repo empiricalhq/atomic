@@ -1,19 +1,3 @@
-import { BudgetCategory } from '@/types';
-
-export const MOCK_BUDGET_CATEGORIES: BudgetCategory[] = [
-  { id: '1', name: 'Comida', budgeted: 500, spent: 340, icon: 'restaurant', userId: '1' },
-  { id: '2', name: 'Transporte', budgeted: 200, spent: 150, icon: 'car', userId: '1' },
-  {
-    id: '3',
-    name: 'Entretenimiento',
-    budgeted: 300,
-    spent: 280,
-    icon: 'game-controller',
-    userId: '1',
-  },
-  { id: '4', name: 'Compras', budgeted: 400, spent: 420, icon: 'bag', userId: '1' },
-];
-
 export const MOCK_MONTHLY_DATA = [
   { month: 'Ene', income: 2400, expenses: 1800 },
   { month: 'Feb', income: 1398, expenses: 2100 },
