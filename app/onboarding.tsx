@@ -2,12 +2,8 @@ import { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import Reanimated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  runOnJS,
-} from 'react-native-reanimated';
+import Reanimated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { storageService } from '@/services/storageService';
 import { userService } from '@/api/userService';
 import Screen from '@/components/layout/Screen';
@@ -64,7 +60,7 @@ export default function OnboardingScreen() {
   const changeStep = (nextStep: number) => {
     const onFadeOutComplete = () => {
       'worklet';
-      runOnJS(setCurrentStep)(nextStep);
+      scheduleOnRN(setCurrentStep, nextStep);
     };
     contentOpacity.value = withTiming(0, { duration: 250 }, onFadeOutComplete);
   };
