@@ -37,9 +37,17 @@ export interface Category {
 
 export interface BudgetCategory {
   id: string;
-  name: string;
+  categoryId: string; // references Category.id in EXPENSE_CATEGORIES
   budgeted: number;
-  spent: number;
-  icon: keyof typeof Ionicons.glyphMap;
   userId: string;
+}
+
+// `name`, `icon`, `spent` and `progress` are derived at read time (see
+// src/utils/budget.ts and src/hooks/useBudget.ts) from categoryId and the
+// user's transactions, not stored, so they can never go stale.
+export interface BudgetCategoryWithSpent extends BudgetCategory {
+  name: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  spent: number;
+  progress: number;
 }
