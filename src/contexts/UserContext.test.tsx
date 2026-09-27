@@ -1,21 +1,35 @@
 // @vitest-environment jsdom
 import { useEffect, useRef } from 'react';
 import { render, screen, waitFor, cleanup } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '@/hooks/useUser';
-import { UserProvider } from './UserContext';
+import { UserProvider, type UserContextValue } from './UserContext';
 
-vi.mock('@react-native-async-storage/async-storage', () => {
-  const store = new Map<string, string>();
-  return {
-    default: {
-      getItem: vi.fn(async (key: string) => store.get(key) ?? null),
-      setItem: vi.fn(async (key: string, value: string) => {
-        store.set(key, value);
-      }),
-    },
-  };
+// Hoisted so the same Map backs both the mock factory below and the
+// beforeEach that restores it: a test earlier in the file can leave a
+// queued mockImplementationOnce unconsumed (e.g. a single-flight guard
+// skipping the second of two queued reads), which would otherwise hang the
+// very next getItem call in a later test.
+const { store } = vi.hoisted(() => ({ store: new Map<string, string>() }));
+
+vi.mock('@react-native-async-storage/async-storage', () => ({
+  default: {
+    getItem: vi.fn(async (key: string) => store.get(key) ?? null),
+    setItem: vi.fn(async (key: string, value: string) => {
+      store.set(key, value);
+    }),
+  },
+}));
+
+beforeEach(() => {
+  store.clear();
+  vi.mocked(AsyncStorage.getItem).mockReset();
+  vi.mocked(AsyncStorage.getItem).mockImplementation(async (key: string) => store.get(key) ?? null);
+  vi.mocked(AsyncStorage.setItem).mockReset();
+  vi.mocked(AsyncStorage.setItem).mockImplementation(async (key: string, value: string) => {
+    store.set(key, value);
+  });
 });
 
 // expo-crypto bridges to a native module that jsdom can't load; a fresh id
@@ -160,6 +174,74 @@ function ShowLoadingUserAndError() {
     </span>
   );
 }
+
+function SettingsProbe({ onReady }: { onReady: (value: UserContextValue) => void }) {
+  const context = useUser();
+  useEffect(() => {
+    if (context.loading) return;
+    onReady(context);
+  });
+  return <span data-testid="dark-mode">{String(context.user?.settings.darkMode ?? false)}</span>;
+}
+
+describe('a settings change survives a reload', () => {
+  it('is read back from storage by a fresh provider after the toggle resolves', async () => {
+    let created: UserContextValue | null = null;
+    render(
+      <UserProvider>
+        <SettingsProbe onReady={(context) => (created = context)} />
+      </UserProvider>
+    );
+    await waitFor(() => expect(created).not.toBeNull());
+    if (created!.user === null) {
+      await created!.createUser();
+    }
+    await waitFor(() => expect(created!.user).not.toBeNull());
+
+    await created!.updateUser({ settings: { ...created!.user!.settings, darkMode: true } });
+    await waitFor(() => expect(screen.getByTestId('dark-mode').textContent).toBe('true'));
+
+    cleanup();
+    render(
+      <UserProvider>
+        <SettingsProbe onReady={() => {}} />
+      </UserProvider>
+    );
+    await waitFor(() => expect(screen.getByTestId('dark-mode').textContent).toBe('true'));
+  });
+});
+
+describe('a failed settings write leaves the value unchanged', () => {
+  it('keeps the provider user and stored user at the old value when storage rejects the write', async () => {
+    let created: UserContextValue | null = null;
+    render(
+      <UserProvider>
+        <SettingsProbe onReady={(context) => (created = context)} />
+      </UserProvider>
+    );
+    await waitFor(() => expect(created).not.toBeNull());
+    if (created!.user === null) {
+      await created!.createUser();
+    }
+    await waitFor(() => expect(created!.user).not.toBeNull());
+    expect(created!.user!.settings.darkMode).toBe(false);
+
+    const setItem = vi.mocked(AsyncStorage.setItem);
+    setItem.mockRejectedValueOnce(new Error('storage write failed'));
+
+    await created!.updateUser({ settings: { ...created!.user!.settings, darkMode: true } });
+
+    expect(screen.getByTestId('dark-mode').textContent).toBe('false');
+
+    cleanup();
+    render(
+      <UserProvider>
+        <SettingsProbe onReady={() => {}} />
+      </UserProvider>
+    );
+    await waitFor(() => expect(screen.getByTestId('dark-mode').textContent).toBe('false'));
+  });
+});
 
 describe('an empty stored value is not treated as a missing user', () => {
   it('ends in the error state, not the missing-user state, when the user key reads back as ""', async () => {
