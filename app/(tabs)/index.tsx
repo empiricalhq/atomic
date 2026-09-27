@@ -125,9 +125,7 @@ export default function HomeScreen() {
             <Card
               variant="elevated"
               padding="lg"
-              onPress={() =>
-                router.push({ pathname: '/(tabs)/add-expense', params: { type: 'expense' } })
-              }
+              onPress={() => router.push({ pathname: '/add-expense', params: { type: 'expense' } })}
               className="mr-2 flex-1 items-center rounded-2xl">
               <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="remove" size={20} color="#475569" />
@@ -139,9 +137,7 @@ export default function HomeScreen() {
             <Card
               variant="elevated"
               padding="lg"
-              onPress={() =>
-                router.push({ pathname: '/(tabs)/add-expense', params: { type: 'income' } })
-              }
+              onPress={() => router.push({ pathname: '/add-expense', params: { type: 'income' } })}
               className="mx-1 flex-1 items-center rounded-2xl">
               <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="add" size={20} color="#475569" />
@@ -194,7 +190,7 @@ export default function HomeScreen() {
               <Button
                 variant="primary"
                 size="md"
-                onPress={() => router.push('/(tabs)/add-expense')}
+                onPress={() => router.push('/add-expense')}
                 className="rounded-xl">
                 Agregar
               </Button>

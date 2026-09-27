@@ -9,15 +9,23 @@ import { CategoryPickerModal } from '@/components/transactions/CategoryPickerMod
 import { Transaction } from '@/types';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '@/constants/categories';
 
+function resolveType(value: unknown): 'expense' | 'income' {
+  return value === 'income' ? 'income' : 'expense';
+}
+
 export default function AddExpenseScreen() {
   const params = useLocalSearchParams();
   const { addTransaction } = useTransactions();
 
-  const [formState, setFormState] = useState({
-    amount: (params.amount as string) || '',
-    description: (params.description as string) || '',
-    type: 'expense' as 'expense' | 'income',
-    category: (params.category as string) || EXPENSE_CATEGORIES[0].id,
+  const [formState, setFormState] = useState(() => {
+    const type = resolveType(params.type);
+    const defaultCategory = type === 'expense' ? EXPENSE_CATEGORIES[0] : INCOME_CATEGORIES[0];
+    return {
+      amount: (params.amount as string) || '',
+      description: (params.description as string) || '',
+      type,
+      category: (params.category as string) || defaultCategory.id,
+    };
   });
 
   const [isLoading, setIsLoading] = useState(false);
