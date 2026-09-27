@@ -13,8 +13,14 @@ import Typography from '@/components/common/Typography';
 import { TransactionListItem } from '@/components/transactions/TransactionListItem';
 
 export default function HomeScreen() {
-  const { user } = useUser();
-  const { transactions, loading, refreshTransactions, getSummary } = useTransactions();
+  const { user, error: userError, refreshUser } = useUser();
+  const {
+    transactions,
+    loading,
+    error: transactionsError,
+    refreshTransactions,
+    getSummary,
+  } = useTransactions();
   const [refreshing, setRefreshing] = useState(false);
 
   const summary = getSummary();
@@ -48,6 +54,20 @@ export default function HomeScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         showsVerticalScrollIndicator={false}>
         <View className="px-6 pb-8 pt-4">
+          {(userError || transactionsError) && (
+            <View className="mb-5 rounded-2xl border border-red-200 bg-red-50 p-5">
+              <Typography variant="body" weight="semibold" color="error" className="mb-2">
+                {userError || transactionsError}
+              </Typography>
+              <Button
+                variant="secondary"
+                size="sm"
+                onPress={userError ? refreshUser : refreshTransactions}
+                className="self-start">
+                Reintentar
+              </Button>
+            </View>
+          )}
           <View className="mb-8 flex-row items-center justify-between">
             <View className="flex-1">
               <Typography variant="caption" color="muted" className="mb-1">

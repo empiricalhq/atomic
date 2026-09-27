@@ -23,31 +23,25 @@ class UserService {
     return user;
   }
 
-  async getCurrentUser(): Promise<User> {
-    const user = await storageService.getUser();
-    if (!user) {
-      return await this.createAnonymousUser();
-    }
-    return user;
+  async loadUser(): Promise<User | null> {
+    return storageService.getUser();
   }
 
   async updateUserSettings(userId: string, settings: Partial<UserSettings>): Promise<void> {
-    const user = await storageService.getUser();
-    if (user && user.id === userId) {
-      user.settings = { ...user.settings, ...settings };
-      await storageService.saveUser(user);
-    }
+    await storageService.updateUser((user) => {
+      if (!user || user.id !== userId) return user;
+      return { ...user, settings: { ...user.settings, ...settings } };
+    });
   }
 
   async updateUserProfile(
     userId: string,
     updates: Partial<Pick<User, 'name' | 'email'>>
   ): Promise<void> {
-    const user = await storageService.getUser();
-    if (user && user.id === userId) {
-      Object.assign(user, updates);
-      await storageService.saveUser(user);
-    }
+    await storageService.updateUser((user) => {
+      if (!user || user.id !== userId) return user;
+      return { ...user, ...updates };
+    });
   }
 }
 
