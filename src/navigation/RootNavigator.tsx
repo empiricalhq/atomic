@@ -45,6 +45,14 @@ export function RootNavigator() {
             animation: 'slide_from_bottom',
           }}
         />
+        <Stack.Screen
+          name="config"
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
       </Stack.Protected>
     </Stack>
   );

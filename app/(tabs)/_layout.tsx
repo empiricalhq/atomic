@@ -67,14 +67,6 @@ export default function TabLayout() {
           tabBarAccessibilityLabel: 'Reportes',
         }}
       />
-      <Tabs.Screen
-        name="config"
-        options={{
-          title: 'Ajustes',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} iconName="person" />,
-          tabBarAccessibilityLabel: 'Ajustes',
-        }}
-      />
     </Tabs>
   );
 }

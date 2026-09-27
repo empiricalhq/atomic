@@ -79,7 +79,7 @@ export default function HomeScreen() {
             </View>
             <TouchableOpacity
               className="h-10 w-10 items-center justify-center rounded-full bg-gray-100"
-              onPress={() => router.push('/(tabs)/config')}>
+              onPress={() => router.push('/config')}>
               <Ionicons name="person-outline" size={18} color="#64748b" />
             </TouchableOpacity>
           </View>
