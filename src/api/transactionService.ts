@@ -1,6 +1,7 @@
 import * as Crypto from 'expo-crypto';
 import { Transaction } from '@/types';
 import { storageService } from '@/services/storageService';
+import { subtractMoney, sumMoney } from '@/utils/money';
 
 class TransactionService {
   async getUserTransactions(userId: string): Promise<Transaction[]> {
@@ -18,26 +19,29 @@ class TransactionService {
   }
 
   getTransactionSummary(transactions: Transaction[]) {
-    const totalIncome = transactions
-      .filter((t) => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+    const totalIncome = sumMoney(
+      transactions.filter((t) => t.type === 'income').map((t) => t.amount)
+    );
 
-    const totalExpenses = transactions
-      .filter((t) => t.type === 'expense')
-      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    const totalExpenses = sumMoney(
+      transactions.filter((t) => t.type === 'expense').map((t) => Math.abs(t.amount))
+    );
 
-    const netAmount = totalIncome - totalExpenses;
+    const netAmount = subtractMoney(totalIncome, totalExpenses);
 
-    const categoryTotals = transactions
+    const amountsByCategory = transactions
       .filter((t) => t.type === 'expense')
       .reduce(
         (acc, transaction) => {
           const { category, amount } = transaction;
-          acc[category] = (acc[category] || 0) + Math.abs(amount);
+          acc[category] = [...(acc[category] ?? []), Math.abs(amount)];
           return acc;
         },
-        {} as Record<string, number>
+        {} as Record<string, number[]>
       );
+    const categoryTotals = Object.fromEntries(
+      Object.entries(amountsByCategory).map(([category, amounts]) => [category, sumMoney(amounts)])
+    );
 
     const topCategories = Object.entries(categoryTotals)
       .sort(([, a], [, b]) => b - a)
