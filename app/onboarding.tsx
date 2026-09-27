@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import { storageService } from '@/services/storageService';
-import { userService } from '@/api/userService';
+import { useUser } from '@/hooks/useUser';
 import Screen from '@/components/layout/Screen';
 import Button from '@/components/common/Button';
 import Typography from '@/components/common/Typography';
@@ -39,7 +38,16 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 ];
 
 export default function OnboardingScreen() {
+  const { createUser } = useUser();
   const [currentStep, setCurrentStep] = useState(0);
+  const [startError, setStartError] = useState<string | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
+  // Set synchronously, before the first await, so a second tap (Comenzar or
+  // Saltar, both call this) fired before the disabled button re-renders
+  // still bails out instead of calling createUser again. The provider's own
+  // single-flight guard also covers this, but bailing here avoids a second
+  // fade transition and a wasted round trip through it.
+  const isStartingRef = useRef(false);
 
   const contentOpacity = useSharedValue(1);
   const backButtonOpacity = useSharedValue(0);
@@ -80,12 +88,20 @@ export default function OnboardingScreen() {
   };
 
   const handleGetStarted = async () => {
+    if (isStartingRef.current) return;
+    isStartingRef.current = true;
+    setIsStarting(true);
     try {
-      await userService.createAnonymousUser();
-      await storageService.setOnboardingComplete();
+      setStartError(null);
+      await createUser();
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Error completing onboarding:', error);
+      // A failed save must not navigate on as if the account was created.
+      setStartError('No se pudo iniciar. Intenta de nuevo.');
+    } finally {
+      isStartingRef.current = false;
+      setIsStarting(false);
     }
   };
 
@@ -106,7 +122,12 @@ export default function OnboardingScreen() {
           ))}
         </View>
         {!isLastStep && (
-          <Button variant="ghost" size="sm" onPress={handleGetStarted} className="px-4 py-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onPress={handleGetStarted}
+            disabled={isStarting}
+            className="px-4 py-2">
             Saltar
           </Button>
         )}
@@ -136,10 +157,16 @@ export default function OnboardingScreen() {
       </Reanimated.View>
 
       <View className="px-8 pb-12">
+        {startError && (
+          <Typography variant="body" color="error" className="mb-3 text-center">
+            {startError}
+          </Typography>
+        )}
         <Button
           variant="primary"
           size="lg"
           onPress={handleNext}
+          disabled={isStarting}
           className="mb-4 rounded-2xl shadow-lg"
           icon={
             <Ionicons name={isLastStep ? 'checkmark' : 'arrow-forward'} size={16} color="white" />
