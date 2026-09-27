@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'; // 1. Import useCallback
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Transaction } from '@/types';
 import { transactionService } from '@/api/transactionService';
 import { useUser } from './useUser';
@@ -9,7 +9,14 @@ export const useTransactions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // refreshTransactions can be called (e.g. a manual retry) while the
+  // effect's own load for the same or a different user is still in flight,
+  // and the two can resolve out of order. Each load gets a sequence number
+  // so only the result matching the latest one is applied.
+  const loadSeqRef = useRef(0);
+
   const loadTransactions = useCallback(async () => {
+    const seq = ++loadSeqRef.current;
     if (!user) {
       setTransactions([]);
       setLoading(false);
@@ -19,12 +26,14 @@ export const useTransactions = () => {
       setLoading(true);
       setError(null);
       const userTransactions = await transactionService.getUserTransactions(user.id);
+      if (seq !== loadSeqRef.current) return;
       setTransactions(userTransactions);
     } catch (err) {
+      if (seq !== loadSeqRef.current) return;
       console.error('Error loading transactions:', err);
       setError('Error cargando transacciones');
     } finally {
-      setLoading(false);
+      if (seq === loadSeqRef.current) setLoading(false);
     }
   }, [user]);
 
