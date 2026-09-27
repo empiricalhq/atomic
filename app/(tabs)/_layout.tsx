@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { Tabs } from 'expo-router/js-tabs';
 import { View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
