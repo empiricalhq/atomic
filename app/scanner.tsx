@@ -74,8 +74,12 @@ export default function ScannerScreen() {
         category: 'food',
         date: new Date().toISOString(),
       };
-      router.replace({
-        pathname: '/(tabs)/add-expense',
+      // dismissTo collapses back to the add-expense screen that opened the
+      // scanner (applying these params to it) instead of stacking a second
+      // one, or replaces this screen with a fresh add-expense if the scanner
+      // was opened directly (no add-expense underneath to dismiss to).
+      router.dismissTo({
+        pathname: '/add-expense',
         params: {
           amount: mockResponse.amount.toString(),
           description: mockResponse.merchant,
@@ -254,7 +258,7 @@ export default function ScannerScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             className="ml-1 h-16 w-16 items-center justify-center rounded-full border-2 border-white/50 bg-white/10 backdrop-blur-sm"
-            onPress={() => router.push('/(tabs)/add-expense')}
+            onPress={() => router.dismissTo('/add-expense')}
             disabled={scanState.processing}>
             <Ionicons name="create" size={24} color="white" />
           </TouchableOpacity>
