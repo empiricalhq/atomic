@@ -7,14 +7,21 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { User } from '@/types';
+import { User, UserSettings } from '@/types';
 import { userService } from '@/api/userService';
+
+// settings is a patch merged onto the existing settings, not a replacement,
+// so two rapid calls that each change one setting (before either's write
+// resolves) don't clobber each other: the storage side merges it onto the
+// record it reads fresh inside the user key's queue, and the provider
+// merges it onto the latest state via setUser(prev => ...).
+export type UserUpdate = Partial<Omit<User, 'settings'>> & { settings?: Partial<UserSettings> };
 
 export interface UserContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
-  updateUser: (updates: Partial<User>) => Promise<void>;
+  updateUser: (updates: UserUpdate) => Promise<void>;
   // Returns the loaded user (or null on failure) so a caller that retries
   // after a failed load can act on the result immediately, instead of
   // reading the `user` this closure still has from before the retry.
@@ -98,7 +105,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, [loading, error, user]);
 
   const updateUser = useCallback(
-    async (updates: Partial<User>) => {
+    async (updates: UserUpdate) => {
       if (!user) return;
       try {
         if (updates.settings) {
@@ -110,7 +117,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
             email: updates.email,
           });
         }
-        setUser((prev) => (prev ? { ...prev, ...updates } : null));
+        setUser((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            ...updates,
+            settings: updates.settings ? { ...prev.settings, ...updates.settings } : prev.settings,
+          };
+        });
       } catch (err) {
         console.error('Error updating user:', err);
       }

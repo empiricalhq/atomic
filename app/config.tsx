@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import { ScrollView, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useUser } from '@/hooks/useUser';
+import { UserSettings } from '@/types';
 import { SETTINGS_GROUPS } from '@/constants/settings';
 import Screen from '@/components/layout/Screen';
 import Header from '@/components/layout/Header';
@@ -10,21 +11,28 @@ import { SettingsGroup } from '@/components/settings/SettingsGroup';
 import Typography from '@/components/common/Typography';
 
 export default function ConfigScreen() {
-  const { user } = useUser();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [biometricEnabled, setBiometricEnabled] = useState(false);
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const { user, updateUser } = useUser();
 
-  // these are fake values
+  const toggleSetting = (key: keyof UserSettings) => (value: boolean) => {
+    updateUser({ settings: { [key]: value } });
+  };
+
   const dynamicSettings = {
-    notifications: { value: notificationsEnabled, onToggle: setNotificationsEnabled },
-    biometric: { value: biometricEnabled, onToggle: setBiometricEnabled },
-    darkMode: { value: darkModeEnabled, onToggle: setDarkModeEnabled },
+    notifications: {
+      value: user?.settings.notifications ?? false,
+      onToggle: toggleSetting('notifications'),
+    },
+    biometric: { value: user?.settings.biometric ?? false, onToggle: toggleSetting('biometric') },
+    darkMode: { value: user?.settings.darkMode ?? false, onToggle: toggleSetting('darkMode') },
   };
 
   return (
     <Screen background="gray" padding="none">
-      <Header title="Configuración" variant="elevated" />
+      <Header
+        title="Configuración"
+        variant="elevated"
+        rightAction={{ icon: 'close', onPress: () => router.back() }}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <UserProfileHeader user={user} />
 
