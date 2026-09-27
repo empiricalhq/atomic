@@ -5,7 +5,6 @@
     "jsx": "react-jsx",
     "types": ["expo/types"],
 
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
