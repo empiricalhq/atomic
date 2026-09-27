@@ -2,6 +2,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { render, screen, waitFor, cleanup } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserProvider } from '@/contexts/UserContext';
 import { useUser } from '@/hooks/useUser';
 import { RootNavigator } from './RootNavigator';
@@ -28,7 +29,9 @@ vi.mock('react-native', () => ({
 function MockStack({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
-MockStack.Screen = ({ name }: { name: string }) => <div data-testid={`screen-${name}`} />;
+MockStack.Screen = ({ name, options }: { name: string; options?: Record<string, unknown> }) => (
+  <div data-testid={`screen-${name}`} data-options={JSON.stringify(options ?? {})} />
+);
 MockStack.Protected = ({ guard, children }: { guard: boolean; children: ReactNode }) =>
   guard ? <>{children}</> : null;
 
@@ -103,5 +106,28 @@ describe('a transient user-load failure never routes to onboarding', () => {
     await waitFor(() => expect(screen.getByTestId('screen-(tabs)')).toBeTruthy());
     expect(screen.queryByTestId('screen-onboarding')).toBeNull();
     expect(screen.getByTestId('probe-user-id').textContent).toBe(onboardedId);
+  });
+});
+
+describe('settings presents as a modal, not a tab', () => {
+  it('renders config as a Stack.Screen with modal presentation once a user is ready', async () => {
+    // Independent of the earlier test's stored user: the next read this
+    // provider issues on mount is forced to see no stored user, so Onboard
+    // creates a fresh one instead of adopting a user left over from before.
+    vi.mocked(AsyncStorage.getItem).mockImplementationOnce(async () => null);
+
+    let onboardedId = '';
+    render(
+      <UserProvider>
+        <Onboard onDone={(id) => (onboardedId = id)} />
+        <RootNavigator />
+      </UserProvider>
+    );
+    await waitFor(() => expect(onboardedId).not.toBe(''));
+    await waitFor(() => expect(screen.getByTestId('screen-(tabs)')).toBeTruthy());
+
+    const configScreen = screen.getByTestId('screen-config');
+    const options = JSON.parse(configScreen.getAttribute('data-options') ?? '{}');
+    expect(options.presentation).toBe('modal');
   });
 });
