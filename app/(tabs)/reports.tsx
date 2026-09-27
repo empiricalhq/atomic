@@ -2,6 +2,7 @@ import { View, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { MOCK_MONTHLY_DATA, MOCK_TOP_CATEGORIES } from '@/data/mockData';
 import { formatCurrency } from '@/utils/formatters';
+import { subtractMoney, sumMoney } from '@/utils/money';
 import Screen from '@/components/layout/Screen';
 import Header from '@/components/layout/Header';
 import Typography from '@/components/common/Typography';
@@ -10,9 +11,9 @@ import { TopCategoriesList } from '@/components/reports/TopCategoriesList';
 import Card from '@/components/common/Card';
 
 export default function ReportsScreen() {
-  const totalIncome = MOCK_MONTHLY_DATA.reduce((sum, item) => sum + item.income, 0);
-  const totalExpenses = MOCK_MONTHLY_DATA.reduce((sum, item) => sum + item.expenses, 0);
-  const netAmount = totalIncome - totalExpenses;
+  const totalIncome = sumMoney(MOCK_MONTHLY_DATA.map((item) => item.income));
+  const totalExpenses = sumMoney(MOCK_MONTHLY_DATA.map((item) => item.expenses));
+  const netAmount = subtractMoney(totalIncome, totalExpenses);
 
   return (
     <Screen background="gray" padding="none">
