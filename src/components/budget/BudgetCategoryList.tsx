@@ -1,20 +1,21 @@
 import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BudgetCategory } from '@/types';
+import { BudgetCategoryWithSpent } from '@/types';
 import { COLORS } from '@/constants/theme';
 import Typography from '@/components/common/Typography';
+import { subtractMoney } from '@/utils/money';
 
 interface Props {
-  categories: BudgetCategory[];
+  categories: BudgetCategoryWithSpent[];
 }
 
 export function BudgetCategoryList({ categories }: Props) {
   return (
     <View>
       {categories.map((category) => {
-        const progress = Math.min((category.spent / category.budgeted) * 100, 100);
+        const { progress } = category;
         const isOverBudget = category.spent > category.budgeted;
-        const remaining = category.budgeted - category.spent;
+        const remaining = subtractMoney(category.budgeted, category.spent);
 
         return (
           <View key={category.id} className="mb-4 rounded-2xl border border-gray-200 bg-white p-5">
