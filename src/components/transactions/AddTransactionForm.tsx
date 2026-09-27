@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Typography from '@/components/common/Typography';
 import Button from '@/components/common/Button';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '@/constants/categories';
+import { hasAtMostTwoDecimals } from '@/utils/money';
 
 type FormState = {
   amount: string;
@@ -16,6 +17,7 @@ interface Props {
   setFormState: React.Dispatch<React.SetStateAction<FormState>>;
   onSave: () => void;
   isLoading: boolean;
+  error?: string | null;
   onShowCategories: () => void;
 }
 
@@ -24,16 +26,14 @@ export function AddTransactionForm({
   setFormState,
   onSave,
   isLoading,
+  error,
   onShowCategories,
 }: Props) {
   const { amount, description, type, category } = formState;
 
   const handleAmountChange = (text: string) => {
     const cleanText = text.replace(/[^0-9.]/g, '');
-    const parts = cleanText.split('.');
-    if (parts.length > 2 || (parts[1] && parts[1].length > 2)) {
-      return;
-    }
+    if (!hasAtMostTwoDecimals(cleanText)) return;
     setFormState((prev) => ({ ...prev, amount: cleanText }));
   };
 
@@ -123,6 +123,11 @@ export function AddTransactionForm({
         )}
       </View>
       <View className="pb-8">
+        {error && (
+          <Typography variant="body" color="error" className="mb-3 text-center">
+            {error}
+          </Typography>
+        )}
         <Button
           onPress={onSave}
           disabled={!hasAmount || isLoading}

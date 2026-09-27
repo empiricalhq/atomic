@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +22,11 @@ export default function AddExpenseScreen() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  // Set before the first await, so a second tap fired before the re-render
+  // that disables Guardar still sees this and bails out synchronously,
+  // instead of calling addTransaction a second time.
+  const isSavingRef = useRef(false);
 
   const categories = formState.type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
   const selectedCategory = categories.find((cat) => cat.id === formState.category);
@@ -46,8 +51,11 @@ export default function AddExpenseScreen() {
   const handleSave = async () => {
     const numAmount = parseFloat(formState.amount);
     if (!numAmount || numAmount <= 0) return;
+    if (isSavingRef.current) return;
+    isSavingRef.current = true;
 
     setIsLoading(true);
+    setSaveError(null);
     try {
       const transactionData: Omit<Transaction, 'id' | 'userId'> = {
         amount: numAmount,
@@ -62,7 +70,11 @@ export default function AddExpenseScreen() {
       router.back();
     } catch (error) {
       console.error('Error saving transaction:', error);
+      // A failed save must not look like a saved transaction: stay on the
+      // form and say so, instead of navigating back as if it went through.
+      setSaveError('No se pudo guardar la transacción. Intenta de nuevo.');
     } finally {
+      isSavingRef.current = false;
       setIsLoading(false);
     }
   };
@@ -89,6 +101,7 @@ export default function AddExpenseScreen() {
         setFormState={setFormState}
         onSave={handleSave}
         isLoading={isLoading}
+        error={saveError}
         onShowCategories={() => setShowCategories(true)}
       />
 
