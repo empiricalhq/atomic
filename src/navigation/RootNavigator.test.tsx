@@ -131,3 +131,23 @@ describe('settings presents as a modal, not a tab', () => {
     expect(options.presentation).toBe('modal');
   });
 });
+
+describe('add-expense presents as a modal, not a tab', () => {
+  it('renders add-expense as a Stack.Screen with modal presentation once a user is ready', async () => {
+    vi.mocked(AsyncStorage.getItem).mockImplementationOnce(async () => null);
+
+    let onboardedId = '';
+    render(
+      <UserProvider>
+        <Onboard onDone={(id) => (onboardedId = id)} />
+        <RootNavigator />
+      </UserProvider>
+    );
+    await waitFor(() => expect(onboardedId).not.toBe(''));
+    await waitFor(() => expect(screen.getByTestId('screen-(tabs)')).toBeTruthy());
+
+    const addExpenseScreen = screen.getByTestId('screen-add-expense');
+    const options = JSON.parse(addExpenseScreen.getAttribute('data-options') ?? '{}');
+    expect(options.presentation).toBe('modal');
+  });
+});
