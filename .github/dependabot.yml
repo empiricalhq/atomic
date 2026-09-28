@@ -4,6 +4,56 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    # Expo pins most of these to each SDK (`npx expo install --check`), so they move only with an SDK upgrade. Patches stay.
+    ignore:
+      # Expo SDK pins the react version its react-native runs.
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # react-dom must match react.
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # The types follow the pinned react release.
+      - dependency-name: '@types/react'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Each SDK is built and tested against one react-native release.
+      - dependency-name: 'react-native'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Native module pinned by the SDK to match its react-native and worklets.
+      - dependency-name: 'react-native-reanimated'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Native module pinned by the SDK to match reanimated.
+      - dependency-name: 'react-native-worklets'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Native module pinned by the SDK to match its react-native.
+      - dependency-name: 'react-native-screens'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Native module pinned by the SDK to match its react-native.
+      - dependency-name: 'react-native-safe-area-context'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Native module whose version the SDK pins for its native build.
+      - dependency-name: '@react-native-async-storage/async-storage'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # The SDK pins its icon package release.
+      - dependency-name: '@expo/vector-icons'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Every expo package is versioned per SDK.
+      - dependency-name: 'expo'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # Every expo-* package is versioned per SDK.
+      - dependency-name: 'expo-*'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # The SDK pins the preset that matches its metro and react-native transforms.
+      - dependency-name: 'babel-preset-expo'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # The SDK pins the babel core its preset is built for.
+      - dependency-name: '@babel/core'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # The SDK pins the typescript release its types and tooling are checked with.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-minor', 'version-update:semver-major']
+      # NativeWind 4 supports only Tailwind 3; NativeWind 5 is still a release candidate.
+      - dependency-name: 'tailwindcss'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'github-actions'
     directory: '/'
