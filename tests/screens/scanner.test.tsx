@@ -2,7 +2,7 @@
 import { type ReactNode } from 'react';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import ScannerScreen from './scanner';
+import ScannerScreen from '../../app/scanner';
 
 vi.mock('react-native', () => {
   class FakeAnimatedValue {

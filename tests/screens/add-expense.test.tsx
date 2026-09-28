@@ -4,7 +4,7 @@ import { render, screen, waitFor, cleanup, fireEvent } from '@testing-library/re
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserProvider } from '@/contexts/UserContext';
-import AddExpenseScreen from './add-expense';
+import AddExpenseScreen from '../../app/add-expense';
 
 vi.mock('react-native', () => ({
   View: ({ children, ...props }: { children?: ReactNode }) => <div {...props}>{children}</div>,

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserProvider } from '@/contexts/UserContext';
 import { useUser } from '@/hooks/useUser';
-import ConfigScreen from './config';
+import ConfigScreen from '../../app/config';
 
 vi.mock('react-native', () => ({
   View: ({ children, ...props }: { children?: ReactNode }) => <div {...props}>{children}</div>,

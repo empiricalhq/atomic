@@ -41,7 +41,7 @@ MockTabs.Screen = ({ name }: { name: string }) => <div data-testid={`tab-${name}
 
 vi.mock('expo-router/js-tabs', () => ({ Tabs: MockTabs }));
 
-import TabLayout from './_layout';
+import TabLayout from '../../app/(tabs)/_layout';
 
 afterEach(cleanup);
 
