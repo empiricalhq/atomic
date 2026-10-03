@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useUser } from '@/hooks/useUser';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
-import { formatCurrency } from '@/utils/formatters';
+import { formatCurrency, getGreeting } from '@/utils/formatters';
 import Screen from '@/components/layout/Screen';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
@@ -22,21 +22,16 @@ export default function HomeScreen() {
     getSummary,
   } = useTransactions();
   const [refreshing, setRefreshing] = useState(false);
+  const [hour, setHour] = useState(() => new Date().getHours());
 
   const summary = getSummary();
   const recentTransactions = transactions.slice(0, 3);
 
   const onRefresh = async () => {
     setRefreshing(true);
+    setHour(new Date().getHours());
     await refreshTransactions();
     setRefreshing(false);
-  };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Buenos días';
-    if (hour < 18) return 'Buenas tardes';
-    return 'Buenas noches';
   };
 
   if (loading) {
@@ -71,7 +66,7 @@ export default function HomeScreen() {
           <View className="mb-8 flex-row items-center justify-between">
             <View className="flex-1">
               <Typography variant="caption" color="muted" className="mb-1">
-                {getGreeting()}
+                {getGreeting(hour)}
               </Typography>
               <Typography variant="h2" weight="bold">
                 {user?.name || 'Usuario'}

@@ -17,3 +17,9 @@ export const formatDate = (
 ): string => {
   return new Intl.DateTimeFormat(locale, options).format(date);
 };
+
+export const getGreeting = (hour: number): string => {
+  if (hour < 12) return 'Buenos días';
+  if (hour < 18) return 'Buenas tardes';
+  return 'Buenas noches';
+};
