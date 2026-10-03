@@ -4,26 +4,21 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
-    # Expo pins most of these to each SDK (`npx expo install --check`), so they move only with an SDK upgrade. Patches stay.
+    # Expo pins most dependencies to each SDK (`npx expo install --check`). They move only with an SDK upgrade. Exact pins also reject patch updates because expo-doctor fails on other versions. Ranges using ~ or ^ retain patch updates.
     ignore:
-      # Expo SDK pins the react version its react-native runs.
+      # Expo SDK pins React to the version required by its React Native renderer.
       - dependency-name: 'react'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # react-dom must match react.
       - dependency-name: 'react-dom'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # The types follow the pinned react release.
       - dependency-name: '@types/react'
         update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # Each SDK is built and tested against one react-native release.
       - dependency-name: 'react-native'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # Native module pinned by the SDK to match its react-native and worklets.
       - dependency-name: 'react-native-reanimated'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # Native module pinned by the SDK to match reanimated.
       - dependency-name: 'react-native-worklets'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # Native module pinned by the SDK to match its react-native.
       - dependency-name: 'react-native-screens'
         update-types: ['version-update:semver-minor', 'version-update:semver-major']
@@ -32,7 +27,6 @@ updates:
         update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # Native module whose version the SDK pins for its native build.
       - dependency-name: '@react-native-async-storage/async-storage'
-        update-types: ['version-update:semver-minor', 'version-update:semver-major']
       # The SDK pins its icon package release.
       - dependency-name: '@expo/vector-icons'
         update-types: ['version-update:semver-minor', 'version-update:semver-major']
