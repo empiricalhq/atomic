@@ -14,7 +14,8 @@ app/(tabs)/index.tsx
 
 ## Reading
 
-1. [`app/(tabs)/index.tsx`](<../app/(tabs)/index.tsx>) calls `useTransactions()`.
+1. The home screen, [`app/(tabs)/index.tsx`](<../app/(tabs)/index.tsx>), calls
+   `useTransactions()`.
 2. The hook reads the current user from `useUser()`. Its effect runs
    `loadTransactions()` whenever the user changes. With no user it sets an empty
    list.
@@ -28,10 +29,11 @@ app/(tabs)/index.tsx
 
 `getSummary()` calls `transactionService.getTransactionSummary`: total income,
 total expenses, net amount, transaction count and the five categories with the
-most spending. All sums go through [`src/utils/money.ts`](../src/utils/money.ts).
+most spending. All sums go through
+[`src/utils/money.ts`](../src/utils/money.ts).
 
-Each load takes a sequence number. If `refreshTransactions` runs while an earlier
-load is in flight, only the latest result is applied.
+Each load takes a sequence number. If `refreshTransactions` runs while an
+earlier load is in flight, only the latest result is applied.
 
 ## Writing
 
@@ -67,6 +69,6 @@ user inside the storage queue.
 | `transactions`     | Array of `Transaction`, for every user.    |
 | `budgetCategories` | Array of `BudgetCategory`, for every user. |
 
-The types are in [`src/types/index.ts`](../src/types/index.ts). `storageService` does
-not revive dates, so a `Date` field comes back from storage as an ISO string.
-Readers wrap it in `new Date(...)`.
+The types are in [`src/types/index.ts`](../src/types/index.ts).
+`storageService` does not revive dates: a `Date` field comes back from storage
+as an ISO string, and readers wrap it in `new Date(...)`.

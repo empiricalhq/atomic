@@ -34,8 +34,8 @@ recent transactions.
   add-expense form from the result. The scanner returns a fixed sample receipt;
   it does not read the image.
 - **Reports.** Monthly income against expenses and the top spending categories.
-  The screen shows sample data from [`src/data/mockData.ts`](src/data/mockData.ts),
-  not your transactions.
+  The screen shows sample data from
+  [`src/data/mockData.ts`](src/data/mockData.ts), not your transactions.
 - **Settings.** Toggles for notifications, biometric login and dark mode are
   saved with the user. Other rows in the settings screen are placeholders.
 - **Local storage.** The user, transactions and budgets are stored in

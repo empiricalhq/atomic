@@ -20,13 +20,12 @@ outside a provider.
 | `createUser`  | Creates and stores the anonymous user. Rejects unless the user is missing. |
 
 A user is **missing** when loading has finished, there is no error and `user` is
-`null`. An error is not the same as missing: a failed read must not lead to a
-new user overwriting the stored one. `createUser` enforces this by rejecting
+`null`. A failed read sets `error` and is not missing. `createUser` rejects
 while loading, on error, or when a user exists.
 
 On mount the provider calls `userService.loadUser()`. Calls to `refreshUser`
 made while a load is in flight join it. `createUser` calls made while a create
-is in flight share one promise, so a double tap creates one user.
+is in flight return the same promise.
 
 ## Navigation
 
@@ -39,8 +38,8 @@ is in flight share one promise, so a double tap creates one user.
 | missing | `onboarding` only.                                       |
 | loaded  | `(tabs)`, `add-expense`, `scanner` and `config`.         |
 
-The two groups use `Stack.Protected`, so a deep link cannot open a screen in the
-other group.
+The two groups use `Stack.Protected`. A deep link to a screen in the other group
+does not open it.
 
 [`app/onboarding.tsx`](../app/onboarding.tsx) calls `createUser()` from
 **Comenzar** or **Saltar**, then replaces the route with `/(tabs)`.
@@ -59,5 +58,5 @@ other group.
 
 `updateUser({ settings: { darkMode: true } })` is a patch. The storage layer
 merges it into the record it reads inside the `user` key's queue, and the
-provider merges it into its state, so two quick updates of different settings
-both survive. The settings screen calls it from its three switches.
+provider merges it into its state. Two quick updates of different settings both
+persist. The settings screen calls it from its three switches.

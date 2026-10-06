@@ -48,8 +48,8 @@ which looks up a category through `categoryService`.
 **Hooks** hold the loading, error and list state for one feature.
 [`useTransactions`](src/hooks/useTransactions.ts) and
 [`useBudget`](src/hooks/useBudget.ts) read the current user from `useUser` and
-reload when it changes. Each load carries a sequence number, so a slow earlier
-load cannot overwrite a newer one.
+reload when it changes. Each load carries a sequence number, and only the
+latest load's result is applied.
 
 **Services in `src/api/`** apply rules to stored data and return domain objects.
 `transactionService` sorts newest first, assigns ids and builds the summary.
@@ -60,8 +60,7 @@ settings and profile updates. `categoryService` finds a category by id or name.
 **`storageService`** reads and writes the three AsyncStorage keys `user`,
 `transactions` and `budgetCategories` as JSON, and filters records by user id.
 Writes to a key run one at a time, and a read-modify-write (`updateUser`,
-`addBudgetCategory`) runs inside that queue, so two concurrent updates do not
-overwrite each other.
+`addBudgetCategory`) runs inside that queue, on the record it reads there.
 
 ## State
 
@@ -79,8 +78,8 @@ Each screen that calls `useTransactions` loads its own copy of the list.
 - Only `storageService` imports AsyncStorage.
 - Only `UserProvider` holds the user. Screens read it through `useUser`, which
   throws outside a provider. See [docs/user.md](docs/user.md).
-- Money is summed and subtracted through [`src/utils/money.ts`](src/utils/money.ts)
-  in integer cents.
+- Money is summed and subtracted in integer cents through
+  [`src/utils/money.ts`](src/utils/money.ts).
 - `RootNavigator` is the only place that decides which screens a missing user
   can reach.
 

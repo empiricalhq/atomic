@@ -9,5 +9,5 @@
 4. [The user](user.md): how the current user is loaded, created and updated, and
    how it gates navigation.
 
-[ARCHITECTURE.md](../ARCHITECTURE.md) maps the code. [CONTRIBUTING.md](../CONTRIBUTING.md)
-covers sending a change.
+[ARCHITECTURE.md](../ARCHITECTURE.md) maps the code.
+[CONTRIBUTING.md](../CONTRIBUTING.md) covers sending a change.
