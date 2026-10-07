@@ -27,7 +27,7 @@ export const calculateCategorySpent = (
     (transaction) =>
       transaction.type === 'expense' &&
       transaction.category === category.categoryId &&
-      isWithinPeriod(new Date(transaction.date), period)
+      isWithinPeriod(transaction.date, period)
   );
   return sumMoney(matching.map((transaction) => Math.abs(transaction.amount)));
 };

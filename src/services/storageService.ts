@@ -7,6 +7,15 @@ const KEYS = {
   BUDGET_CATEGORIES: 'budgetCategories',
 };
 
+// JSON stores dates as strings. Revive only the known date fields so text that
+// happens to look like a date remains a string.
+const reviveUser = (user: User): User => ({ ...user, createdAt: new Date(user.createdAt) });
+
+const reviveTransaction = (transaction: Transaction): Transaction => ({
+  ...transaction,
+  date: new Date(transaction.date),
+});
+
 class StorageService {
   // One promise chain per key: a write, or a read-check-write a caller runs
   // through runExclusive, starts only once every earlier operation on that
@@ -40,7 +49,8 @@ class StorageService {
   }
 
   async getUser(): Promise<User | null> {
-    return this.get<User>(KEYS.USER);
+    const user = await this.get<User>(KEYS.USER);
+    return user && reviveUser(user);
   }
 
   async saveUser(user: User): Promise<void> {
@@ -55,7 +65,8 @@ class StorageService {
     update: (user: User | null) => User | null | Promise<User | null>
   ): Promise<User | null> {
     return this.runExclusive(KEYS.USER, async () => {
-      const user = await this.get<User>(KEYS.USER);
+      const stored = await this.get<User>(KEYS.USER);
+      const user = stored && reviveUser(stored);
       const updated = await update(user);
       if (updated) await this.set(KEYS.USER, updated);
       return updated;
@@ -63,7 +74,8 @@ class StorageService {
   }
 
   private async getAllTransactions(): Promise<Transaction[]> {
-    return (await this.get<Transaction[]>(KEYS.TRANSACTIONS)) || [];
+    const transactions = (await this.get<Transaction[]>(KEYS.TRANSACTIONS)) || [];
+    return transactions.map(reviveTransaction);
   }
 
   async getTransactions(userId: string): Promise<Transaction[]> {

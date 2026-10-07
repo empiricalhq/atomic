@@ -6,7 +6,7 @@ import { subtractMoney, sumMoney } from '@/utils/money';
 class TransactionService {
   async getUserTransactions(userId: string): Promise<Transaction[]> {
     const transactions = await storageService.getTransactions(userId);
-    return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   async createTransaction(transaction: Omit<Transaction, 'id'>): Promise<Transaction> {
