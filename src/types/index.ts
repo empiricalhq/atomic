@@ -25,7 +25,6 @@ export interface Transaction {
   date: Date;
   type: 'expense' | 'income';
   userId: string;
-  receiptImage?: string;
 }
 
 export interface Category {

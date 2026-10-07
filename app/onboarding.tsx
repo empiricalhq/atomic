@@ -25,9 +25,9 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
   {
     id: 'track',
-    title: 'Escanea recibos',
-    subtitle: 'Captura gastos automáticamente usando tu cámara',
-    icon: 'camera-outline',
+    title: 'Define presupuestos',
+    subtitle: 'Fija un límite mensual por categoría y sigue cuánto llevas gastado',
+    icon: 'pie-chart-outline',
   },
   {
     id: 'analyze',

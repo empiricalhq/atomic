@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,12 +20,7 @@ export default function AddExpenseScreen() {
   const [formState, setFormState] = useState(() => {
     const type = resolveType(params.type);
     const defaultCategory = type === 'expense' ? EXPENSE_CATEGORIES[0] : INCOME_CATEGORIES[0];
-    return {
-      amount: (params.amount as string) || '',
-      description: (params.description as string) || '',
-      type,
-      category: (params.category as string) || defaultCategory.id,
-    };
+    return { amount: '', description: '', type, category: defaultCategory.id };
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -38,23 +33,6 @@ export default function AddExpenseScreen() {
 
   const categories = formState.type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
   const selectedCategory = categories.find((cat) => cat.id === formState.category);
-
-  useEffect(() => {
-    // If parsed receipt data is available, update the form state
-    if (params.receiptData) {
-      try {
-        const receipt = JSON.parse(params.receiptData as string);
-        setFormState((prev) => ({
-          ...prev,
-          amount: receipt.amount?.toString() || prev.amount,
-          description: receipt.merchant || prev.description,
-          category: receipt.category || prev.category,
-        }));
-      } catch (error) {
-        console.error('Error parsing receipt data:', error);
-      }
-    }
-  }, [params.receiptData]);
 
   const handleSave = async () => {
     const numAmount = parseFloat(formState.amount);
@@ -89,18 +67,12 @@ export default function AddExpenseScreen() {
 
   return (
     <Screen background="white" safeArea padding="none">
-      <View className="flex-row items-center justify-between px-6 py-4 pt-6">
+      <View className="flex-row items-center px-6 py-4 pt-6">
         <TouchableOpacity
           onPress={() => router.back()}
           className="h-10 w-10 items-center justify-center rounded-full"
           activeOpacity={0.7}>
           <Ionicons name="close" size={24} color="#6b7280" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push('/scanner')}
-          className="h-10 w-10 items-center justify-center rounded-full"
-          activeOpacity={0.7}>
-          <Ionicons name="scan-outline" size={24} color="#6b7280" />
         </TouchableOpacity>
       </View>
 

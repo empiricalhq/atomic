@@ -4,6 +4,7 @@ import { render, screen, waitFor, cleanup, fireEvent } from '@testing-library/re
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserProvider } from '@/contexts/UserContext';
+import { TransactionsProvider } from '@/contexts/TransactionsContext';
 import AddExpenseScreen from '../../app/add-expense';
 
 vi.mock('react-native', () => ({
@@ -58,10 +59,9 @@ vi.mock('react-native-safe-area-context', () => ({
 }));
 
 const backMock = vi.fn();
-const pushMock = vi.fn();
 let currentParams: Record<string, string> = {};
 vi.mock('expo-router', () => ({
-  router: { back: () => backMock(), push: (...args: unknown[]) => pushMock(...args) },
+  router: { back: () => backMock() },
   useLocalSearchParams: () => currentParams,
 }));
 
@@ -83,7 +83,6 @@ afterEach(() => {
   cleanup();
   currentParams = {};
   backMock.mockClear();
-  pushMock.mockClear();
 });
 
 const seededUser = {
@@ -106,7 +105,9 @@ describe('a second visit to the form', () => {
 
     const { unmount } = render(
       <UserProvider>
-        <AddExpenseScreen />
+        <TransactionsProvider>
+          <AddExpenseScreen />
+        </TransactionsProvider>
       </UserProvider>
     );
 
@@ -123,7 +124,9 @@ describe('a second visit to the form', () => {
     unmount();
     render(
       <UserProvider>
-        <AddExpenseScreen />
+        <TransactionsProvider>
+          <AddExpenseScreen />
+        </TransactionsProvider>
       </UserProvider>
     );
 
@@ -138,11 +141,13 @@ describe('a second visit to the form', () => {
 describe("an add-income entry's params", () => {
   it('opens the form as income, with an income category, instead of the expense default', async () => {
     await AsyncStorage.setItem('user', JSON.stringify(seededUser));
-    currentParams = { type: 'income', amount: '10' };
+    currentParams = { type: 'income' };
 
     render(
       <UserProvider>
-        <AddExpenseScreen />
+        <TransactionsProvider>
+          <AddExpenseScreen />
+        </TransactionsProvider>
       </UserProvider>
     );
 
@@ -154,33 +159,7 @@ describe("an add-income entry's params", () => {
     const expenseToggle = screen.getByText('Gasto').closest('button') as HTMLButtonElement;
     expect(expenseToggle.className).not.toContain('bg-white');
 
-    expect(screen.getByText('Salario')).toBeTruthy();
-  });
-});
-
-describe("the scanner's prefilled params", () => {
-  it('populate the form on the first render', async () => {
-    await AsyncStorage.setItem('user', JSON.stringify(seededUser));
-    currentParams = {
-      amount: '45.67',
-      description: 'Starbucks',
-      category: 'food',
-    };
-
-    render(
-      <UserProvider>
-        <AddExpenseScreen />
-      </UserProvider>
-    );
-
-    const amountInput = await waitFor(() => screen.getByPlaceholderText('0') as HTMLInputElement);
-    expect(amountInput.value).toBe('45.67');
-
-    const descriptionInput = (await waitFor(() =>
-      screen.getByPlaceholderText('Agregar descripción...')
-    )) as HTMLInputElement;
-    expect(descriptionInput.value).toBe('Starbucks');
-
-    expect(screen.getByText('Comida')).toBeTruthy();
+    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '10' } });
+    expect(await screen.findByText('Salario')).toBeTruthy();
   });
 });

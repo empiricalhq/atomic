@@ -6,7 +6,7 @@ import Typography from '@/components/common/Typography';
 import Button from '@/components/common/Button';
 
 // A missing user means onboarding hasn't created one yet, so the tabs and
-// scanner stay unreachable (including by deep link) until it has. A load
+// modals stay unreachable (including by deep link) until it has. A load
 // error is routed separately from a missing user: routing it to onboarding
 // would let a retryable storage failure look like a fresh install and create
 // a second user that overwrites the one already in storage.
@@ -39,14 +39,6 @@ export function RootNavigator() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="add-expense"
-          options={{
-            headerShown: false,
-            presentation: 'modal',
-            animation: 'slide_from_bottom',
-          }}
-        />
-        <Stack.Screen
-          name="scanner"
           options={{
             headerShown: false,
             presentation: 'modal',
