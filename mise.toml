@@ -7,18 +7,12 @@ run = ["npm install", "mise run dev"]
 
 [tasks.dev]
 description = "Start development server with cache clearing"
-run = "npx expo start"
+run = "npx expo start --clear"
 alias = "d"
 
 [tasks.reset]
 description = "Reset development environment (clear cache, reinstall)"
-run = [
-  "npm run format",
-  "rm -rf node_modules",
-  "rm -rf .expo",
-  "npm install",
-  "npx expo install --fix",
-]
+run = ["rm -rf node_modules", "rm -rf .expo", "npm install", "npx expo install --fix"]
 
 [tasks.build-preview]
 description = "Build preview version using EAS"
