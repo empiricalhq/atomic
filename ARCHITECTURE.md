@@ -12,8 +12,9 @@ app/ screens ──► src/hooks ──► src/api ──► src/services/storag
      └──► src/components
 ```
 
-[`App.tsx`](App.tsx) registers Expo Router's root component with `app/` as the
-route context. [`app/_layout.tsx`](app/_layout.tsx) wraps the tree in
+`main` in [`package.json`](package.json) is `expo-router/entry`, which registers
+the root component with `app/` as the route context.
+[`app/_layout.tsx`](app/_layout.tsx) wraps the tree in
 `SafeAreaProvider` and `UserProvider`, then renders
 [`RootNavigator`](src/navigation/RootNavigator.tsx).
 
