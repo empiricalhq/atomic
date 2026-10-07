@@ -36,7 +36,7 @@ is in flight return the same promise.
 | loading | A spinner.                                               |
 | error   | The message and a retry button that calls `refreshUser`. |
 | missing | `onboarding` only.                                       |
-| loaded  | `(tabs)`, `add-expense`, `scanner` and `config`.         |
+| loaded  | `(tabs)`, `add-expense` and `config`.                    |
 
 The two groups use `Stack.Protected`. A deep link to a screen in the other group
 does not open it.
@@ -61,5 +61,6 @@ merges it into the record it reads inside the `user` key's queue, and the
 provider merges it into its state. Two quick updates of different settings both
 persist. The settings screen calls it from its three switches.
 
-If the write fails, `updateUser` logs the error, leaves the provider's state
-unchanged and resolves without throwing.
+If the write fails, `updateUser` rejects and leaves the provider's state
+unchanged. The settings screen catches the rejection and shows "No se pudo
+guardar el cambio. Intenta de nuevo."

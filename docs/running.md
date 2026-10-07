@@ -29,7 +29,6 @@ npx expo start --clear
 | ------------------ | ------------------------------------------------------ |
 | `npm run ios`      | `expo start --ios`                                     |
 | `npm run android`  | `expo start --android`                                 |
-| `npm run web`      | `expo start --web`                                     |
 | `npm run prebuild` | `expo prebuild`, which generates `ios/` and `android/` |
 
 `ios/` and `android/` are git-ignored.
@@ -38,15 +37,13 @@ npx expo start --clear
 
 `mise tasks` lists them.
 
-| Task                     | Runs                                                                                           |
-| ------------------------ | ---------------------------------------------------------------------------------------------- |
-| `mise run setup`         | `npm install`, then `mise run dev`.                                                            |
-| `mise run dev` (`d`)     | `npx expo start`.                                                                              |
-| `mise run reset`         | `npm run format`, deletes `node_modules` and `.expo`, `npm install`, `npx expo install --fix`. |
-| `mise run doctor`        | `npx expo-doctor` and `npx expo install --check`.                                              |
-| `mise run build-preview` | `npx eas build -p android --profile preview`.                                                  |
-
-`mise run dev` does not pass `--clear`.
+| Task                     | Runs                                                                         |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `mise run setup`         | `npm install`, then `mise run dev`.                                          |
+| `mise run dev` (`d`)     | `npx expo start --clear`.                                                    |
+| `mise run reset`         | Deletes `node_modules` and `.expo`, `npm install`, `npx expo install --fix`. |
+| `mise run doctor`        | `npx expo-doctor` and `npx expo install --check`.                            |
+| `mise run build-preview` | `npx eas build -p android --profile preview`.                                |
 
 ## Preview builds
 

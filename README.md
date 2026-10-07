@@ -33,14 +33,10 @@ recent transactions.
 - **Budgets.** Set a monthly budget for an expense category. The budget screen
   shows spent against budgeted for the current calendar month, per category and
   in total.
-- **Receipt scanner.** Open the camera or the photo library and fill the
-  add-expense form from the result. The scanner returns a fixed sample receipt;
-  it does not read the image.
-- **Reports.** Monthly income against expenses and the top spending categories.
-  The screen shows sample data from
-  [`src/data/mockData.ts`](src/data/mockData.ts), not your transactions.
+- **Reports.** Income against expenses for each of the last six months, and the
+  top five spending categories, from your transactions.
 - **Settings.** Toggles for notifications, biometric login and dark mode are
-  saved with the user. Other rows in the settings screen are placeholders.
+  saved with the user. The screen shows an error if a change is not saved.
 - **Local storage.** The user, transactions and budgets are stored in
   AsyncStorage on the device. There is no server and no account.
 - **Exact money arithmetic.** Totals are summed in integer cents, so
