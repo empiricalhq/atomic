@@ -133,7 +133,7 @@ export default function HomeScreen() {
               variant="elevated"
               padding="lg"
               onPress={() => router.push({ pathname: '/add-expense', params: { type: 'income' } })}
-              className="mx-1 flex-1 items-center rounded-2xl">
+              className="ml-2 flex-1 items-center rounded-2xl">
               <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
                 <Ionicons name="add" size={20} color="#475569" />
               </View>
@@ -141,33 +141,13 @@ export default function HomeScreen() {
                 Ingreso
               </Typography>
             </Card>
-            <Card
-              variant="elevated"
-              padding="lg"
-              onPress={() => router.push('/scanner')}
-              className="ml-2 flex-1 items-center rounded-2xl">
-              <View className="mb-3 h-12 w-12 items-center justify-center rounded-xl bg-gray-100">
-                <Ionicons name="camera" size={20} color="#475569" />
-              </View>
-              <Typography variant="caption" weight="semibold" color="secondary">
-                Escanear
-              </Typography>
-            </Card>
           </View>
         </View>
 
         <View className="mb-8 px-6">
-          <View className="mb-4 flex-row items-center justify-between">
-            <Typography variant="body" weight="bold" className="text-lg">
-              Recientes
-            </Typography>
-            <TouchableOpacity className="flex-row items-center">
-              <Typography variant="caption" color="muted" className="mr-1">
-                Ver todas
-              </Typography>
-              <Ionicons name="chevron-forward" size={14} color="#94a3b8" />
-            </TouchableOpacity>
-          </View>
+          <Typography variant="body" weight="bold" className="mb-4 text-lg">
+            Recientes
+          </Typography>
           {recentTransactions.length === 0 ? (
             <Card variant="elevated" padding="lg" className="items-center rounded-2xl">
               <View className="mb-4 h-16 w-16 items-center justify-center rounded-full bg-gray-100">
@@ -197,9 +177,6 @@ export default function HomeScreen() {
                   key={transaction.id}
                   transaction={transaction}
                   isLast={index === recentTransactions.length - 1}
-                  onPress={() => {
-                    /* Navigate to transaction detail */
-                  }}
                 />
               ))}
             </Card>
