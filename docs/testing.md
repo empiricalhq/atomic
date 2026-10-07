@@ -11,12 +11,8 @@ npm test
 
 ## Tests
 
-`npm test` runs `vitest run`. It finds every `*.test.ts` and `*.test.tsx`.
-
-```text
- Test Files  17 passed (17)
-      Tests  67 passed (67)
-```
+`npm test` runs `vitest run`. It finds every `*.test.ts` and `*.test.tsx` and
+exits non-zero if one fails.
 
 One file or one directory:
 
@@ -35,7 +31,8 @@ Layout:
 - Tests that render screens or navigators replace `react-native` with plain DOM
   elements. Tests that touch storage replace
   `@react-native-async-storage/async-storage` with an in-memory `Map`, and
-  `expo-crypto` with a counter. Its native module does not load under jsdom.
+  `expo-crypto` with a stub id generator, because its native module does not
+  load under jsdom.
 - `@/` resolves to `src/` in tests, as in the app
   ([`vitest.config.mts`](../vitest.config.mts)).
 

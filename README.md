@@ -7,6 +7,8 @@ expenses, tracks monthly budgets per category, and keeps everything on the
 device. It is built with React Native, Expo Router and NativeWind. The interface
 is in Spanish.
 
+## Get started
+
 ```bash
 git clone https://github.com/empiricalhq/atomic
 cd atomic
@@ -16,7 +18,8 @@ npm start
 ```
 
 `mise install` installs the Node.js version in `mise.toml`. `npm start` starts
-the development server; scan its QR code with Expo Go.
+the development server. Scan its QR code with Expo Go. Simulators, emulators
+and preview builds are in [Running the app](docs/running.md).
 
 The app opens on a three-step onboarding. Tapping **Comenzar** creates an
 anonymous local user and lands on the home screen, which shows the balance and
@@ -45,12 +48,12 @@ recent transactions.
 
 ## Documentation
 
-The [manual](docs/README.md) covers running the app, testing, the data flow and
-the user lifecycle. [ARCHITECTURE.md](ARCHITECTURE.md) maps the code.
+The [manual](docs/README.md) covers running the app, the architecture, the data
+flow, the user lifecycle and testing.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## License
 

@@ -60,3 +60,6 @@ does not open it.
 merges it into the record it reads inside the `user` key's queue, and the
 provider merges it into its state. Two quick updates of different settings both
 persist. The settings screen calls it from its three switches.
+
+If the write fails, `updateUser` logs the error, leaves the provider's state
+unchanged and resolves without throwing.
