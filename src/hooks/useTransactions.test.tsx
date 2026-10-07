@@ -2,6 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserProvider } from '@/contexts/UserContext';
+import { TransactionsProvider } from '@/contexts/TransactionsContext';
 import { useTransactions } from './useTransactions';
 
 vi.mock('@/api/userService', () => ({
@@ -77,7 +78,9 @@ describe('useTransactions drops a stale load', () => {
 
     render(
       <UserProvider>
-        <Probe />
+        <TransactionsProvider>
+          <Probe />
+        </TransactionsProvider>
       </UserProvider>
     );
 

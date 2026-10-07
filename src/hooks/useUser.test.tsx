@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserProvider } from '@/contexts/UserContext';
+import { TransactionsProvider } from '@/contexts/TransactionsContext';
 import { useUser } from './useUser';
 import { useTransactions } from './useTransactions';
 import { useBudget } from './useBudget';
@@ -91,7 +92,9 @@ describe('shared user state', () => {
 
     render(
       <UserProvider>
-        <Probe />
+        <TransactionsProvider>
+          <Probe />
+        </TransactionsProvider>
       </UserProvider>
     );
 
