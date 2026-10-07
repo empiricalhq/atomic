@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Switch } from 'react-native';
+import { View, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Typography from '@/components/common/Typography';
 import Card from '@/components/common/Card';
@@ -7,10 +7,10 @@ import { SettingsItem } from '@/constants/settings';
 interface Props {
   title: string;
   items: SettingsItem[];
-  dynamicSettings?: Record<string, { value: boolean; onToggle: (value: boolean) => void }>;
+  settings: Record<SettingsItem['id'], { value: boolean; onToggle: (value: boolean) => void }>;
 }
 
-export function SettingsGroup({ title, items, dynamicSettings = {} }: Props) {
+export function SettingsGroup({ title, items, settings }: Props) {
   return (
     <View className="mb-8 px-5">
       <Typography variant="overline" weight="semibold" color="secondary" className="mb-2 uppercase">
@@ -18,11 +18,11 @@ export function SettingsGroup({ title, items, dynamicSettings = {} }: Props) {
       </Typography>
       <Card padding="none" variant="bordered" className="overflow-hidden">
         {items.map((item, itemIndex) => {
-          const dynamicProps = item.id ? dynamicSettings[item.id] : undefined;
+          const setting = settings[item.id];
           return (
-            <TouchableOpacity
-              key={itemIndex}
-              className={`flex-row items-center justify-between px-4 py-4 active:bg-gray-50 ${
+            <View
+              key={item.id}
+              className={`flex-row items-center justify-between px-4 py-4 ${
                 itemIndex !== items.length - 1 ? 'border-b border-gray-100' : ''
               }`}>
               <View className="flex-1 flex-row items-center">
@@ -36,20 +36,15 @@ export function SettingsGroup({ title, items, dynamicSettings = {} }: Props) {
                 </View>
               </View>
               <View className="ml-3">
-                {item.action === 'switch' && dynamicProps && (
-                  <Switch
-                    value={dynamicProps.value}
-                    onValueChange={dynamicProps.onToggle}
-                    trackColor={{ false: '#e2e8f0', true: '#475569' }}
-                    thumbColor="white"
-                    ios_backgroundColor="#e2e8f0"
-                  />
-                )}
-                {item.action === 'chevron' && (
-                  <Ionicons name="chevron-forward" size={16} color="#64748b" />
-                )}
+                <Switch
+                  value={setting.value}
+                  onValueChange={setting.onToggle}
+                  trackColor={{ false: '#e2e8f0', true: '#475569' }}
+                  thumbColor="white"
+                  ios_backgroundColor="#e2e8f0"
+                />
               </View>
-            </TouchableOpacity>
+            </View>
           );
         })}
       </Card>

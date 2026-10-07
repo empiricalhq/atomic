@@ -159,6 +159,42 @@ describe('the settings screen', () => {
     );
   });
 
+  it('says so, and leaves the switch where it was, when the write fails', async () => {
+    await AsyncStorage.setItem('user', JSON.stringify(seededUser));
+
+    render(
+      <UserProvider>
+        <ConfigScreen />
+      </UserProvider>
+    );
+
+    const darkModeSwitch = (await waitFor(
+      () => screen.getAllByRole('checkbox')[2]
+    )) as HTMLInputElement;
+    vi.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('storage write failed'));
+    vi.spyOn(console, 'error').mockImplementationOnce(() => {});
+
+    fireEvent.click(darkModeSwitch);
+
+    await waitFor(() =>
+      expect(screen.getByText('No se pudo guardar el cambio. Intenta de nuevo.')).toBeTruthy()
+    );
+    expect(darkModeSwitch.checked).toBe(false);
+  });
+
+  it('lists only the settings that work: no inert rows and no sign-out', async () => {
+    render(
+      <UserProvider>
+        <ConfigScreen />
+      </UserProvider>
+    );
+
+    await waitFor(() => screen.getAllByRole('checkbox'));
+    expect(screen.getAllByRole('checkbox')).toHaveLength(3);
+    expect(screen.queryByTestId('icon-chevron-forward')).toBeNull();
+    expect(screen.queryByText('Cerrar Sesión')).toBeNull();
+  });
+
   it('closes back to the screen that opened it', async () => {
     render(
       <UserProvider>

@@ -1,9 +1,8 @@
-import { ScrollView, TouchableOpacity, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useUser } from '@/hooks/useUser';
-import { UserSettings } from '@/types';
-import { SETTINGS_GROUPS } from '@/constants/settings';
+import { SETTINGS_GROUPS, type SettingsItem } from '@/constants/settings';
 import Screen from '@/components/layout/Screen';
 import Header from '@/components/layout/Header';
 import { UserProfileHeader } from '@/components/settings/UserProfileHeader';
@@ -12,12 +11,20 @@ import Typography from '@/components/common/Typography';
 
 export default function ConfigScreen() {
   const { user, updateUser } = useUser();
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const toggleSetting = (key: keyof UserSettings) => (value: boolean) => {
-    updateUser({ settings: { [key]: value } });
+  const toggleSetting = (key: SettingsItem['id']) => async (value: boolean) => {
+    setSaveError(null);
+    try {
+      await updateUser({ settings: { [key]: value } });
+    } catch (error) {
+      console.error('Error saving setting:', error);
+      // A failed write leaves the switch at the stored value, so show an error.
+      setSaveError('No se pudo guardar el cambio. Intenta de nuevo.');
+    }
   };
 
-  const dynamicSettings = {
+  const settings = {
     notifications: {
       value: user?.settings.notifications ?? false,
       onToggle: toggleSetting('notifications'),
@@ -36,19 +43,20 @@ export default function ConfigScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <UserProfileHeader user={user} />
 
-        {SETTINGS_GROUPS.map((group, groupIndex) => (
+        {saveError && (
+          <Typography variant="body" color="error" className="mb-4 px-5 text-center">
+            {saveError}
+          </Typography>
+        )}
+
+        {SETTINGS_GROUPS.map((group) => (
           <SettingsGroup
-            key={groupIndex}
+            key={group.title}
             title={group.title}
             items={group.items}
-            dynamicSettings={dynamicSettings}
+            settings={settings}
           />
         ))}
-
-        <TouchableOpacity className="mx-5 mb-8 flex-row items-center justify-center rounded-2xl bg-white py-4 active:bg-gray-50">
-          <Ionicons name="log-out" size={20} color="#dc2626" />
-          <Text className="ml-2 text-base font-semibold text-red-600">Cerrar Sesión</Text>
-        </TouchableOpacity>
 
         <Typography variant="caption" color="muted" className="pb-8 text-center">
           Versión 1.0.0
