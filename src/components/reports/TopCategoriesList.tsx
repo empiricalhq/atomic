@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '@/components/common/Card';
 import Typography from '@/components/common/Typography';
@@ -21,19 +21,17 @@ interface Props {
 export function TopCategoriesList({ categories, totalExpenses, className }: Props) {
   return (
     <Card variant="bordered" padding="lg" className={cn(className)}>
-      <View className="mb-4 flex-row items-center justify-between">
-        <Typography variant="h3" weight="bold">
-          Categorías Top
+      <Typography variant="h3" weight="bold" className="mb-4">
+        Categorías Top
+      </Typography>
+      {categories.length === 0 && (
+        <Typography variant="body" color="muted">
+          Sin gastos en los últimos seis meses
         </Typography>
-        <TouchableOpacity>
-          <Typography variant="caption" weight="medium" color="secondary">
-            Ver todas
-          </Typography>
-        </TouchableOpacity>
-      </View>
+      )}
       {categories.map((category, index) => (
         <View
-          key={index}
+          key={category.name}
           className={`flex-row items-center justify-between py-4 ${
             index !== categories.length - 1 ? 'border-b border-gray-100' : ''
           }`}>
