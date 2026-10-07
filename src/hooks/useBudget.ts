@@ -2,7 +2,6 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { budgetService } from '@/api/budgetService';
 import { transactionService } from '@/api/transactionService';
-import { getCategoryById } from '@/api/categoryService';
 import { BudgetCategory, BudgetCategoryWithSpent, Transaction } from '@/types';
 import {
   BudgetPeriod,
@@ -12,6 +11,7 @@ import {
   isKnownExpenseCategory,
   isValidBudgetAmount,
 } from '@/utils/budget';
+import { getCategoryById } from '@/utils/categories';
 import { sumMoney } from '@/utils/money';
 import { useUser } from './useUser';
 
