@@ -21,6 +21,8 @@ export interface UserContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
+  // Rejects when the write fails, leaving the user unchanged, so the caller
+  // can tell the person the change was not saved.
   updateUser: (updates: UserUpdate) => Promise<void>;
   // Returns the loaded user (or null on failure) so a caller that retries
   // after a failed load can act on the result immediately, instead of
@@ -107,27 +109,23 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const updateUser = useCallback(
     async (updates: UserUpdate) => {
       if (!user) return;
-      try {
-        if (updates.settings) {
-          await userService.updateUserSettings(user.id, updates.settings);
-        }
-        if (updates.name || updates.email) {
-          await userService.updateUserProfile(user.id, {
-            name: updates.name,
-            email: updates.email,
-          });
-        }
-        setUser((prev) => {
-          if (!prev) return null;
-          return {
-            ...prev,
-            ...updates,
-            settings: updates.settings ? { ...prev.settings, ...updates.settings } : prev.settings,
-          };
-        });
-      } catch (err) {
-        console.error('Error updating user:', err);
+      if (updates.settings) {
+        await userService.updateUserSettings(user.id, updates.settings);
       }
+      if (updates.name || updates.email) {
+        await userService.updateUserProfile(user.id, {
+          name: updates.name,
+          email: updates.email,
+        });
+      }
+      setUser((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          ...updates,
+          settings: updates.settings ? { ...prev.settings, ...updates.settings } : prev.settings,
+        };
+      });
     },
     [user]
   );

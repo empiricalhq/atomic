@@ -212,7 +212,7 @@ describe('a settings change survives a reload', () => {
 });
 
 describe('a failed settings write leaves the value unchanged', () => {
-  it('keeps the provider user and stored user at the old value when storage rejects the write', async () => {
+  it('rejects, and keeps the provider user and stored user at the old value, when storage rejects the write', async () => {
     let created: UserContextValue | null = null;
     render(
       <UserProvider>
@@ -229,7 +229,9 @@ describe('a failed settings write leaves the value unchanged', () => {
     const setItem = vi.mocked(AsyncStorage.setItem);
     setItem.mockRejectedValueOnce(new Error('storage write failed'));
 
-    await created!.updateUser({ settings: { ...created!.user!.settings, darkMode: true } });
+    await expect(
+      created!.updateUser({ settings: { ...created!.user!.settings, darkMode: true } })
+    ).rejects.toThrow('storage write failed');
 
     expect(screen.getByTestId('dark-mode').textContent).toBe('false');
 
