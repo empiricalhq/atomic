@@ -17,7 +17,7 @@
     "@react-native-async-storage/async-storage": "3.1.1",
     "@react-native-async-storage/expo-with-async-storage": "1.0.0",
     "clsx": "^2.1.1",
-    "expo": "^57.0.27",
+    "expo": "^57.0.28",
     "expo-constants": "~57.0.21",
     "expo-crypto": "~57.0.3",
     "expo-font": "~57.0.4",
