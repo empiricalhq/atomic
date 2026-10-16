@@ -21,7 +21,12 @@ outside a provider.
 
 A user is **missing** when loading has finished, there is no error and `user` is
 `null`. A failed read sets `error` and is not missing. `createUser` rejects
-while loading, on error, or when a user exists.
+while loading, on error, or when a user exists. This keeps a transient read
+failure from creating a second user over the stored one.
+
+`storageService` reports a missing user when the `user` key is absent or holds
+the JSON value `null`. An empty or unparsable stored value fails the read, so it
+sets `error`.
 
 On mount the provider calls `userService.loadUser()`. Calls to `refreshUser`
 made while a load is in flight join it. `createUser` calls made while a create
