@@ -73,9 +73,11 @@ because the month can change while the app stays open.
 [`useBudget`](../src/hooks/useBudget.ts) loads the user's budget categories and
 transactions together and derives `spent` and `progress` for the current month
 with [`src/utils/budget.ts`](../src/utils/budget.ts). It reloads every time the
-budget tab gains focus. `addCategory` validates the amount and the category,
-and `budgetService.addBudgetCategory` rejects a duplicate category for the same
-user inside the storage queue.
+budget tab gains focus. Focus does not fire when the user changes under a
+screen that stays focused, so `refreshCategories` after a failed user load
+refreshes the user and, when that returns a user, loads the budget data. `addCategory` validates the
+amount and the category, and `budgetService.addBudgetCategory` rejects a
+duplicate category for the same user inside the storage queue.
 
 ## Stored shape
 
