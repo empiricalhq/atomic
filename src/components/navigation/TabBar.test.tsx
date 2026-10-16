@@ -66,7 +66,7 @@ function makeProps(focusedIndex: number) {
 }
 
 describe('the tab bar renders the three route buttons with a "+" slot between budget and reports', () => {
-  it('keeps every button in its own slot, in the original left-to-right order', () => {
+  it('keeps every button in its own slot, in left-to-right order', () => {
     const { props } = makeProps(0);
     render(<TabBar {...props} />);
 

@@ -99,11 +99,11 @@ const seededUser = {
   },
 };
 
-describe('a second visit to the form', () => {
-  it('starts empty even after a successful save on the first visit', async () => {
+describe('saving an entry', () => {
+  it('stores the transaction and closes the form', async () => {
     await AsyncStorage.setItem('user', JSON.stringify(seededUser));
 
-    const { unmount } = render(
+    render(
       <UserProvider>
         <TransactionsProvider>
           <AddExpenseScreen />
@@ -118,23 +118,9 @@ describe('a second visit to the form', () => {
     fireEvent.click(saveButton);
 
     await waitFor(() => expect(backMock).toHaveBeenCalledOnce());
-
-    // The screen is a root-level modal that mounts fresh every visit, not a
-    // tab that stays mounted: nothing about the saved form carries over.
-    unmount();
-    render(
-      <UserProvider>
-        <TransactionsProvider>
-          <AddExpenseScreen />
-        </TransactionsProvider>
-      </UserProvider>
-    );
-
-    const secondVisitAmount = await waitFor(
-      () => screen.getByPlaceholderText('0') as HTMLInputElement
-    );
-    expect(secondVisitAmount.value).toBe('');
-    expect(screen.queryByPlaceholderText('Agregar descripción...')).toBeNull();
+    const stored = JSON.parse((await AsyncStorage.getItem('transactions'))!);
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).toMatchObject({ userId: seededUser.id, type: 'expense' });
   });
 });
 

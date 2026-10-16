@@ -18,8 +18,6 @@ vi.mock('@react-native-async-storage/async-storage', () => {
   };
 });
 
-// expo-crypto bridges to a native module that jsdom can't load; only
-// userService.createAnonymousUser's random id generation needs it here.
 let nextId = 0;
 vi.mock('expo-crypto', () => ({ randomUUID: () => `test-user-${++nextId}` }));
 

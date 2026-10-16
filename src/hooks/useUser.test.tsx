@@ -8,9 +8,7 @@ import { useUser } from './useUser';
 import { useTransactions } from './useTransactions';
 import { useBudget } from './useBudget';
 
-// expo-router's useFocusEffect requires a real navigation container; these
-// hooks only need it to run their effect, so it's replaced with a plain
-// mount effect rather than pulling in react-navigation for this test.
+// useFocusEffect requires a real navigation container; a mount effect stands in.
 vi.mock('expo-router', () => ({
   useFocusEffect: (callback: () => void | (() => void)) => {
     useEffect(() => callback(), [callback]);
@@ -66,10 +64,8 @@ describe('shared user state', () => {
   });
 
   it('reloads both transactions and budgets, in every screen, from a single retry after a failed user load', async () => {
-    // A flag, not mockRejectedValueOnce/mockResolvedValueOnce: a shared
-    // provider makes one loadUser() call per load, but the bug this
-    // guards against made every screen call it independently, so the
-    // fix must hold regardless of how many calls a mount makes.
+    // A flag rather than a queued once-implementation, so the test holds
+    // however many loadUser calls a mount makes.
     let shouldFail = true;
     vi.mocked(userService.loadUser).mockImplementation(async () => {
       if (shouldFail) throw new Error('storage read failed');

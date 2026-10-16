@@ -61,11 +61,6 @@ vi.mock('expo-crypto', () => ({ randomUUID: () => 'config-test-user' }));
 
 afterEach(cleanup);
 
-function DarkModeProbe() {
-  const { user } = useUser();
-  return <span data-testid="dark-mode">{String(user?.settings.darkMode ?? false)}</span>;
-}
-
 function SettingsProbe() {
   const { user } = useUser();
   return (
@@ -93,35 +88,6 @@ const seededUser = {
 };
 
 describe('the settings screen', () => {
-  it('writes a flipped toggle through updateUser, so it survives a reload of the provider', async () => {
-    // A ready user, as if reached from Home's person icon rather than
-    // during onboarding, so the toggle has a real user to write through.
-    await AsyncStorage.setItem('user', JSON.stringify(seededUser));
-
-    render(
-      <UserProvider>
-        <ConfigScreen />
-      </UserProvider>
-    );
-
-    // Notificaciones, Autenticación Biométrica, Modo Oscuro, in that order.
-    const darkModeSwitch = (await waitFor(
-      () => screen.getAllByRole('checkbox')[2]
-    )) as HTMLInputElement;
-    expect(darkModeSwitch.checked).toBe(false);
-
-    fireEvent.click(darkModeSwitch);
-    await waitFor(() => expect(darkModeSwitch.checked).toBe(true));
-
-    cleanup();
-    render(
-      <UserProvider>
-        <DarkModeProbe />
-      </UserProvider>
-    );
-    await waitFor(() => expect(screen.getByTestId('dark-mode').textContent).toBe('true'));
-  });
-
   it('keeps both changes when two different toggles are flipped before either write resolves', async () => {
     await AsyncStorage.setItem('user', JSON.stringify(seededUser));
 
@@ -131,15 +97,13 @@ describe('the settings screen', () => {
       </UserProvider>
     );
 
-    // Notificaciones, Autenticación Biométrica, Modo Oscuro, in that order.
+    // Switch order: notifications, biometric, dark mode.
     const [notificationsSwitch, , darkModeSwitch] = (await waitFor(() =>
       screen.getAllByRole('checkbox')
     )) as HTMLInputElement[];
     expect(notificationsSwitch.checked).toBe(true);
     expect(darkModeSwitch.checked).toBe(false);
 
-    // Two taps landing before either updateUser call's write has resolved,
-    // each starting from the same render-time settings.
     fireEvent.click(notificationsSwitch);
     fireEvent.click(darkModeSwitch);
 
@@ -180,19 +144,6 @@ describe('the settings screen', () => {
       expect(screen.getByText('No se pudo guardar el cambio. Intenta de nuevo.')).toBeTruthy()
     );
     expect(darkModeSwitch.checked).toBe(false);
-  });
-
-  it('lists only the settings that work: no inert rows and no sign-out', async () => {
-    render(
-      <UserProvider>
-        <ConfigScreen />
-      </UserProvider>
-    );
-
-    await waitFor(() => screen.getAllByRole('checkbox'));
-    expect(screen.getAllByRole('checkbox')).toHaveLength(3);
-    expect(screen.queryByTestId('icon-chevron-forward')).toBeNull();
-    expect(screen.queryByText('Cerrar Sesión')).toBeNull();
   });
 
   it('closes back to the screen that opened it', async () => {

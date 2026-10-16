@@ -6,11 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '@/hooks/useUser';
 import { UserProvider, type UserContextValue } from './UserContext';
 
-// Hoisted so the same Map backs both the mock factory below and the
-// beforeEach that restores it: a test earlier in the file can leave a
-// queued mockImplementationOnce unconsumed (e.g. a single-flight guard
-// skipping the second of two queued reads), which would otherwise hang the
-// very next getItem call in a later test.
+// Hoisted so one Map backs both the mock factory and the beforeEach that
+// restores it. A queued mockImplementationOnce a test leaves unconsumed would
+// otherwise hang the next getItem call in a later test.
 const { store } = vi.hoisted(() => ({ store: new Map<string, string>() }));
 
 vi.mock('@react-native-async-storage/async-storage', () => ({
@@ -32,9 +30,8 @@ beforeEach(() => {
   });
 });
 
-// expo-crypto bridges to a native module that jsdom can't load; a fresh id
-// on every call is what would expose the bug (two calls, two ids) if
-// createUser weren't single-flight.
+// A fresh id on every call exposes a createUser that is not single-flight
+// (two calls, two ids).
 let nextId = 0;
 vi.mock('expo-crypto', () => ({ randomUUID: () => `test-user-${++nextId}` }));
 
@@ -44,9 +41,6 @@ function DoubleTapCreate({ onDone }: { onDone: (ids: [string, string]) => void }
   const { user, loading, createUser } = useUser();
   useEffect(() => {
     if (loading || user) return;
-    // Both calls fire in the same tick, before either has awaited anything,
-    // mirroring two rapid taps that both land before React re-renders with
-    // a disabled button.
     Promise.all([createUser(), createUser()]).then(([a, b]) => onDone([a.id, b.id]));
   }, [loading, user, createUser, onDone]);
   return null;
@@ -101,8 +95,6 @@ function DoubleRefresh({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     if (loading || firedRef.current) return;
     firedRef.current = true;
-    // Both calls fire in the same tick, before either has awaited anything,
-    // mirroring two rapid retries.
     Promise.all([refreshUser(), refreshUser()]).then(onDone);
   }, [loading, refreshUser, onDone]);
   return null;
@@ -117,7 +109,6 @@ describe('refreshUser is single-flight', () => {
   it('joins a second concurrent call to the first read, so an older read that later fails cannot hide a valid user behind an error', async () => {
     const getItem = vi.mocked(AsyncStorage.getItem);
     getItem.mockReset();
-    // The provider's mount effect issues the first read: no stored user yet.
     getItem.mockImplementationOnce(() => Promise.resolve(null));
 
     let resolveFirstRefreshRead!: (value: string | null) => void;
@@ -142,19 +133,15 @@ describe('refreshUser is single-flight', () => {
       </UserProvider>
     );
 
-    // Give both refreshUser() calls a chance to each start a read if the
-    // provider isn't single-flight.
     await waitFor(() => expect(getItem.mock.calls.length).toBeGreaterThanOrEqual(2));
 
     if (getItem.mock.calls.length >= 3) {
-      // Not single-flight: two independent reads happened. The newer call's
-      // read resolves first with a valid user, and the older call's read
-      // rejects afterwards - reproducing the race the gate found.
+      // Two independent reads: the newer one resolves with a valid user, then
+      // the older one rejects.
       resolveSecondRefreshRead(JSON.stringify(storedUser));
       await Promise.resolve();
       rejectFirstRefreshRead(new Error('stale read failed'));
     } else {
-      // Single-flight: only one read was issued for both calls.
       resolveFirstRefreshRead(JSON.stringify(storedUser));
     }
 

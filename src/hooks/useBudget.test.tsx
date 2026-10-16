@@ -5,9 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserProvider } from '@/contexts/UserContext';
 import { useBudget } from './useBudget';
 
-// expo-router's useFocusEffect requires a real navigation container; this
-// hook only needs it to run its effect, so it's replaced with a plain
-// mount effect rather than pulling in react-navigation for this test.
+// useFocusEffect requires a real navigation container; a mount effect stands in.
 vi.mock('expo-router', () => ({
   useFocusEffect: (callback: () => void | (() => void)) => {
     useEffect(() => callback(), [callback]);
@@ -83,19 +81,15 @@ describe('useBudget drops a stale load', () => {
       </UserProvider>
     );
 
-    // Let the mount-triggered focus load start (the first getBudgetCategories call).
     await waitFor(() => expect(getBudgetCategories.mock.calls.length).toBeGreaterThanOrEqual(1));
 
-    // A second, overlapping load starts before the first has resolved.
     screen.getByText('refresh').click();
     await waitFor(() => expect(getBudgetCategories.mock.calls.length).toBe(2));
 
-    // The newer (second) load resolves first; the older (first) resolves after it.
     resolveSecond(categoriesFor('transport'));
     await waitFor(() => expect(screen.getByTestId('category-ids').textContent).toBe('transport'));
     resolveFirst(categoriesFor('food'));
 
-    // Give the stale, later-resolving first load a chance to (wrongly) apply.
     await new Promise((r) => setTimeout(r, 20));
     expect(screen.getByTestId('category-ids').textContent).toBe('transport');
   });

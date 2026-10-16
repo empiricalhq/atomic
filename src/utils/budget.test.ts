@@ -21,88 +21,56 @@ const expense = (overrides: Partial<Transaction>): Transaction => ({
 });
 
 describe('calculateCategorySpent', () => {
+  const category = { categoryId: 'food' };
+
   it('sums this category expense transactions in the period, exactly', () => {
-    const category = { categoryId: 'food' };
     const transactions = [
-      expense({ id: '1', category: 'food', amount: 0.1 }),
-      expense({ id: '2', category: 'food', amount: 0.2 }),
+      expense({ id: '1', amount: 0.1 }),
+      expense({ id: '2', amount: 0.2 }),
+      expense({ id: '3', amount: 25, category: 'transport' }),
     ];
     expect(calculateCategorySpent(category, transactions, period)).toBe(0.3);
   });
 
-  it('matches by categoryId, not by name', () => {
-    const category = { categoryId: 'food' };
-    const transactions = [expense({ category: 'food', amount: 25 })];
-    expect(calculateCategorySpent(category, transactions, period)).toBe(25);
-  });
-
-  it('ignores income transactions', () => {
-    const category = { categoryId: 'food' };
-    const transactions = [expense({ category: 'food', type: 'income', amount: 100 })];
-    expect(calculateCategorySpent(category, transactions, period)).toBe(0);
-  });
-
-  it('ignores transactions from other categories', () => {
-    const category = { categoryId: 'food' };
-    const transactions = [expense({ category: 'transport', amount: 100 })];
-    expect(calculateCategorySpent(category, transactions, period)).toBe(0);
-  });
-
-  it('ignores transactions outside the period', () => {
-    const category = { categoryId: 'food' };
-    const transactions = [expense({ category: 'food', amount: 100, date: new Date(2026, 7, 15) })];
+  it.each([
+    ['income transactions', { type: 'income' as const }],
+    ['other categories', { category: 'transport' }],
+    ['transactions outside the period', { date: new Date(2026, 7, 15) }],
+  ])('ignores %s', (_label, overrides) => {
+    const transactions = [expense({ amount: 100, ...overrides })];
     expect(calculateCategorySpent(category, transactions, period)).toBe(0);
   });
 });
 
 describe('calculateProgress', () => {
-  it('caps progress at 100', () => {
-    expect(calculateProgress(150, 100)).toBe(100);
-  });
-
-  it('computes a normal ratio', () => {
-    expect(calculateProgress(25, 100)).toBe(25);
-  });
-
-  it('is finite for a zero budget with spending', () => {
-    const progress = calculateProgress(10, 0);
-    expect(Number.isFinite(progress)).toBe(true);
-    expect(progress).toBe(100);
-  });
-
-  it('is finite for a zero budget with no spending', () => {
-    const progress = calculateProgress(0, 0);
-    expect(Number.isFinite(progress)).toBe(true);
-    expect(progress).toBe(0);
+  it.each([
+    [150, 100, 100],
+    [25, 100, 25],
+    [10, 0, 100],
+    [0, 0, 0],
+  ])('spent %d of budget %d is %d%%', (spent, budgeted, progress) => {
+    expect(calculateProgress(spent, budgeted)).toBe(progress);
   });
 });
 
 describe('isValidBudgetAmount', () => {
-  it('rejects zero and negative amounts', () => {
-    expect(isValidBudgetAmount(0)).toBe(false);
-    expect(isValidBudgetAmount(-5)).toBe(false);
-  });
-
-  it('accepts a positive amount', () => {
-    expect(isValidBudgetAmount(500)).toBe(true);
-  });
-
-  it('rejects an amount that rounds to zero cents', () => {
-    expect(isValidBudgetAmount(0.004)).toBe(false);
+  it.each([
+    [500, true],
+    [0, false],
+    [-5, false],
+    [0.004, false],
+  ])('%d is %s', (amount, valid) => {
+    expect(isValidBudgetAmount(amount)).toBe(valid);
   });
 });
 
 describe('isKnownExpenseCategory', () => {
-  it('accepts a category id from EXPENSE_CATEGORIES', () => {
-    expect(isKnownExpenseCategory('food')).toBe(true);
-  });
-
-  it('rejects an id that is not an expense category', () => {
-    expect(isKnownExpenseCategory('not-a-real-category')).toBe(false);
-  });
-
-  it('rejects an income category id', () => {
-    expect(isKnownExpenseCategory('salary')).toBe(false);
+  it.each([
+    ['food', true],
+    ['not-a-real-category', false],
+    ['salary', false],
+  ])('%s is %s', (id, known) => {
+    expect(isKnownExpenseCategory(id)).toBe(known);
   });
 });
 

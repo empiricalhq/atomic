@@ -16,15 +16,11 @@ const tx = (overrides: Partial<Transaction>): Transaction => ({
 });
 
 describe('getReportPeriod', () => {
-  it('spans the current month and the five before it', () => {
-    const { start, end } = getReportPeriod(now);
-    expect(start).toEqual(new Date(2026, 4, 1));
-    expect(end).toEqual(new Date(2026, 10, 1));
-  });
-
-  it('crosses a year boundary', () => {
-    const { start } = getReportPeriod(new Date(2026, 1, 10));
-    expect(start).toEqual(new Date(2025, 8, 1));
+  it.each([
+    ['within a year', now, new Date(2026, 4, 1), new Date(2026, 10, 1)],
+    ['across a year boundary', new Date(2026, 1, 10), new Date(2025, 8, 1), new Date(2026, 2, 1)],
+  ])('spans the current month and the five before it, %s', (_label, date, start, end) => {
+    expect(getReportPeriod(date)).toEqual({ start, end });
   });
 });
 

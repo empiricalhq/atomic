@@ -25,7 +25,6 @@ vi.mock('@react-native-async-storage/async-storage', () => {
   };
 });
 
-// expo-crypto bridges to a native module jsdom can't load; this test only reads.
 vi.mock('expo-crypto', () => ({ randomUUID: () => 'unused' }));
 
 afterEach(cleanup);

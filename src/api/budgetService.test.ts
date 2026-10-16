@@ -12,8 +12,6 @@ vi.mock('@react-native-async-storage/async-storage', () => {
   };
 });
 
-// expo-crypto bridges to a native module that jsdom can't load; budgetService
-// only needs its id generation.
 let nextId = 0;
 vi.mock('expo-crypto', () => ({ randomUUID: () => `test-budget-id-${++nextId}` }));
 

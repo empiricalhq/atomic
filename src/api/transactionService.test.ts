@@ -12,8 +12,6 @@ vi.mock('@react-native-async-storage/async-storage', () => {
   };
 });
 
-// expo-crypto bridges to a native module that jsdom can't load; a fresh id
-// on every call is enough for createTransaction here.
 let nextId = 0;
 vi.mock('expo-crypto', () => ({ randomUUID: () => `test-tx-${++nextId}` }));
 
