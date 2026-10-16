@@ -15,7 +15,7 @@ export const toCents = (amount: number): number => {
   return negative ? -cents : cents;
 };
 
-export const fromCents = (cents: number): number => cents / 100;
+const fromCents = (cents: number): number => cents / 100;
 
 export const sumMoney = (amounts: number[]): number =>
   fromCents(amounts.reduce((total, amount) => total + toCents(amount), 0));

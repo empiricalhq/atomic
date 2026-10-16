@@ -2,7 +2,7 @@ import { Transaction } from '@/types';
 import { BudgetPeriod } from './budget';
 import { sumMoney } from './money';
 
-export const REPORT_MONTHS = 6;
+const REPORT_MONTHS = 6;
 
 const MONTH_LABELS = [
   'Ene',
