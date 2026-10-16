@@ -42,11 +42,9 @@ export default function OnboardingScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [startError, setStartError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
-  // Set synchronously, before the first await, so a second tap (Comenzar or
-  // Saltar, both call this) fired before the disabled button re-renders
-  // still bails out instead of calling createUser again. The provider's own
-  // single-flight guard also covers this, but bailing here avoids a second
-  // fade transition and a wasted round trip through it.
+  // Set before the first await: a second tap on Comenzar or Saltar before the
+  // button disables must not start a second fade transition. The provider's
+  // single-flight createUser already prevents a second user.
   const isStartingRef = useRef(false);
 
   const contentOpacity = useSharedValue(1);
@@ -97,7 +95,6 @@ export default function OnboardingScreen() {
       router.replace('/(tabs)');
     } catch (error) {
       console.error('Error completing onboarding:', error);
-      // A failed save must not navigate on as if the account was created.
       setStartError('No se pudo iniciar. Intenta de nuevo.');
     } finally {
       isStartingRef.current = false;

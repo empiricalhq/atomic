@@ -19,7 +19,6 @@ export default function ConfigScreen() {
       await updateUser({ settings: { [key]: value } });
     } catch (error) {
       console.error('Error saving setting:', error);
-      // A failed write leaves the switch at the stored value, so show an error.
       setSaveError('No se pudo guardar el cambio. Intenta de nuevo.');
     }
   };

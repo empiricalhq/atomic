@@ -17,10 +17,8 @@ const reviveTransaction = (transaction: Transaction): Transaction => ({
 });
 
 class StorageService {
-  // One promise chain per key: a write, or a read-check-write a caller runs
-  // through runExclusive, starts only once every earlier operation on that
-  // key has settled, so two concurrent writes to the same key can't each
-  // read the same starting data and overwrite the other's addition.
+  // One promise chain per key: an operation starts only once every earlier
+  // one on that key has settled.
   private queues = new Map<string, Promise<unknown>>();
 
   private runExclusive<T>(key: string, operation: () => Promise<T>): Promise<T> {
@@ -36,9 +34,6 @@ class StorageService {
     return next;
   }
 
-  // Returns null only for a missing key (AsyncStorage.getItem's own null),
-  // not an empty string: "" is a stored value, so it's parsed like any
-  // other, and a parse failure rejects rather than reading as missing.
   private async get<T>(key: string): Promise<T | null> {
     const data = await AsyncStorage.getItem(key);
     return data === null ? null : JSON.parse(data);
@@ -57,10 +52,6 @@ class StorageService {
     return this.runExclusive(KEYS.USER, () => this.set(KEYS.USER, user));
   }
 
-  // update runs inside the user key's queue, on the record it reads there,
-  // not a snapshot the caller read earlier: two concurrent updates (say a
-  // settings change and a profile edit) would otherwise both read the same
-  // starting user and the later write would overwrite the earlier one.
   async updateUser(
     update: (user: User | null) => User | null | Promise<User | null>
   ): Promise<User | null> {
@@ -99,9 +90,8 @@ class StorageService {
     return allCategories.filter((c) => c.userId === userId);
   }
 
-  // update runs inside this key's queue: the caller's duplicate check and
-  // the write it guards happen as one step, so two concurrent adds can't
-  // both pass the check before either write lands.
+  // The duplicate check and the write it guards run in the same queued
+  // operation.
   async addBudgetCategory(
     update: (categories: BudgetCategory[]) => BudgetCategory | Promise<BudgetCategory>
   ): Promise<BudgetCategory> {

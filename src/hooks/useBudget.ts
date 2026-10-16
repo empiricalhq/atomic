@@ -24,23 +24,15 @@ export const useBudget = () => {
   const [period, setPeriod] = useState<BudgetPeriod>(() => getCurrentMonthPeriod());
   const hasLoadedOnce = useRef(false);
 
-  // A focus-triggered load can overlap a previous one still in flight (a
-  // quick blur/refocus, or refreshCategories firing while the focus load
-  // hasn't resolved), and the two can resolve out of order. Unlike
-  // refreshUser's single shared target, each of these loads may already be
-  // stale by the time it resolves and should be discarded rather than
-  // joined, so every load gets its own sequence number and only the result
-  // matching the latest one is applied.
+  // Overlapping loads can resolve out of order. Each gets a sequence number
+  // and only the latest result is applied.
   const loadSeqRef = useRef(0);
 
-  // Categories and the transactions their spent is derived from are fetched
-  // together, under one loading flag, so spent can't render as $0.00 for a
-  // moment while transactions are still on the way in behind it.
+  // Fetched together under one loading flag, so spent never renders as $0.00
+  // while transactions are still on the way.
   const loadDataForUser = useCallback(async (userId: string) => {
     const seq = ++loadSeqRef.current;
     try {
-      // Only the first load shows the full-screen spinner; a focus-triggered
-      // refresh after that updates the list in place.
       if (!hasLoadedOnce.current) setLoading(true);
       setDataError(null);
       const [userCategories, userTransactions] = await Promise.all([
@@ -74,10 +66,6 @@ export const useBudget = () => {
     await loadDataForUser(user.id);
   }, [user, loadDataForUser]);
 
-  // A category or transaction added on another tab is invisible here until
-  // this screen refetches, and the month can change while the app stays
-  // open, so this is the one place both are (re)loaded: on every focus,
-  // including the first, rather than a separate mount effect plus this one.
   useFocusEffect(
     useCallback(() => {
       setPeriod(getCurrentMonthPeriod());
@@ -85,12 +73,8 @@ export const useBudget = () => {
     }, [loadData])
   );
 
-  // useFocusEffect only re-runs on a focus/blur transition, not merely
-  // because `user` changed while this screen stayed focused, so a failed
-  // user load left this screen showing an empty budget forever: retrying
-  // it here re-fetches the user and, once it resolves, this screen's own
-  // data in the same action, rather than waiting for a focus change that a
-  // screen already open may never get.
+  // useFocusEffect does not re-run when `user` changes while the screen stays
+  // focused, so a retry after a failed user load reloads the data itself.
   const retry = useCallback(async () => {
     if (userError) {
       const refreshedUser = await refreshUser();

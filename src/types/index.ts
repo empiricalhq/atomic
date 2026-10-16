@@ -21,7 +21,7 @@ export interface Transaction {
   id: string;
   amount: number;
   description: string;
-  category: string; // category id
+  category: string;
   date: Date;
   type: 'expense' | 'income';
   userId: string;

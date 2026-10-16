@@ -22,8 +22,6 @@ export interface TransactionsContextValue {
 
 export const TransactionsContext = createContext<TransactionsContextValue | null>(null);
 
-// This context owns the current user's transaction list. Screens share it, so
-// a transaction added in the add-expense modal appears without a reload.
 export function TransactionsProvider({ children }: { children: ReactNode }) {
   const { user } = useUser();
   const [transactions, setTransactions] = useState<Transaction[]>([]);

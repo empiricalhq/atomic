@@ -26,9 +26,8 @@ export default function AddExpenseScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  // Set before the first await, so a second tap fired before the re-render
-  // that disables Guardar still sees this and bails out synchronously,
-  // instead of calling addTransaction a second time.
+  // Set before the first await: a second tap before the re-render that
+  // disables Guardar must not call addTransaction again.
   const isSavingRef = useRef(false);
 
   const categories = formState.type === 'expense' ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
@@ -56,8 +55,6 @@ export default function AddExpenseScreen() {
       router.back();
     } catch (error) {
       console.error('Error saving transaction:', error);
-      // A failed save must not look like a saved transaction: stay on the
-      // form and say so, instead of navigating back as if it went through.
       setSaveError('No se pudo guardar la transacción. Intenta de nuevo.');
     } finally {
       isSavingRef.current = false;

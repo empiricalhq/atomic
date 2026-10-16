@@ -47,7 +47,6 @@ export default function Screen({
       }
     : {};
 
-  // const ContainerComponent = variant === 'scroll' ? ScrollView : View;
   const baseContainerClass = cn('flex-1', backgroundStyles[background], className);
   const contentClass = cn(paddingStyles[padding]);
 
