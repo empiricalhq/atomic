@@ -6,8 +6,8 @@ Thank you for considering a contribution to atomic.
 
 [Architecture](../docs/architecture.md) maps the code. Screens go in `app/`,
 data loading in `src/hooks/`, rules over stored data in `src/api/`, and storage
-access in `src/services/storageService.ts`. The architecture page also lists
-the [boundaries](../docs/architecture.md#boundaries) a change must keep.
+access in `src/services/storageService.ts`. The architecture page also lists the
+[boundaries](../docs/architecture.md#boundaries) a change must keep.
 
 ## Set up
 
@@ -19,17 +19,15 @@ the dev server.
 1. Branch from `master`.
 2. Add or update a test next to the file you change. See
    [Testing and checks](../docs/testing.md).
-3. Run the checks CI runs:
+3. Run the check CI runs:
 
    ```bash
-   npx tsc --noEmit
-   npm run lint
-   npm test
+   mise run check
    ```
 
-   `npm run format` fixes lint and formatting problems it can.
+   `mise run fix` fixes the lint and formatting problems it can.
 
-4. Open a pull request against `master`. CI runs the same three commands.
+4. Open a pull request against `master`. CI runs `mise run check`.
 
 ## Conventions
 
@@ -39,5 +37,5 @@ the dev server.
   [`src/utils/cn.ts`](../src/utils/cn.ts).
 - Commit subjects read `area: what changed`, such as
   `hooks: reload transactions when the user changes`.
-- Markdown is formatted by `oxfmt`, which `npm run lint` checks.
+- Markdown is formatted by `oxfmt`, which `mise run lint` checks.
 - Each fact lives in one document. Link to it instead of copying it.

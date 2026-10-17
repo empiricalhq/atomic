@@ -1,7 +1,6 @@
 # AGENTS.md
 
-- Before finishing, run `npx tsc --noEmit`, `npm run lint` and `npm test`. All
-  three must pass.
+- Before finishing, run `mise run fix`, then `mise run check`. Both must pass.
 - Format Markdown and TypeScript with `oxfmt`. Do not use Prettier.
 - Interface text is Spanish. Code, comments and documentation are English.
 - Import from `src/` with `@/`.

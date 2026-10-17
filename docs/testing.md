@@ -1,18 +1,20 @@
 # Testing and checks
 
-CI runs three checks on every pull request
-([`ci.yml`](../.github/workflows/ci.yml)). Run them locally in the same order:
+CI runs `mise run check` on every pull request
+([`ci.yml`](../.github/workflows/ci.yml)). Run the same task locally. It runs
+`lint`, `typecheck`, `test` and `build`, and writes only the git-ignored
+`dist/`:
 
 ```bash
-npx tsc --noEmit
-npm run lint
-npm test
+mise run check
 ```
+
+`mise run fix` applies the safe oxlint fixes and formats every file.
 
 ## Tests
 
-`npm test` runs `vitest run`. It finds every `*.test.ts` and `*.test.tsx` and
-exits non-zero if one fails.
+`mise run test` runs `vitest run`. It finds every `*.test.ts` and `*.test.tsx`
+and exits non-zero if one fails.
 
 One file or one directory:
 
@@ -38,19 +40,19 @@ Layout:
 
 ## Lint and format
 
-`npm run lint` runs `oxlint` and then `oxfmt --check`. It exits non-zero on a
-lint error or an unformatted file, including Markdown. Lint warnings print but
-do not fail it.
+`mise run lint` runs `oxlint --deny-warnings` and then `oxfmt --check`. It exits
+non-zero on any lint diagnostic or unformatted file, including Markdown, YAML
+and JSON.
 
 ```bash
-npm run lint      # check
-npm run format    # oxlint --fix, then oxfmt
+mise run lint   # check
+mise run fix    # oxlint --fix, then oxfmt
 ```
 
 Rules are in [`.oxlintrc.json`](../.oxlintrc.json) and formatting options are in
-[`.oxfmtrc.json`](../.oxfmtrc.json).
+[`.oxfmtrc.json`](../.oxfmtrc.json). Markdown, YAML and JSON wrap at 80 columns.
 
 ## Type check
 
-`npx tsc --noEmit` checks the whole project with `strict` on
-([`tsconfig.json`](../tsconfig.json)).
+`mise run typecheck` runs `tsc --noEmit`. It checks the whole project with
+`strict` on ([`tsconfig.json`](../tsconfig.json)).

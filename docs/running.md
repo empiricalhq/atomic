@@ -10,7 +10,7 @@
 ## Install and start
 
 ```bash
-npm install
+mise run install
 npm start
 ```
 
@@ -37,13 +37,20 @@ npx expo start --clear
 
 `mise tasks` lists them.
 
-| Task                     | Runs                                                                         |
-| ------------------------ | ---------------------------------------------------------------------------- |
-| `mise run setup`         | `npm install`, then `mise run dev`.                                          |
-| `mise run dev` (`d`)     | `npx expo start --clear`.                                                    |
-| `mise run reset`         | Deletes `node_modules` and `.expo`, `npm install`, `npx expo install --fix`. |
-| `mise run doctor`        | `npx expo-doctor` and `npx expo install --check`.                            |
-| `mise run build-preview` | `npx eas build -p android --profile preview`.                                |
+| Task                     | Runs                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `mise run install`       | `npm ci`.                                                                         |
+| `mise run setup`         | `mise run install`, then `mise run dev`.                                          |
+| `mise run dev` (`d`)     | `npx expo start --clear`.                                                         |
+| `mise run reset`         | Deletes `node_modules` and `.expo`, `mise run install`, `npx expo install --fix`. |
+| `mise run doctor`        | `expo-doctor` and `npx expo install --check`.                                     |
+| `mise run build`         | `npx expo export`, which bundles iOS, Android and web into `dist/`.               |
+| `mise run build-preview` | `eas build -p android --profile preview`.                                         |
+
+`mise install` installs `eas` and `expo-doctor` at the versions in
+[`mise.toml`](../mise.toml). `mise run build` needs no Expo account. The checks
+(`lint`, `fix`, `typecheck`, `test`, `check`) are in
+[Testing and checks](testing.md).
 
 ## Preview builds
 

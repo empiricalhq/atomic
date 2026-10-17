@@ -13,13 +13,13 @@ is in Spanish.
 git clone https://github.com/empiricalhq/atomic
 cd atomic
 mise install
-npm install
+mise run install
 npm start
 ```
 
 `mise install` installs the Node.js version in `mise.toml`. `npm start` starts
-the development server. Scan its QR code with Expo Go. Simulators, emulators
-and preview builds are in [Running the app](docs/running.md).
+the development server. Scan its QR code with Expo Go. Simulators, emulators and
+preview builds are in [Running the app](docs/running.md).
 
 The app opens on a three-step onboarding. Tapping **Comenzar** creates an
 anonymous local user and lands on the home screen, which shows the balance and
@@ -39,8 +39,8 @@ recent transactions.
   saved with the user. The screen shows an error if a change is not saved.
 - **Local storage.** The user, transactions and budgets are stored in
   AsyncStorage on the device. There is no server and no account.
-- **Exact money arithmetic.** Totals are summed in integer cents, so
-  `0.1 + 0.2` is `0.3`.
+- **Exact money arithmetic.** Totals are summed in integer cents, so `0.1 + 0.2`
+  is `0.3`.
 
 ## Documentation
 
