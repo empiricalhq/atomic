@@ -6,7 +6,7 @@ import { subtractMoney, sumMoney } from '@/utils/money';
 class TransactionService {
   async getUserTransactions(userId: string): Promise<Transaction[]> {
     const transactions = await storageService.getTransactions(userId);
-    return transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+    return transactions.toSorted((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   async createTransaction(transaction: Omit<Transaction, 'id'>): Promise<Transaction> {
@@ -44,7 +44,7 @@ class TransactionService {
     );
 
     const topCategories = Object.entries(categoryTotals)
-      .sort(([, a], [, b]) => b - a)
+      .toSorted(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([category, total]) => ({ category, total }));
 

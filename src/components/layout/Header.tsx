@@ -18,6 +18,29 @@ interface HeaderProps {
   className?: string;
 }
 
+const renderAction = (action: ActionConfig) => {
+  const iconColor = action.disabled ? '#cbd5e1' : '#475569';
+  const textColor = action.disabled ? 'text-gray-300' : 'text-gray-600';
+
+  return (
+    <TouchableOpacity
+      onPress={action.onPress}
+      disabled={action.disabled}
+      className={cn(
+        'h-10 items-center justify-center rounded-lg px-2',
+        !action.disabled && 'active:bg-gray-100'
+      )}
+      activeOpacity={0.7}>
+      {action.icon && <Ionicons name={action.icon} size={22} color={iconColor} />}
+      {action.text && (
+        <Typography variant="body" weight="medium" className={cn('text-sm', textColor)}>
+          {action.text}
+        </Typography>
+      )}
+    </TouchableOpacity>
+  );
+};
+
 export default function Header({
   title,
   leftAction,
@@ -29,29 +52,6 @@ export default function Header({
     default: 'bg-white border-b border-gray-200',
     transparent: 'bg-transparent',
     elevated: 'bg-white shadow-sm shadow-gray-200',
-  };
-
-  const renderAction = (action: ActionConfig) => {
-    const iconColor = action.disabled ? '#cbd5e1' : '#475569';
-    const textColor = action.disabled ? 'text-gray-300' : 'text-gray-600';
-
-    return (
-      <TouchableOpacity
-        onPress={action.onPress}
-        disabled={action.disabled}
-        className={cn(
-          'h-10 items-center justify-center rounded-lg px-2',
-          !action.disabled && 'active:bg-gray-100'
-        )}
-        activeOpacity={0.7}>
-        {action.icon && <Ionicons name={action.icon} size={22} color={iconColor} />}
-        {action.text && (
-          <Typography variant="body" weight="medium" className={cn('text-sm', textColor)}>
-            {action.text}
-          </Typography>
-        )}
-      </TouchableOpacity>
-    );
   };
 
   return (

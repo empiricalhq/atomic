@@ -109,9 +109,9 @@ export default function OnboardingScreen() {
     <Screen background="white" safeArea padding="none">
       <View className="flex-row items-center justify-between px-6 py-4">
         <View className="flex-row">
-          {ONBOARDING_STEPS.map((_, index) => (
+          {ONBOARDING_STEPS.map((step, index) => (
             <View
-              key={index}
+              key={step.id}
               className={`mr-2 h-1 rounded-full ${
                 index === currentStep ? 'w-6 bg-gray-800' : 'w-1 bg-gray-200'
               }`}

@@ -23,12 +23,12 @@ export function MonthlyBarChart({ data, className }: Props) {
         Resumen Mensual
       </Typography>
       <View className="mb-5 flex-row items-end justify-around" style={{ height: 200 }}>
-        {data.map((item, index) => {
+        {data.map((item) => {
           const incomeHeight = maxAmount > 0 ? (item.income / maxAmount) * 150 : 0;
           const expenseHeight = maxAmount > 0 ? (item.expenses / maxAmount) * 150 : 0;
 
           return (
-            <View key={index} className="flex-1 items-center px-1">
+            <View key={item.month} className="flex-1 items-center px-1">
               <View className="mb-2 h-[150px] flex-row items-end justify-center">
                 <View
                   className="mx-0.5 w-4 rounded-t-md bg-gray-800"
