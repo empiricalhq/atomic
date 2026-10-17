@@ -59,7 +59,8 @@ function makeProps(focusedIndex: number) {
   const props = {
     state: { index: focusedIndex, routes },
     descriptors,
-    navigation: { navigate: navigateMock, emit: emitMock },
+    emitter: { emit: emitMock },
+    navigateToTab: navigateMock,
     insets: { top: 0, bottom: 0, left: 0, right: 0 },
   } as unknown as BottomTabBarProps;
   return { props, navigateMock, emitMock };
@@ -88,7 +89,7 @@ describe('the tab bar renders the three route buttons with a "+" slot between bu
     expect(emitMock).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ type: 'tabPress', target: 'budget-key' })
     );
-    expect(navigateMock).toHaveBeenCalledExactlyOnceWith('budget', undefined);
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith('budget-key');
   });
 
   it('pushes /add-expense from the "+" slot without touching the tab navigation state', () => {

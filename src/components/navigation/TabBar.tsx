@@ -8,7 +8,7 @@ import type { BottomTabBarProps } from 'expo-router/js-tabs';
 // budget and reports as its own flex slot, the same width as the three real
 // tabs, so it can never overlap the button under it. The default tab bar has
 // no way to interleave a non-route button between two routes like that.
-export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
+export function TabBar({ state, descriptors, emitter, navigateToTab, insets }: BottomTabBarProps) {
   return (
     <View
       className="flex-row items-center bg-white px-6 pt-3.5"
@@ -26,18 +26,18 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
         const isFocused = state.index === index;
 
         const onPress = () => {
-          const event = navigation.emit({
+          const event = emitter.emit({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigateToTab(route.key);
           }
         };
 
         const onLongPress = () => {
-          navigation.emit({ type: 'tabLongPress', target: route.key });
+          emitter.emit({ type: 'tabLongPress', target: route.key });
         };
 
         const tabButton = (
