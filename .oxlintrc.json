@@ -3,10 +3,11 @@
   "plugins": ["typescript", "unicorn", "oxc", "react", "import"],
   "categories": {
     "correctness": "error",
-    "suspicious": "warn",
-    "perf": "warn"
+    "suspicious": "error",
+    "perf": "error"
   },
   "rules": {
+    "react/style-prop-object": ["error", { "allow": ["StatusBar"] }],
     "react/display-name": "off",
     "react/react-in-jsx-scope": "off",
     "react/immutability": "off",
