@@ -1,8 +1,8 @@
 # The user
 
 The app has one user per install, created locally on first launch. There is no
-sign-in. [`UserProvider`](../src/contexts/UserContext.tsx) is the only holder
-of that user. Screens read it with `useUser()`
+sign-in. [`UserProvider`](../src/contexts/UserContext.tsx) is the only holder of
+that user. Screens read it with `useUser()`
 ([`src/hooks/useUser.ts`](../src/hooks/useUser.ts)), which throws when called
 outside a provider.
 

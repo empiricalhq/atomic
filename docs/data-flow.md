@@ -1,7 +1,7 @@
 # Data flow
 
-Data moves in one direction. A screen asks a hook, the hook asks a service,
-the service asks storage, and the result comes back up the same path. This page
+Data moves in one direction. A screen asks a hook, the hook asks a service, the
+service asks storage, and the result comes back up the same path. This page
 follows the transactions on the home screen.
 
 ```text
@@ -42,8 +42,8 @@ an earlier load is in flight, only the latest result is applied.
 
 ## Writing
 
-[`app/add-expense.tsx`](../app/add-expense.tsx) calls
-`addTransaction(data)` from `useTransactions`:
+[`app/add-expense.tsx`](../app/add-expense.tsx) calls `addTransaction(data)`
+from `useTransactions`:
 
 1. The provider adds the current user's id and calls
    `transactionService.createTransaction`.
@@ -52,8 +52,8 @@ an earlier load is in flight, only the latest result is applied.
 3. `saveTransaction` appends the record to the `transactions` array under a
    per-key queue, so concurrent saves each keep their record.
 4. The provider prepends the new record to the shared list and returns it. If a
-   load is in flight, the provider starts another so that a read made before
-   the write does not replace the list without the new record.
+   load is in flight, the provider starts another so that a read made before the
+   write does not replace the list without the new record.
 
 Every screen reads the same list, so the home and reports screens show the new
 transaction without a reload. Pull-to-refresh on the home screen loads the list
@@ -63,21 +63,21 @@ again.
 
 [`useReports`](../src/hooks/useReports.ts) derives the reports screen from the
 shared list. It keeps the transactions of the current month and the five months
-before it ([`src/utils/reports.ts`](../src/utils/reports.ts)), and builds
-income and expense totals for each of those months, the summary and the top
-categories. It recomputes the window each time the reports tab gains focus,
-because the month can change while the app stays open.
+before it ([`src/utils/reports.ts`](../src/utils/reports.ts)), and builds income
+and expense totals for each of those months, the summary and the top categories.
+It recomputes the window each time the reports tab gains focus, because the
+month can change while the app stays open.
 
 ## Budgets
 
 [`useBudget`](../src/hooks/useBudget.ts) loads the user's budget categories and
 transactions together and derives `spent` and `progress` for the current month
 with [`src/utils/budget.ts`](../src/utils/budget.ts). It reloads every time the
-budget tab gains focus. Focus does not fire when the user changes under a
-screen that stays focused, so `refreshCategories` after a failed user load
-refreshes the user and, when that returns a user, loads the budget data. `addCategory` validates the
-amount and the category, and `budgetService.addBudgetCategory` rejects a
-duplicate category for the same user inside the storage queue.
+budget tab gains focus. Focus does not fire when the user changes under a screen
+that stays focused, so `refreshCategories` after a failed user load refreshes
+the user and, when that returns a user, loads the budget data. `addCategory`
+validates the amount and the category, and `budgetService.addBudgetCategory`
+rejects a duplicate category for the same user inside the storage queue.
 
 ## Stored shape
 
@@ -87,6 +87,6 @@ duplicate category for the same user inside the storage queue.
 | `transactions`     | Array of `Transaction`, for every user.    |
 | `budgetCategories` | Array of `BudgetCategory`, for every user. |
 
-The types are in [`src/types/index.ts`](../src/types/index.ts).
-JSON stores dates as strings. `storageService` converts `User.createdAt` and
+The types are in [`src/types/index.ts`](../src/types/index.ts). JSON stores
+dates as strings. `storageService` converts `User.createdAt` and
 `Transaction.date` to `Date` when it reads them.
