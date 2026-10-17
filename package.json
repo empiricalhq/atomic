@@ -7,10 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "start": "expo start",
-    "prebuild": "expo prebuild",
-    "lint": "oxlint && oxfmt --check",
-    "format": "oxlint --fix && oxfmt",
-    "test": "vitest run"
+    "prebuild": "expo prebuild"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
