@@ -1,6 +1,6 @@
 [tools]
 node = "26.12.0"
-"npm:eas-cli" = "25.2.0"
+"npm:eas-cli" = "25.3.0"
 "npm:expo-doctor" = "1.21.5"
 
 [tasks.install]
