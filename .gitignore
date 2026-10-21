@@ -1,22 +1,9 @@
 node_modules/
 .expo/
 dist/
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
 *.ps1
 
-.env
-.env.*
-!.env.example
-
-
-
+# Expo prebuild generates these directories.
 ios
 android
 
