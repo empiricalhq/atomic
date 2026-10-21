@@ -11,6 +11,10 @@ npm-debug.*
 web-build/
 *.ps1
 
+.env
+.env.*
+!.env.example
+
 
 
 ios
