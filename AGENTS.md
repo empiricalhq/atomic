@@ -1,6 +1,6 @@
 # AGENTS.md
 
-- Before finishing, run `mise run fix`, then `mise run check`. Both must pass.
+- Before finishing, run `npm run fix`, then `npm run check`. Both must pass.
 - Format Markdown and TypeScript with `oxfmt`. Do not use Prettier.
 - Interface text is Spanish. Code, comments and documentation are English.
 - Import from `src/` with `@/`.

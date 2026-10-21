@@ -13,12 +13,12 @@ is in Spanish.
 git clone https://github.com/empiricalhq/atomic
 cd atomic
 mise install
-mise run install
+npm ci
 npm start
 ```
 
-`mise install` installs the Node.js version in `mise.toml`. `npm start` starts
-the development server. Scan its QR code with Expo Go. Simulators, emulators and
+`mise install` installs the tool versions in `mise.toml`. `npm start` starts the
+development server. Scan its QR code with Expo Go. Simulators, emulators and
 preview builds are in [Running the app](docs/running.md).
 
 The app opens on a three-step onboarding. Tapping **Comenzar** creates an

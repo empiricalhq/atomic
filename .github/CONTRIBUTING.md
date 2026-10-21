@@ -22,12 +22,12 @@ the dev server.
 3. Run the check CI runs:
 
    ```bash
-   mise run check
+   npm run check
    ```
 
-   `mise run fix` fixes the lint and formatting problems it can.
+   `npm run fix` fixes the lint and formatting problems it can.
 
-4. Open a pull request against `master`. CI runs `mise run check`.
+4. Open a pull request against `master`. CI runs `npm run check`.
 
 ## Conventions
 
@@ -37,5 +37,5 @@ the dev server.
   [`src/utils/cn.ts`](../src/utils/cn.ts).
 - Commit subjects read `area: what changed`, such as
   `hooks: reload transactions when the user changes`.
-- Markdown is formatted by `oxfmt`, which `mise run lint` checks.
+- Markdown is formatted by `oxfmt`, which `npm run lint` checks.
 - Each fact lives in one document. Link to it instead of copying it.

@@ -10,7 +10,7 @@
 ## Install and start
 
 ```bash
-mise run install
+npm ci
 npm start
 ```
 
@@ -20,35 +20,23 @@ npm start
 To start with an empty Metro cache:
 
 ```bash
-npx expo start --clear
+npm run dev
 ```
 
-## Other targets
+## Other scripts
 
-| Command            | Runs                                                   |
-| ------------------ | ------------------------------------------------------ |
-| `npm run ios`      | `expo start --ios`                                     |
-| `npm run android`  | `expo start --android`                                 |
-| `npm run prebuild` | `expo prebuild`, which generates `ios/` and `android/` |
+| Command                 | Runs                                                                    |
+| ----------------------- | ----------------------------------------------------------------------- |
+| `npm run ios`           | `expo start --ios`                                                      |
+| `npm run android`       | `expo start --android`                                                  |
+| `npm run build`         | `expo export`, which bundles iOS, Android and web into `dist/`          |
+| `npm run build-preview` | `eas build -p android --profile preview`                                |
+| `npm run doctor`        | `expo-doctor`, then `expo install --check`                              |
+| `npm run reset`         | Deletes `node_modules` and `.expo`, runs `npm ci`, `expo install --fix` |
 
-`ios/` and `android/` are git-ignored.
-
-## mise tasks
-
-`mise tasks` lists them.
-
-| Task                     | Runs                                                                              |
-| ------------------------ | --------------------------------------------------------------------------------- |
-| `mise run install`       | `npm ci`.                                                                         |
-| `mise run setup`         | `mise run install`, then `mise run dev`.                                          |
-| `mise run dev` (`d`)     | `npx expo start --clear`.                                                         |
-| `mise run reset`         | Deletes `node_modules` and `.expo`, `mise run install`, `npx expo install --fix`. |
-| `mise run doctor`        | `expo-doctor` and `npx expo install --check`.                                     |
-| `mise run build`         | `npx expo export`, which bundles iOS, Android and web into `dist/`.               |
-| `mise run build-preview` | `eas build -p android --profile preview`.                                         |
-
+`npx expo prebuild` generates `ios/` and `android/`, which are git-ignored.
 `mise install` installs `eas` and `expo-doctor` at the versions in
-[`mise.toml`](../mise.toml). `mise run build` needs no Expo account. The checks
+[`mise.toml`](../mise.toml). `npm run build` needs no Expo account. The checks
 (`lint`, `fix`, `typecheck`, `test`, `check`) are in
 [Testing and checks](testing.md).
 
