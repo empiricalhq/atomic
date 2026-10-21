@@ -7,7 +7,16 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "start": "expo start",
-    "prebuild": "expo prebuild"
+    "dev": "expo start --clear",
+    "lint": "oxlint --deny-warnings && oxfmt --check",
+    "fix": "oxlint --fix && oxfmt",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "expo export",
+    "build-preview": "eas build -p android --profile preview",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "doctor": "expo-doctor && expo install --check",
+    "reset": "rm -rf node_modules .expo && npm ci && expo install --fix"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
